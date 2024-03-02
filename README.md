@@ -13,9 +13,9 @@
 <h1 align="center">midFEMA</h1>
 
 <p align="center">
-  <strong>Exploring Neurodevelopmental Biomarkers for Behavioral and Emotional Problems in Youth.</strong>
+  <strong>Longitudinal Analysis using data from the ABCD© Study.</strong>
   <br />
-  Utilizing Fast and Efficient Mixed‐Effects Analysis (FEMA) within the Adolescent Brain and Cognitive Development (ABCD) study.
+  Utilizing Longitudinal Analysis within the Adolescent Brain and Cognitive Development (ABCD) study.
   <br />
   <a href="https://github.com/openresearchcollabs/midFEMA"><strong>Explore the Documentation »</strong></a>
   <br />
