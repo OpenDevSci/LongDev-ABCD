@@ -1,0 +1,2718 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+```{r}
+install.packages(SDSDiff)
+library(SDSDiff)
+######
+### Loading and Cleaning ABCD data
+######
+
+setwd()
+
+##Demo/Descriptives
+site_df<-read.csv('abcd_y_lt.csv', header=T)  
+demo_df<-read.csv('abcd_p_demo.csv', header=T)
+
+##CBCL/UPPS
+cbcl_df<-read.csv("mh_p_cbcl.csv",header=T)  #CBCL
+upps_df<-read.csv("mh_y_upps.csv",header=T) #UPPS  
+
+##Parent KSADS
+ksads_p_symp_df<-read.csv("mh_p_ksads_ss.csv", header=T)    #Symptom present/absent across diagnoses 
+
+##Youth KSADS
+ksads_y_symp_df<-read.csv("mh_y_ksads_ss.csv", header=T)    #Symptom present/absent across diagnoses 
+
+##Fluid Int. and Prosocial Behavior 
+fluid_df<-read.csv("nc_y_nihtb.csv",header=T) #Fluid Int. Composite
+pro_y_df<-read.csv("ce_y_psb.csv", header=T) #Prosocial Bx-Youth
+pro_p_df<-read.csv("ce_p_psb.csv", header=T) #Prosocial Bx-Parent 
+
+###Subset CBCL and KSADS data 
+library(tidyverse)
+
+
+#CBCL
+
+cbcl_ext<-cbcl_df %>% 
+  select(src_subject_id, eventname,
+cbcl_q01_p,   #Acts too young for their age
+cbcl_q03_p,	  #Argues a lot
+cbcl_q04_p,	  #Fails to finish things they start
+cbcl_q07_p,	  #Bragging, boasting (note: incorrectly omitted in prereg)
+cbcl_q08_p,	  #Can't concentrate, can't pay attention for long-'Distracted/Hyperactive' composite
+cbcl_q09_p,	  #Can't get their mind off certain thoughts; obsessions
+cbcl_q10_p,	  #Can't sit still, restless, or hyperactive-'Distracted/Hyperactive' composite
+cbcl_q13_p,	  #Confused or seems to be in a fog
+cbcl_q15_p,	  #Cruel to animals
+cbcl_q16_p,	  #Cruelty, bullying, or meanness to others
+cbcl_q17_p,	  #Daydreams or gets lost in their thoughts
+cbcl_q19_p,	  #Demands a lot of attention
+cbcl_q20_p,	  #Destroys their own things-'Destroys' composite
+cbcl_q21_p,	  #Destroys things belonging to their family or others-'Destroys' composite
+cbcl_q22_p,	  #Disobedient at home-'Disobeys Rules' composite
+cbcl_q23_p,	  #Disobedient at school-'Disobeys Rules' composite
+cbcl_q25_p,	  #Doesn't get along with other kids-'Peer Problems' composite 
+cbcl_q26_p,	  #Doesn't seem to feel guilty after misbehaving
+cbcl_q27_p,	  #Easily jealous
+cbcl_q28_p,	  #Breaks rules at home, school or elsewhere-'Disobeys Rules' composite
+cbcl_q34_p,	  #Feels others are out to get them
+cbcl_q36_p,	  #Gets hurt a lot, accident prone 
+cbcl_q37_p,	  #Gets in many fights
+cbcl_q39_p,	  #Hangs around with others who get in trouble
+cbcl_q41_p,	  #Impulsive or acts without thinking
+cbcl_q43_p,	  #Lying or cheating
+cbcl_q46_p,	  #Nervous movements or twitching
+cbcl_q48_p,	  #Not liked by other kids-'Peer Problems' composite 
+cbcl_q57_p,	  #Physically attacks people-'Attacks/threatens' composite 
+cbcl_q61_p,	  #Poor school work
+cbcl_q62_p,	  #Poorly coordinated or clumsy
+cbcl_q64_p,	  #Prefers being with younger kids
+cbcl_q66_p,	  #Repeats certain acts over and over; compulsions
+cbcl_q67_p,	  #Runs away from home
+cbcl_q68_p,	  #Screams a lot
+cbcl_q72_p,	  #Sets fires
+cbcl_q74_p,	  #Showing off or clowning
+cbcl_q78_p,	  #Inattentive or easily distracted-'Distracted/Hyperactive' composite 
+cbcl_q80_p,	  #Stares blankly
+cbcl_q81_p,	  #Steals at home-'Steals' composite
+cbcl_q82_p,	  #Steals outside the home-'Steals' composite
+cbcl_q85_p,	  #Strange ideas
+cbcl_q86_p,	  #Stubborn, sullen, or irritable 
+cbcl_q87_p,	  #Sudden changes in mood or feelings
+cbcl_q88_p,	  #Sulks a lot
+cbcl_q89_p,	  #Suspicious
+cbcl_q90_p,	  #Swearing or obscene language
+cbcl_q93_p,	  #Talks too much
+cbcl_q94_p,	  #Teases a lot
+cbcl_q95_p,	  #Temper tantrums or hot temper
+cbcl_q96_p,	  #Thinks about sex too much
+cbcl_q97_p,	  #Threatens people-'Attacks/threatens' composite 
+cbcl_q106_p,	#Vandalism-'Destroys' composite
+cbcl_q109_p)	#Whining
+
+#Create composites 
+cbcl_ext<- cbcl_ext %>%
+  rowwise() %>% 
+  mutate(AttThreat_comp = round(mean(c(cbcl_q57_p, cbcl_q97_p), na.rm = T),0), #round() with 0 ensures ratings for composites also range from 0-2
+         Destroy_comp = round(mean(c(cbcl_q20_p, cbcl_q21_p, cbcl_q106_p), na.rm = T),0),
+         Disobey_comp =  round(mean(c(cbcl_q22_p, cbcl_q23_p, cbcl_q28_p), na.rm = T),0),
+         Steal_comp =  round(mean(c(cbcl_q81_p, cbcl_q82_p), na.rm = T),0),
+         PeerProb_comp =  round(mean(c(cbcl_q25_p, cbcl_q48_p), na.rm = T),0),
+         DistrHyp_comp =  round(mean(c(cbcl_q08_p, cbcl_q10_p, cbcl_q78_p), na.rm = T),0)) %>% 
+  select(-c(cbcl_q57_p, cbcl_q97_p,   #drop individual items from df used to create composites 
+            cbcl_q20_p, cbcl_q21_p, cbcl_q106_p, 
+            cbcl_q22_p, cbcl_q23_p, cbcl_q28_p, 
+            cbcl_q81_p, cbcl_q82_p, 
+            cbcl_q25_p, cbcl_q48_p,
+            cbcl_q08_p, cbcl_q10_p, cbcl_q78_p))   
+
+
+###KSADS-Parent 
+ksads_p_symp_df[ksads_p_symp_df==888]<-NA #Recode 888 to be NA
+
+##Create symptom count variables 
+ksads_SymCount_p<- ksads_p_symp_df %>% 
+  rowwise() %>% 
+  ##Conduct disorder
+  mutate(CD_count_p=sum(c(
+ ksads_16_98_p,	  #Symptom - Often Lies, Present			
+ ksads_16_100_p,	#Symptom - Truancy, Present			
+ ksads_16_102_p,	#Symptom - Often initiates physical fights, Present			
+ ksads_16_104_p,	#Symptom - Often bullies others, Present			
+ ksads_16_106_p,	#Symptom - Stealing, Present			
+ ksads_16_447_p,	#Symptom - Vandalism, Present			
+ ksads_16_449_p,	#Symptom - Breaking and entering, Present			
+ ksads_16_451_p,	#Symptom - Stealing while confronting victim, Present			
+ ksads_16_453_p,	#Symptom - Fire setting, Present			
+ ksads_16_455_p,	#Symptom - Stays out late at night despite parental prohibition, Present			
+ ksads_16_457_p,	#Symptom - Ran away overnight, Present			
+ ksads_16_459_p,	#Symptom - Use of a weapon that can cause serious harm, Present			
+ ksads_16_461_p,	#Symptom - Has been physically cruel to people, Present			
+ ksads_16_463_p,	#Symptom - Forced someone into sexual activity, Present			
+ ksads_16_465_p),na.rm=T),	#Symptom - Has been physically cruel to animals, Present			
+ 
+         
+##Oppositional defiant disorder
+ODD_count_p=sum(c(
+ksads_15_91_p,   #Symptom - Often loses temper Present			
+ksads_15_93_p,   #Symptom - Often argues with adults/authority Present			
+ksads_15_95_p,   #Symptom - Often disobeys rules/requests Present			
+ksads_15_432_p,	#Symptom - Often touchy or easily annoyed, Present			
+ksads_15_433_p,	#Symptom - Often angry or resentful, Present			
+ksads_15_434_p,	#Symptom - Spiteful or vindictive, Present			
+ksads_15_435_p,	#Symptom - Often deliberatively annoys people, Present			
+ksads_15_436_p,	#Symptom - Often blames others for own mistakes, Present			
+ksads_15_438_p),na.rm=T),	#Symptom - Duration of at least 6 months, Present			
+
+##ADHD
+ADHD_count_p=sum(c(
+ksads_14_76_p,	  #Symptom - Difficulty sustaining attention Present			
+ksads_14_80_p,	  #Symptom - Easily distracted Present			
+ksads_14_84_p,	  #Symptom - Difficulty remaining seated Present			
+ksads_14_88_p,	  #Symptom - Impulsivity Present			
+ksads_14_394_p,	#Symptom - Often makes careless mistakes, Present			
+ksads_14_395_p,	#Symptom - Often doesn't seem to listen when spoken to, Present			
+ksads_14_396_p,	#Symptom - Difficulty following Instructions, Present			
+ksads_14_397_p,	#Symptom - Difficulty organizing tasks, Present			
+ksads_14_398_p,	#Symptom - Avoids tasks requiring attention, Present			
+ksads_14_399_p,	#Symptom - Often loses things, Present			
+ksads_14_400_p,	#Symptom - Forgetful in daily activities, Present			
+ksads_14_401_p,	#Symptom - Fidgets, Present			
+ksads_14_402_p,	#Symptom - Runs or climbs excessively, Present			
+ksads_14_403_p,	#Symptom - Acts like driven by a motor, Present			
+ksads_14_404_p,	#Symptom - Difficulty playing quietly, Present			
+ksads_14_405_p,	#Symptom - Blurts out answers, Present			
+ksads_14_406_p,	#Symptom - Difficulty waiting turn, Present			
+ksads_14_407_p,	#Symptom - Often Interrupts or intrudes on others, Present			
+ksads_14_408_p), na.rm=T),	#Symptom - Often talks excessively, Present			
+
+
+##Major depressive disorder
+MDD_count_p=sum(c(
+ksads_1_1_p,	  #Symptom - Depressed Mood, Present			
+ksads_1_3_p,	  #Symptom - Irritability, Present			
+ksads_1_5_p,	  #Symptom - Anhedonia, Present			
+ksads_1_157_p,	#Symptom - Hypersomnia, Present			
+ksads_1_159_p,	#Symptom - Fatigue, Present			
+ksads_1_161_p,	#Symptom - Concentration Disturbance, Present			
+ksads_1_163_p,	#Symptom - Indecision, Present			
+ksads_1_165_p,	#Symptom - Decreased Appetite, Present			
+ksads_1_167_p,	#Symptom - Weight Loss, Present			
+ksads_1_169_p,	#Symptom - Increased Appetite, Present			
+ksads_1_171_p,	#Symptom - Weight Gain, Present			
+ksads_1_175_p,	#Symptom - Psychomotor Retardation, Present			
+ksads_1_177_p,	#Symptom - Guilt, Present			
+ksads_1_179_p,	#Symptom - Hopeless, Present			
+ksads_1_181_p),na.rm=T),	#Symptom - Decreased Self-Esteem, Present			
+
+
+##Suicidality/self-harm
+SSH_count_p=sum(c(
+ksads_23_143_p,	#Symptom - Self injurious behavior, Present			
+ksads_23_145_p,	#Symptom - Wishes/Better off dead, Present			
+ksads_23_147_p,	#Symptom - Suicidal Ideation, Present			
+ksads_23_149_p,	#Symptom - Suicidal Attempt, Present			
+ksads_23_807_p,	#Symptom - Self-injury, intent to die, Present			
+ksads_23_808_p,	#Symptom - Self-Injury, thought could die from behavior, Present			
+ksads_23_809_p,	#Symptom - Suicidal ideation thought of method, Present			
+ksads_23_810_p,	#Symptom - Suicidal ideation, intent to act, Present			
+ksads_23_811_p,	#Symptom - Suicidal ideation, specific plan, Present			
+ksads_23_812_p,	#Symptom - Suicidal behavior, made preparations, Present			
+ksads_23_813_p,	#Symptom - Aborted or interrupted suicide attempts, Present			
+ksads_23_814_p,	#Symptom - Method of actual suicide attempt, Present			
+ksads_23_815_p),na.rm=T),	#Symptom - Suicide attempt, thought could die, Present			
+
+
+##Generalized anxiety disorder
+GAD_count_p=sum(c(
+ksads_10_45_p,	  #Symptom - Excessive worries more days than not Present			
+ksads_10_320_p,	#Symptom - Excessive worries across breadth of domains, Present			
+ksads_10_322_p,	#Symptom - Worry associated with defined symptom(s), Present			
+ksads_10_324_p),na.rm=T),	#Symptom - Difficulty controlling worries, Present			
+	
+
+##Social anxiety disorder
+SAD_count_p=sum(c(
+ksads_8_29_p,	  #Symptom - Fear of Social Situations Present			
+ksads_8_30_p,	  #Symptom - Duration (at least 6 months) Present			
+ksads_8_301_p,	  #Symptom - Social situations invariably provoke anxiety, Present			
+ksads_8_303_p,	  #Symptom - Social situations avoided or endured with distress, Present			
+ksads_8_307_p), na.rm=T)) %>%  	  #Symptom - Social fear is excessive given threat or sociocultural context, Present			
+select(src_subject_id, eventname, CD_count_p:SAD_count_p)
+
+
+###KSADS-Youth
+ksads_y_symp_df[ksads_y_symp_df==888]<-NA #Recode 888 to be NA
+
+##Create symptom count variables 
+ksads_SymCount_y<- ksads_y_symp_df %>% 
+  rowwise() %>%
+  mutate(
+    ##Major depressive disorder
+    MDD_count_y=sum(c(
+      ksads_1_1_t,	  #Symptom - Depressed Mood, Present			
+      ksads_1_3_t,	  #Symptom - Irritability, Present			
+      ksads_1_5_t,	  #Symptom - Anhedonia, Present			
+      ksads_1_157_t,	#Symptom - Hypersomnia, Present			
+      ksads_1_159_t,	#Symptom - Fatigue, Present			
+      ksads_1_161_t,	#Symptom - Concentration Disturbance, Present			
+      ksads_1_163_t,	#Symptom - Indecision, Present			
+      ksads_1_165_t,	#Symptom - Decreased Appetite, Present			
+      ksads_1_167_t,	#Symptom - Weight Loss, Present			
+      ksads_1_169_t,	#Symptom - Increased Appetite, Present			
+      ksads_1_171_t,	#Symptom - Weight Gain, Present			
+      ksads_1_175_t,	#Symptom - Psychomotor Retardation, Present			
+      ksads_1_177_t,	#Symptom - Guilt, Present			
+      ksads_1_179_t,	#Symptom - Hopeless, Present			
+      ksads_1_181_t),na.rm=T),	#Symptom - Decreased Self-Esteem, Present			
+     
+    
+    ##Suicidality/self-harm
+    SSH_count_y=sum(c(
+      ksads_23_143_t,	#Symptom - Self injurious behavior, Present			
+      ksads_23_145_t,	#Symptom - Wishes/Better off dead, Present			
+      ksads_23_147_t,	#Symptom - Suicidal Ideation, Present			
+      ksads_23_149_t,	#Symptom - Suicidal Attempt, Present			
+      ksads_23_807_t,	#Symptom - Self-injury, intent to die, Present			
+      ksads_23_808_t,	#Symptom - Self-Injury, thought could die from behavior, Present			
+      ksads_23_809_t,	#Symptom - Suicidal ideation thought of method, Present			
+      ksads_23_810_t,	#Symptom - Suicidal ideation, intent to act, Present			
+      ksads_23_811_t,	#Symptom - Suicidal ideation, specific plan, Present			
+      ksads_23_812_t,	#Symptom - Suicidal behavior, made preparations, Present			
+      ksads_23_813_t,	#Symptom - Aborted or interrupted suicide attempts, Present			
+      ksads_23_814_t,	#Symptom - Method of actual suicide attempt, Present			
+      ksads_23_815_t),na.rm=T),	#Symptom - Suicide attempt, thought could die, Present			
+      
+    ##Generalized anxiety disorder
+    GAD_count_y=sum(c(
+      ksads_10_45_t,	  #Symptom - Excessive worries more days than not Present			
+      ksads_10_320_t,	#Symptom - Excessive worries across breadth of domains, Present			
+      ksads_10_322_t,	#Symptom - Worry associated with defined symptom(s), Present			
+      ksads_10_324_t),na.rm=T),	#Symptom - Difficulty controlling worries, Present			
+      
+    ##Social anxiety disorder
+    SAD_count_y=sum(c(
+      ksads_8_29_t,	  #Symptom - Fear of Social Situations Present			
+      ksads_8_30_t,	  #Symptom - Duration (at least 6 months) Present			
+      ksads_8_301_t,	  #Symptom - Social situations invariably provoke anxiety, Present			
+      ksads_8_303_t,	  #Symptom - Social situations avoided or endured with distress, Present			
+      ksads_8_307_t), na.rm=T)) %>%	  #Symptom - Social fear is excessive given threat or sociocultural context, Present			
+  select(src_subject_id, eventname, MDD_count_y:SAD_count_y)
+
+
+######
+######
+### Analyses for Aim 1: Identify Hierarchical Structure of CBCL Externalizing Symptoms and Examine Discriminant Validity  
+######
+######
+
+library(psych)
+library(GPArotation)
+
+#Subset to only focus on baseline CBCL data
+cbcl_ext_base <- cbcl_ext %>% 
+  subset(., eventname == 'baseline_year_1_arm_1')    
+
+#Parallel analysis and MAP
+fa.parallel(cbcl_ext_base[,3:47], cor = 'poly')                  #14 factors optimal
+vss(cbcl_ext_base[,3:47], rotate="promax", fm="pa", cor='poly')  #4 factors optimal based on MAP
+
+#Run Forbes (2023) modified bass-ackward analyses on CBCL items 
+##NOTE: these functions are contained in the "ExtendedBassAckwards functions with annotation.R" 
+#file available on the OSF page for the paper: https://osf.io/ec36x/?view_only=d63a1452f133421b9e1bef34a41675f1
+
+cbcl_poly<-polychoric(cbcl_ext_base[,3:47]) #first get polychoric corrs among cbcl items
+
+CBCL_4_ExBA<-ExtendedBassAckwards(cbcl_poly$rho,  #use polychoic corr matrix as input 
+                             num.comp = 4, #Extract 4 factors at lowest level of hierarchy
+                             fm = "minres", #Factoring method
+                             rotate = "promax", #Rotation
+                             scores = "tenBerge") #Method for computing factor scores 
+
+CBCL_4_ExBA$comp.load #Loadings at each level of hierarchy 
+CBCL_4_ExBA$comp.corr #Corrs between factors across levels 
+hierCorrs<-HierarchicalCorrs(CBCL_4_ExBA$comp.corr, 'd4')
+negCorrs<-NegativeCorrs(CBCL_4_ExBA$comp.corr, 'd4')
+
+#Get loadings and export (used for Excel tables in supplement)
+
+CBCL_4_ExBA_loadings<-as.data.frame(unclass(CBCL_4_ExBA$comp.load[[4]]))
+CBCL_3_ExBA_loadings<-as.data.frame(unclass(CBCL_4_ExBA$comp.load[[3]]))
+CBCL_2_ExBA_loadings<-as.data.frame(unclass(CBCL_4_ExBA$comp.load[[2]]))
+CBCL_1_ExBA_loadings<-as.data.frame(unclass(CBCL_4_ExBA$comp.load[[1]]))
+
+write.csv(CBCL_4_ExBA_loadings, "Extended_BassAck_4.csv")
+write.csv(CBCL_3_ExBA_loadings, "Extended_BassAck_3.csv")
+write.csv(CBCL_2_ExBA_loadings, "Extended_BassAck_2.csv")
+write.csv(CBCL_1_ExBA_loadings, "Extended_BassAck_1.csv")
+
+#3-factor solution 
+CBCL_3_ExBA<-ExtendedBassAckwards(cbcl_poly$rho,  #use polychoic corr matrix as input 
+                                  num.comp = 3, #Extract 4 factors at lowest level of hierarchy
+                                  fm = "minres", #Factoring method
+                                  rotate = "promax", #Rotation
+                                  scores = "tenBerge") #Method for computing factor scores 
+
+#Identify any redundant factors in solution 
+redund_CBCL_3_ExBA<-FindRedundantComp(CBCL_3_ExBA$comp.corr, CBCL_3_ExBA$cong, 'c3') 
+redund_CBCL_3_ExBA$cong.chase 
+redund_CBCL_3_ExBA$corr.chase
+CBCL_3_ExBA$comp.corr #Corrs between factors across levels 
+
+#Examine 14-factor solution 
+CBCL_14_ExBA<-ExtendedBassAckwards(cbcl_poly$rho, num.comp = 14,fm = "minres",rotate = "promax",scores = "tenBerge") #Extract 14 factors
+CBCL_14_ExBA$comp.load
+
+redund_CBCL_14_ExBA<-FindRedundantComp(CBCL_14_ExBA$comp.corr, CBCL_14_ExBA$cong, 'n14')
+
+
+#Extended Bass-ackwards object doesn't contain easily accessible factor scores, so run fa.poly() to get these scores for 1- and 3-factor solutions 
+#using same extraction, rotation, and factor scoring methods
+
+CBCL_ext_EFA_1<-fa.poly(cbcl_ext_base[,3:47], nfactors = 1, fm="minres", rotate = "promax", scores = 'tenBerge')
+CBCL_ext_EFA_3<-fa.poly(cbcl_ext_base[,3:47], nfactors = 3, fm="minres", rotate = "promax", scores = "tenBerge")
+
+
+CBCL_ext_EFA_1scores<-as.data.frame(CBCL_ext_EFA_1[["scores"]][["scores"]]) #Factor score for broad-based externalizing
+CBCL_ext_EFA_3scores<-as.data.frame(CBCL_ext_EFA_3[["scores"]][["scores"]]) #Factor score for 3-factor solution, which includes Ant and Dis
+
+###################
+### NOTE: In the subsequent code, what is called "narrow externalizing" in the manuscript is labeled as "Ant" or "ANT".
+## What is called "neurodevelopmental problems" in the manuscript is labeled as "Dis" or "DIS". Full disclosure: we changed our minds about
+## the labels in the manuscript pretty late in the game. 
+##################
+
+colnames(CBCL_ext_EFA_1scores) <- 'Broad_Ext'
+colnames(CBCL_ext_EFA_3scores) <- c('Ant_Ext', 'Irr_Ext', 'Dis_Ext') 
+
+cbcl_ext_base<-bind_cols(cbcl_ext_base, CBCL_ext_EFA_1scores, CBCL_ext_EFA_3scores) #Add factor scores to our dataframe 
+
+
+######
+##Examine Relations between Factors and External Correlates (Table 1)
+######
+
+#Merge CBCL results with other DFs
+df_list<-list(site_df,
+              demo_df,
+              cbcl_ext_base,
+              upps_df,
+              ksads_SymCount_p,
+              ksads_SymCount_y,
+              fluid_df,
+              pro_y_df,
+              pro_p_df)
+
+abcd_merged <- df_list %>% 
+  reduce(left_join, by=c('src_subject_id','eventname'))
+
+abcd_merged_baseline <- abcd_merged %>% 
+subset(., eventname == 'baseline_year_1_arm_1') #only focus on baseline
+
+abcd_corrs<-abcd_merged_baseline %>% 
+  select(., Broad_Ext, Ant_Ext, Irr_Ext, Dis_Ext, 
+         MDD_count_y:SAD_count_y, CD_count_p:SAD_count_p,
+         upps_y_ss_lack_of_perseverance, upps_y_ss_lack_of_planning, upps_y_ss_negative_urgency, upps_y_ss_positive_urgency, upps_y_ss_sensation_seeking,
+         psb_p_ss_mean, psb_y_ss_mean,
+         nihtbx_fluidcomp_agecorrected) %>% 
+  corr.test(alpha=.01)
+
+print(abcd_corrs, short=F) #include short=F to get CIs
+
+
+###
+#Tests of dependent correlations
+###
+
+
+##Parent-report K-SADS outcomes
+
+#CD
+r.test(n=11790, r12=.60, r13 =.39, r23 = .62,     #r12 equals the correlations between Antagonism factor and Parent-report CD; 
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   #r13 is correlation with Irritability factor; r23 is corr between Ant. and Irr.
+
+r.test(n=11790, r12=.60, r13 =.31, r23 = .52,     #r23 equals the correlation between Antagonism and Disinhibition/Neurodevelopmental problems
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+r.test(n=11790, r12=.39, r13 =.31, r23 = .58,     #r23 equals the correlation between Irritability and Disinhibition/Neurodevelopmental problems
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#ODD
+r.test(n=11790, r12=.45, r13 =.53, r23 = .62,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.45, r13 =.32, r23 = .52,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.53, r13 =.32, r23 = .58,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#ADHD
+r.test(n=11790, r12=.41, r13 =.38, r23 = .62,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.41, r13 =.57, r23 = .52,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.38, r13 =.57, r23 = .58,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#MDD
+r.test(n=11790, r12=.26, r13 =.32, r23 = .62,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.26, r13 =.28, r23 = .52,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.32, r13 =.28, r23 = .58,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#Suicidality
+r.test(n=11790, r12=.20, r13 =.20, r23 = .62,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.20, r13 =.19, r23 = .52,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.20, r13 =.19, r23 = .58,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#GAD
+r.test(n=11790, r12=.09, r13 =.23, r23 = .62,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.09, r13 =.22, r23 = .52,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.23, r13 =.22, r23 = .58,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#SAD
+r.test(n=11790, r12=.04, r13 =.08, r23 = .62,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.04, r13 =.13, r23 = .52,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.08, r13 =.13, r23 = .58,  
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+##Youth-report K-SADS outcomes
+
+#MDD
+r.test(n=11790, r12=.13, r13 =.09, r23 = .62,     #r12 equals the correlations between Antagonism factor and Youth-report MDD; 
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   #r13 is correlation with Irritability factor; r23 is corr between Ant. and Irr.
+
+r.test(n=11790, r12=.13, r13 =.10, r23 = .52,     #r23 equals the correlation between Antagonism and Disinhibition/Neurodevelopmental problems
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+r.test(n=11790, r12=.09, r13 =.10, r23 = .58,     #r23 equals the correlation between Irritability and Disinhibition/Neurodevelopmental problems
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#Suicidality
+r.test(n=11790, r12=.11, r13 =.09, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=.11, r13 =.11, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.09, r13 =.11, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#GAD
+r.test(n=11790, r12=.04, r13 =.05, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=.04, r13 =.06, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.05, r13 =.06, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#SAD
+r.test(n=11790, r12=.04, r13 =.04, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=.04, r13 =.05, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.04, r13 =.05, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#UPPS
+r.test(n=11790, r12=.16, r13 =.15, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=.16, r13 =.11, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.15, r13 =.11, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+r.test(n=11790, r12=.15, r13 =.10, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=.15, r13 =.12, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.10, r13 =.12, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+r.test(n=11790, r12=.15, r13 =.12, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=.15, r13 =.14, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.12, r13 =.14, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+r.test(n=11790, r12=.12, r13 =.10, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=.12, r13 =.18, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.10, r13 =.18, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+r.test(n=11790, r12=.06, r13 =.02, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=.06, r13 =.02, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=.02, r13 =.02, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#Prosocial Behavior-Parent
+r.test(n=11790, r12=-.33, r13 =-.32, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=-.33, r13 =-.22, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=-.32, r13 =-.22, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#Prosocial Behavior-Youth
+r.test(n=11790, r12=-.09, r13 =-.07, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=-.09, r13 =-.06, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=-.07, r13 =-.06, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+#Fluid intelligence
+r.test(n=11790, r12=-.14, r13 =-.08, r23 = .62,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)   
+r.test(n=11790, r12=-.14, r13 =-.17, r23 = .52,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+r.test(n=11790, r12=-.08, r13 =-.17, r23 = .58,     
+       n2 = NULL,pooled=TRUE, twotailed = TRUE)
+
+
+
+######
+######
+### Analyses for Aim 2: Examine Longitudinal Measurement Invariance   
+######
+######
+
+
+
+
+#####
+##Prep Data for MI 
+#####
+
+
+##Check corrs between CBCL items used for composites at follow-up assessments
+
+abcd_cbcl_compitems<-cbcl_df %>% 
+  select(., src_subject_id, eventname, 
+         cbcl_q08_p,	    #Can't concentrate, can't pay attention for long-'Distracted/Hyperactive' composite
+         cbcl_q10_p,	    #Can't sit still, restless, or hyperactive-'Distracted/Hyperactive' composite
+         cbcl_q78_p,	    #Inattentive or easily distracted-'Distracted/Hyperactive' composite
+         cbcl_q20_p,	    #Destroys their own things-'Destroys' composite
+         cbcl_q21_p,	    #Destroys things belonging to their family or others-'Destroys' composite
+         cbcl_q106_p, 	  #Vandalism-'Destroys' composite
+         cbcl_q22_p,	    #Disobedient at home-'Disobeys Rules' composite
+         cbcl_q23_p,	    #Disobedient at school-'Disobeys Rules' composite
+         cbcl_q28_p,	    #Breaks rules at home, school or elsewhere-'Disobeys Rules' composite
+         cbcl_q25_p,	    #Doesn't get along with other kids-'Peer Problems' composite
+         cbcl_q48_p,	    #Not liked by other kids-'Peer Problems' composite 
+         cbcl_q57_p,	    #Physically attacks people-'Attacks/threatens' composite
+         cbcl_q97_p,	    #Threatens people-'Attacks/threatens' composite
+         cbcl_q81_p,	    #Steals at home-'Steals' composite
+         cbcl_q82_p)      #Steals outside the home-'Steals' composite
+
+#1 yr follow up
+abcd_cbcl_compitems %>% 
+  subset(., eventname=='1_year_follow_up_y_arm_1') %>%
+  select(., 
+         cbcl_q08_p,	    #Can't concentrate, can't pay attention for long-'Distracted/Hyperactive' composite
+         cbcl_q10_p,	    #Can't sit still, restless, or hyperactive-'Distracted/Hyperactive' composite
+         cbcl_q78_p,	    #Inattentive or easily distracted-'Distracted/Hyperactive' composite
+         cbcl_q20_p,	    #Destroys their own things-'Destroys' composite
+         cbcl_q21_p,	    #Destroys things belonging to their family or others-'Destroys' composite
+         cbcl_q106_p, 	  #Vandalism-'Destroys' composite
+         cbcl_q22_p,	    #Disobedient at home-'Disobeys Rules' composite
+         cbcl_q23_p,	    #Disobedient at school-'Disobeys Rules' composite
+         cbcl_q28_p,	    #Breaks rules at home, school or elsewhere-'Disobeys Rules' composite
+         cbcl_q25_p,	    #Doesn't get along with other kids-'Peer Problems' composite
+         cbcl_q48_p,	    #Not liked by other kids-'Peer Problems' composite 
+         cbcl_q57_p,	    #Physically attacks people-'Attacks/threatens' composite
+         cbcl_q97_p,	    #Threatens people-'Attacks/threatens' composite
+         cbcl_q81_p,	    #Steals at home-'Steals' composite
+         cbcl_q82_p) %>%       #Steals outside the home-'Steals' composite
+  polychoric()
+
+#2-yr follow-up
+abcd_cbcl_compitems %>% 
+  subset(., eventname=='2_year_follow_up_y_arm_1') %>%
+  select(., 
+         cbcl_q08_p,	    #Can't concentrate, can't pay attention for long-'Distracted/Hyperactive' composite
+         cbcl_q10_p,	    #Can't sit still, restless, or hyperactive-'Distracted/Hyperactive' composite
+         cbcl_q78_p,	    #Inattentive or easily distracted-'Distracted/Hyperactive' composite
+         cbcl_q20_p,	    #Destroys their own things-'Destroys' composite
+         cbcl_q21_p,	    #Destroys things belonging to their family or others-'Destroys' composite
+         cbcl_q106_p, 	  #Vandalism-'Destroys' composite
+         cbcl_q22_p,	    #Disobedient at home-'Disobeys Rules' composite
+         cbcl_q23_p,	    #Disobedient at school-'Disobeys Rules' composite
+         cbcl_q28_p,	    #Breaks rules at home, school or elsewhere-'Disobeys Rules' composite
+         cbcl_q25_p,	    #Doesn't get along with other kids-'Peer Problems' composite
+         cbcl_q48_p,	    #Not liked by other kids-'Peer Problems' composite 
+         cbcl_q57_p,	    #Physically attacks people-'Attacks/threatens' composite
+         cbcl_q97_p,	    #Threatens people-'Attacks/threatens' composite
+         cbcl_q81_p,	    #Steals at home-'Steals' composite
+         cbcl_q82_p) %>%       #Steals outside the home-'Steals' composite
+  polychoric()
+
+#3-yr follow-up
+abcd_cbcl_compitems %>% 
+  subset(., eventname=='3_year_follow_up_y_arm_1') %>%
+  select(., 
+         cbcl_q08_p,	    #Can't concentrate, can't pay attention for long-'Distracted/Hyperactive' composite
+         cbcl_q10_p,	    #Can't sit still, restless, or hyperactive-'Distracted/Hyperactive' composite
+         cbcl_q78_p,	    #Inattentive or easily distracted-'Distracted/Hyperactive' composite
+         cbcl_q20_p,	    #Destroys their own things-'Destroys' composite
+         cbcl_q21_p,	    #Destroys things belonging to their family or others-'Destroys' composite
+         cbcl_q106_p, 	  #Vandalism-'Destroys' composite
+         cbcl_q22_p,	    #Disobedient at home-'Disobeys Rules' composite
+         cbcl_q23_p,	    #Disobedient at school-'Disobeys Rules' composite
+         cbcl_q28_p,	    #Breaks rules at home, school or elsewhere-'Disobeys Rules' composite
+         cbcl_q25_p,	    #Doesn't get along with other kids-'Peer Problems' composite
+         cbcl_q48_p,	    #Not liked by other kids-'Peer Problems' composite 
+         cbcl_q57_p,	    #Physically attacks people-'Attacks/threatens' composite
+         cbcl_q97_p,	    #Threatens people-'Attacks/threatens' composite
+         cbcl_q81_p,	    #Steals at home-'Steals' composite
+         cbcl_q82_p) %>%       #Steals outside the home-'Steals' composite
+  polychoric()
+
+
+
+######
+##Assigning CBCL Items to Parcels for MI Testing
+######
+
+
+##Broad-based Externalizing 
+
+CBCL_ITEMS_EXT<-as.data.frame(colnames(cbcl_ext_base[,3:47])) #Note that this df is CBCL items at baseline 
+set.seed(111); Item_assign_EXT<-as.data.frame(sample(1:45, 45, replace=F)) #set seed for reproducibility and randomly generate numbers between 1-45 without replacement
+                                                                           #Important Note: the item assignments are based on the first sampling iteration! Following iterations will produce different orders of items 
+colnames(CBCL_ITEMS_EXT)<-'CBCL_Item'
+colnames(Item_assign_EXT)<-'Assign_N'
+
+Parcel_assignments_EXT<-bind_cols(CBCL_ITEMS_EXT, Item_assign_EXT) %>% 
+  arrange(Assign_N) #Arrange in order from 1-45
+
+#Create parcels using item assignments from above
+print(Parcel_assignments_EXT)
+
+cbcl_ext_base<-cbcl_ext_base %>%
+  rowwise() %>% 
+  mutate(
+    EXT_parc1=sum(c(cbcl_q66_p, Disobey_comp, cbcl_q72_p, cbcl_q80_p, cbcl_q09_p, cbcl_q85_p, cbcl_q61_p, cbcl_q15_p, cbcl_q67_p), na.rm=T), 
+    EXT_parc2=sum(c(cbcl_q17_p, cbcl_q94_p, cbcl_q96_p, cbcl_q87_p, cbcl_q01_p, cbcl_q64_p, cbcl_q41_p, cbcl_q43_p, cbcl_q88_p), na.rm=T),
+    EXT_parc3=sum(c(cbcl_q04_p, cbcl_q03_p, cbcl_q62_p, cbcl_q86_p, AttThreat_comp, cbcl_q37_p, cbcl_q07_p, cbcl_q16_p, cbcl_q39_p), na.rm=T),
+    EXT_parc4=sum(c(cbcl_q90_p, Steal_comp, cbcl_q46_p, cbcl_q109_p, DistrHyp_comp, cbcl_q74_p, cbcl_q89_p, cbcl_q13_p, cbcl_q19_p), na.rm=T),
+    EXT_parc5=sum(c(cbcl_q95_p, cbcl_q34_p, cbcl_q26_p, cbcl_q68_p, cbcl_q93_p, cbcl_q36_p, Destroy_comp, PeerProb_comp, cbcl_q27_p), na.rm=T)) 
+
+##Antagonistic Externalizing
+
+cbcl_ant<-select(cbcl_ext_base, 
+                 Steal_comp,	       #Steal Composite	
+                 cbcl_q72_p,	       #Sets fires	
+                 cbcl_q43_p,	       #Lying or cheating	
+                 cbcl_q16_p,	       #Cruelty, bullying, or meanness to others	
+                 cbcl_q15_p,	       #Cruel to animals	
+                 Disobey_comp,	     #Disobey Composite	
+                 cbcl_q37_p,	       #Gets in many fights	
+                 cbcl_q90_p,	       #Swearing or obscene language
+                 cbcl_q39_p,	       #Hangs around with others who get in trouble	
+                 Destroy_comp,	     #Destroy Composite	
+                 AttThreat_comp,     #Attack/Threaten Composite	
+                 cbcl_q96_p,	       #Thinks about sex too much	
+                 cbcl_q26_p,	       #Doesn't seem to feel guilty after misbehaving	
+                 cbcl_q94_p,	       #Teases a lot	
+                 cbcl_q74_p,	       #Showing off or clowning	
+                 cbcl_q67_p)	       #Runs away from home	
+                 #cbcl_q41_p	       #Impulsive or acts without thinking; due to cross-loading on disinhibition factor, excluded from scale 	
+                 #PeerProb_comp	     #Peer Problems Composite; due to cross-loading on irritability factor, excluded from scale 
+
+CBCL_ITEMS_ANT_EXT<-as.data.frame(colnames(cbcl_ant))
+set.seed(222); Item_assign_ANT_EXT<-as.data.frame(sample(1:16, 16, replace=F)) #set seed for reproducibility and randomly generate numbers between 1-17 without replacement 
+colnames(CBCL_ITEMS_ANT_EXT)<-'CBCL_Item'
+colnames(Item_assign_ANT_EXT)<-'Assign_N'
+
+Parcel_assignments_ANT_EXT<-bind_cols(CBCL_ITEMS_ANT_EXT, Item_assign_ANT_EXT) %>% 
+  arrange(Assign_N)
+
+#Create parcels using item assignments from above
+print(Parcel_assignments_ANT_EXT)
+
+#4 parcels 
+cbcl_ext_base<-cbcl_ext_base %>%
+  rowwise() %>% 
+  mutate(
+    ANT_parc1.2=sum(c(cbcl_q39_p,cbcl_q43_p,cbcl_q74_p,cbcl_q90_p), na.rm=T), 
+    ANT_parc2.2=sum(c(cbcl_q94_p, Disobey_comp, cbcl_q16_p, cbcl_q15_p), na.rm=T),
+    ANT_parc3.2=sum(c(cbcl_q67_p, cbcl_q37_p, cbcl_q26_p, AttThreat_comp), na.rm=T),
+    ANT_parc4.2=sum(c(Steal_comp, cbcl_q72_p, Destroy_comp, cbcl_q96_p), na.rm=T)) 
+
+##Irritability Externalizing
+
+cbcl_irr<-select(cbcl_ext_base,
+                 cbcl_q88_p,	  #Sulks a lot
+                 cbcl_q86_p,	  #Stubborn, sullen, or irritable 
+                 cbcl_q95_p,	  #Temper tantrums or hot temper
+                 cbcl_q87_p,	  #Sudden changes in mood or feelings
+                 cbcl_q03_p,	  #Argues a lot
+                 cbcl_q109_p, 	#Whining
+                 cbcl_q68_p,	  #Screams a lot
+                 cbcl_q27_p,	  #Easily jealous
+                 cbcl_q34_p,	  #Feels others are out to get them
+                 cbcl_q19_p,	  #Demands a lot of attention
+                 cbcl_q89_p)	  #Suspicious
+ 
+CBCL_ITEMS_IRR_EXT<-as.data.frame(colnames(cbcl_irr))
+set.seed(444); Item_assign_IRR_EXT<-as.data.frame(sample(1:11, 11, replace=F)) #set seed for reproducibility and randomly generate numbers between 1-17 without replacement 
+colnames(CBCL_ITEMS_IRR_EXT)<-'CBCL_Item'
+colnames(Item_assign_IRR_EXT)<-'Assign_N'
+
+Parcel_assignments_IRR_EXT<-bind_cols(CBCL_ITEMS_IRR_EXT, Item_assign_IRR_EXT) %>% 
+  arrange(Assign_N)
+
+#Create parcels using item assignments from above
+print(Parcel_assignments_IRR_EXT)
+
+#4 parcels 
+cbcl_ext_base<-cbcl_ext_base %>%
+  rowwise() %>% 
+  mutate(
+    IRR_parc1=sum(c(cbcl_q87_p, cbcl_q109_p, cbcl_q86_p), na.rm=T), 
+    IRR_parc2=sum(c(cbcl_q19_p, cbcl_q68_p, cbcl_q88_p), na.rm=T),
+    IRR_parc3=sum(c(cbcl_q27_p, cbcl_q34_p, cbcl_q03_p), na.rm=T),
+    IRR_parc4=sum(c(cbcl_q95_p, cbcl_q89_p ), na.rm=T)) 
+
+
+##Neurodevelopmental/Disinhibition
+
+cbcl_dis<-select(cbcl_ext_base, 
+                 cbcl_q17_p,	  #Daydreams or gets lost in their thoughts
+                 cbcl_q13_p,	  #Confused or seems to be in a fog
+                 cbcl_q80_p,	  #Stares blankly
+                 DistrHyp_comp,	#Distracted/Hyperactive Composite
+                 cbcl_q62_p,	  #Poorly coordinated or clumsy
+                 cbcl_q04_p,	  #Fails to finish things they start
+                 cbcl_q66_p,	  #Repeats certain acts over and over; compulsions
+                 cbcl_q46_p,	  #Nervous movements or twitching
+                 cbcl_q09_p,	  #Can't get their mind off certain thoughts; obsessions
+                 cbcl_q01_p,	  #Acts too young for their age
+                 cbcl_q85_p,	  #Strange ideas
+                 cbcl_q61_p,	  #Poor school work
+                 cbcl_q64_p,	  #Prefers being with younger kids
+                 cbcl_q36_p,	  #Gets hurt a lot, accident prone 
+                 cbcl_q93_p)	  #Talks too much	
+
+CBCL_ITEMS_DIS_EXT<-as.data.frame(colnames(cbcl_dis))
+set.seed(333); Item_assign_DIS_EXT<-as.data.frame(sample(1:15, 15, replace=F)) #set seed for reproducibility and randomly generate numbers between 1-15 without replacement 
+colnames(CBCL_ITEMS_DIS_EXT)<-'CBCL_Item'
+colnames(Item_assign_DIS_EXT)<-'Assign_N'
+
+Parcel_assignments_DIS_EXT<-bind_cols(CBCL_ITEMS_DIS_EXT, Item_assign_DIS_EXT) %>% 
+  arrange(Assign_N)
+
+#Create parcels using item assignments from above
+
+print(Parcel_assignments_DIS_EXT)
+
+#4 parcel solution
+cbcl_ext_base<-cbcl_ext_base %>%
+  rowwise() %>% 
+  mutate(
+    DIS_parc1.2=sum(c(cbcl_q01_p, DistrHyp_comp, cbcl_q46_p, cbcl_q09_p), na.rm=T), 
+    DIS_parc2.2=sum(c(cbcl_q64_p, cbcl_q66_p, cbcl_q80_p, cbcl_q85_p), na.rm=T),
+    DIS_parc3.2=sum(c(cbcl_q13_p, cbcl_q61_p, cbcl_q36_p, cbcl_q04_p), na.rm=T),
+    DIS_parc4.2=sum(c(cbcl_q62_p, cbcl_q17_p, cbcl_q93_p), na.rm=T)) 
+
+        
+##Create Item parcels in longitudinal CBCL data
+
+cbcl_ext <-cbcl_ext %>%
+  rowwise() %>% 
+  mutate(
+    EXT_parc1=sum(c(cbcl_q66_p, Disobey_comp, cbcl_q72_p, cbcl_q80_p, cbcl_q09_p, cbcl_q85_p, cbcl_q61_p, cbcl_q15_p, cbcl_q67_p), na.rm=T), 
+    EXT_parc2=sum(c(cbcl_q17_p, cbcl_q94_p, cbcl_q96_p, cbcl_q87_p, cbcl_q01_p, cbcl_q64_p, cbcl_q41_p, cbcl_q43_p, cbcl_q88_p), na.rm=T),
+    EXT_parc3=sum(c(cbcl_q04_p, cbcl_q03_p, cbcl_q62_p, cbcl_q86_p, AttThreat_comp, cbcl_q37_p, cbcl_q07_p, cbcl_q16_p, cbcl_q39_p), na.rm=T),
+    EXT_parc4=sum(c(cbcl_q90_p, Steal_comp, cbcl_q46_p, cbcl_q109_p, DistrHyp_comp, cbcl_q74_p, cbcl_q89_p, cbcl_q13_p, cbcl_q19_p), na.rm=T),
+    EXT_parc5=sum(c(cbcl_q95_p, cbcl_q34_p, cbcl_q26_p, cbcl_q68_p, cbcl_q93_p, cbcl_q36_p, Destroy_comp, PeerProb_comp, cbcl_q27_p), na.rm=T)) 
+
+cbcl_ext <-cbcl_ext %>%
+  rowwise() %>% 
+  mutate(
+    ANT_parc1.2=sum(c(cbcl_q39_p,cbcl_q43_p,cbcl_q74_p,cbcl_q90_p), na.rm=T), 
+    ANT_parc2.2=sum(c(cbcl_q94_p, Disobey_comp, cbcl_q16_p, cbcl_q15_p), na.rm=T),
+    ANT_parc3.2=sum(c(cbcl_q67_p, cbcl_q37_p, cbcl_q26_p, AttThreat_comp), na.rm=T),
+    ANT_parc4.2=sum(c(Steal_comp, cbcl_q72_p, Destroy_comp, cbcl_q96_p), na.rm=T)) 
+
+cbcl_ext <-cbcl_ext %>%
+  rowwise() %>% 
+  mutate(
+    IRR_parc1=sum(c(cbcl_q87_p, cbcl_q109_p, cbcl_q86_p), na.rm=T), 
+    IRR_parc2=sum(c(cbcl_q19_p, cbcl_q68_p, cbcl_q88_p), na.rm=T),
+    IRR_parc3=sum(c(cbcl_q27_p, cbcl_q34_p, cbcl_q03_p), na.rm=T),
+    IRR_parc4=sum(c(cbcl_q95_p, cbcl_q89_p ), na.rm=T)) 
+
+cbcl_ext <-cbcl_ext %>%
+  rowwise() %>% 
+  mutate(
+    DIS_parc1.2=sum(c(cbcl_q01_p, DistrHyp_comp, cbcl_q46_p, cbcl_q09_p), na.rm=T), 
+    DIS_parc2.2=sum(c(cbcl_q64_p, cbcl_q66_p, cbcl_q80_p, cbcl_q85_p), na.rm=T),
+    DIS_parc3.2=sum(c(cbcl_q13_p, cbcl_q61_p, cbcl_q36_p, cbcl_q04_p), na.rm=T),
+    DIS_parc4.2=sum(c(cbcl_q62_p, cbcl_q17_p, cbcl_q93_p), na.rm=T)) 
+
+
+##Prep for MPLUS/Lavaan
+
+#Requires wide format data
+
+#Recode time to make code easier to work with 
+cbcl_ext <-cbcl_ext %>%
+  mutate(eventname_r=as_factor(case_match(eventname, 
+                                          'baseline_year_1_arm_1'~'t1',
+                                          "1_year_follow_up_y_arm_1"~'t2',
+                                          "2_year_follow_up_y_arm_1"~'t3',
+                                          "3_year_follow_up_y_arm_1"~'t4',
+                                          "4_year_follow_up_y_arm_1"~'t5'))) #won't use 4 year follow up
+#Subset parcels
+cbcl_long<-cbcl_ext %>% 
+  select(src_subject_id, eventname_r, EXT_parc1:DIS_parc4.2)
+
+#Convert to wide         
+cbcl_wide<- cbcl_long %>% 
+  pivot_wider(id_cols = "src_subject_id", 
+              names_from = "eventname_r",
+              values_from=c(EXT_parc1, EXT_parc2, EXT_parc3, EXT_parc4, EXT_parc5,
+                            ANT_parc1.2, ANT_parc2.2, ANT_parc3.2, ANT_parc4.2,
+                            IRR_parc1, IRR_parc2, IRR_parc3, IRR_parc4,
+                            DIS_parc1.2, DIS_parc2.2, DIS_parc3.2, DIS_parc4.2),
+              names_glue = "{.value}_{eventname_r}")
+
+
+#Get descriptives across time points 
+
+#Externalizing
+cbcl_wide %>% 
+  select(EXT_parc1_t1,
+         EXT_parc2_t1,
+         EXT_parc3_t1,
+         EXT_parc4_t1,
+         EXT_parc5_t1,
+         EXT_parc1_t2,
+         EXT_parc2_t2,
+         EXT_parc3_t2,
+         EXT_parc4_t2,
+         EXT_parc5_t2,
+         EXT_parc1_t3,
+         EXT_parc2_t3,
+         EXT_parc3_t3,
+         EXT_parc4_t3,
+         EXT_parc5_t3,
+         EXT_parc1_t4,
+         EXT_parc2_t4,
+         EXT_parc3_t4,
+         EXT_parc4_t4,
+         EXT_parc5_t4) %>% 
+  describe()
+
+cbcl_wide %>% 
+  select(EXT_parc1_t1,
+         EXT_parc2_t1,
+         EXT_parc3_t1,
+         EXT_parc4_t1,
+         EXT_parc5_t1,
+         EXT_parc1_t2,
+         EXT_parc2_t2,
+         EXT_parc3_t2,
+         EXT_parc4_t2,
+         EXT_parc5_t2,
+         EXT_parc1_t3,
+         EXT_parc2_t3,
+         EXT_parc3_t3,
+         EXT_parc4_t3,
+         EXT_parc5_t3,
+         EXT_parc1_t4,
+         EXT_parc2_t4,
+         EXT_parc3_t4,
+         EXT_parc4_t4,
+         EXT_parc5_t4) %>% 
+  corr.test()
+
+#Antagonism 
+
+cbcl_wide %>% 
+  select(ANT_parc1.2_t1,
+         ANT_parc2.2_t1,
+         ANT_parc3.2_t1,
+         ANT_parc4.2_t1,
+         ANT_parc1.2_t2,
+         ANT_parc2.2_t2,
+         ANT_parc3.2_t2,
+         ANT_parc4.2_t2,
+         ANT_parc1.2_t3,
+         ANT_parc2.2_t3,
+         ANT_parc3.2_t3,
+         ANT_parc4.2_t3,
+         ANT_parc1.2_t4,
+         ANT_parc2.2_t4,
+         ANT_parc3.2_t4,
+         ANT_parc4.2_t4) %>% 
+  describe()
+
+cbcl_wide %>% 
+  select(ANT_parc1.2_t1,
+         ANT_parc2.2_t1,
+         ANT_parc3.2_t1,
+         ANT_parc4.2_t1,
+         ANT_parc1.2_t2,
+         ANT_parc2.2_t2,
+         ANT_parc3.2_t2,
+         ANT_parc4.2_t2,
+         ANT_parc1.2_t3,
+         ANT_parc2.2_t3,
+         ANT_parc3.2_t3,
+         ANT_parc4.2_t3,
+         ANT_parc1.2_t4,
+         ANT_parc2.2_t4,
+         ANT_parc3.2_t4,
+         ANT_parc4.2_t4) %>% 
+  corr.test()
+
+#Irritability
+cbcl_wide %>% 
+  select(IRR_parc1_t1,
+         IRR_parc2_t1,
+         IRR_parc3_t1,
+         IRR_parc4_t1,
+         IRR_parc1_t2,
+         IRR_parc2_t2,
+         IRR_parc3_t2,
+         IRR_parc4_t2,
+         IRR_parc1_t3,
+         IRR_parc2_t3,
+         IRR_parc3_t3,
+         IRR_parc4_t3,
+         IRR_parc1_t4,
+         IRR_parc2_t4,
+         IRR_parc3_t4,
+         IRR_parc4_t4) %>% 
+  describe()
+
+cbcl_wide %>% 
+  select(IRR_parc1_t1,
+         IRR_parc2_t1,
+         IRR_parc3_t1,
+         IRR_parc4_t1,
+         IRR_parc1_t2,
+         IRR_parc2_t2,
+         IRR_parc3_t2,
+         IRR_parc4_t2,
+         IRR_parc1_t3,
+         IRR_parc2_t3,
+         IRR_parc3_t3,
+         IRR_parc4_t3,
+         IRR_parc1_t4,
+         IRR_parc2_t4,
+         IRR_parc3_t4,
+         IRR_parc4_t4) %>% 
+  corr.test()
+
+#Disinhibition
+
+cbcl_wide %>% 
+  select(DIS_parc1.2_t1,
+         DIS_parc2.2_t1,
+         DIS_parc3.2_t1,
+         DIS_parc4.2_t1,
+         DIS_parc1.2_t2,
+         DIS_parc2.2_t2,
+         DIS_parc3.2_t2,
+         DIS_parc4.2_t2,
+         DIS_parc1.2_t3,
+         DIS_parc2.2_t3,
+         DIS_parc3.2_t3,
+         DIS_parc4.2_t3,
+         DIS_parc1.2_t4,
+         DIS_parc2.2_t4,
+         DIS_parc3.2_t4,
+         DIS_parc4.2_t4) %>% 
+  describe()
+
+cbcl_wide %>% 
+  select(DIS_parc1.2_t1,
+         DIS_parc2.2_t1,
+         DIS_parc3.2_t1,
+         DIS_parc4.2_t1,
+         DIS_parc1.2_t2,
+         DIS_parc2.2_t2,
+         DIS_parc3.2_t2,
+         DIS_parc4.2_t2,
+         DIS_parc1.2_t3,
+         DIS_parc2.2_t3,
+         DIS_parc3.2_t3,
+         DIS_parc4.2_t3,
+         DIS_parc1.2_t4,
+         DIS_parc2.2_t4,
+         DIS_parc3.2_t4,
+         DIS_parc4.2_t4) %>% 
+  corr.test()
+
+
+
+
+#################
+#################
+### MI using Lavaan
+#################
+#################
+
+library(lavaan)
+library(SBSDiff) #used for scaled chi square tests
+library(semTools)
+
+##Run our MI models, from configural to strict
+
+
+###################
+#Broad-based Externalizing 
+###################
+
+#Configural
+
+EXT_config<-'
+#EXT Factors at baseline through 3 year follow up 
+
+EXT_t1 =~ EXT_parc1_t1+EXT_parc2_t1+EXT_parc3_t1+EXT_parc4_t1+EXT_parc5_t1 
+EXT_t2 =~ EXT_parc1_t2+EXT_parc2_t2+EXT_parc3_t2+EXT_parc4_t2+EXT_parc5_t2
+EXT_t3 =~ EXT_parc1_t3+EXT_parc2_t3+EXT_parc3_t3+EXT_parc4_t3+EXT_parc5_t3
+EXT_t4 =~ EXT_parc1_t4+EXT_parc2_t4+EXT_parc3_t4+EXT_parc4_t4+EXT_parc5_t4
+
+#Estimate observed intercepts at each wave
+EXT_parc1_t1~1
+EXT_parc2_t1~1
+EXT_parc3_t1~1
+EXT_parc4_t1~1
+EXT_parc5_t1~1
+
+EXT_parc1_t2~1
+EXT_parc2_t2~1
+EXT_parc3_t2~1
+EXT_parc4_t2~1
+EXT_parc5_t2~1
+
+EXT_parc1_t3~1
+EXT_parc2_t3~1
+EXT_parc3_t3~1
+EXT_parc4_t3~1
+EXT_parc5_t3~1
+
+EXT_parc1_t4~1
+EXT_parc2_t4~1
+EXT_parc3_t4~1
+EXT_parc4_t4~1
+EXT_parc5_t4~1
+
+#Residual Covariances
+
+EXT_parc1_t1 ~~ EXT_parc1_t2
+EXT_parc1_t1 ~~ EXT_parc1_t3
+EXT_parc1_t1 ~~ EXT_parc1_t4
+EXT_parc1_t2 ~~ EXT_parc1_t3
+EXT_parc1_t2 ~~ EXT_parc1_t4
+EXT_parc1_t3 ~~ EXT_parc1_t4
+
+EXT_parc2_t1 ~~ EXT_parc2_t2
+EXT_parc2_t1 ~~ EXT_parc2_t3
+EXT_parc2_t1 ~~ EXT_parc2_t4
+EXT_parc2_t2 ~~ EXT_parc2_t3
+EXT_parc2_t2 ~~ EXT_parc2_t4
+EXT_parc2_t3 ~~ EXT_parc2_t4
+
+EXT_parc3_t1 ~~ EXT_parc3_t2
+EXT_parc3_t1 ~~ EXT_parc3_t3
+EXT_parc3_t1 ~~ EXT_parc3_t4
+EXT_parc3_t2 ~~ EXT_parc3_t3
+EXT_parc3_t2 ~~ EXT_parc3_t4
+EXT_parc3_t3 ~~ EXT_parc3_t4
+
+EXT_parc4_t1 ~~ EXT_parc4_t2
+EXT_parc4_t1 ~~ EXT_parc4_t3
+EXT_parc4_t1 ~~ EXT_parc4_t4
+EXT_parc4_t2 ~~ EXT_parc4_t3
+EXT_parc4_t2 ~~ EXT_parc4_t4
+EXT_parc4_t3 ~~ EXT_parc4_t4
+
+EXT_parc5_t1 ~~ EXT_parc5_t2
+EXT_parc5_t1 ~~ EXT_parc5_t3
+EXT_parc5_t1 ~~ EXT_parc5_t4
+EXT_parc5_t2 ~~ EXT_parc5_t3
+EXT_parc5_t2 ~~ EXT_parc5_t4
+EXT_parc5_t3 ~~ EXT_parc5_t4
+'
+
+EXT_config.fit<-cfa(EXT_config, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(EXT_config.fit, fit.measures=T, standardized=T)
+
+#McDonald's NCI
+exp(-0.5*((767.72- 134)/(11866-1))) #Can compute by hand using exp(-0.5*((Chisquare of the target model - DF of the target model)/(N-1))); note scaled chi square is used
+                                      #Cutoff for change in McDonald's NCI is .0065 for 1 factor w/ 5 indicators; .0067 for 1 factor w/ 4 indicators
+
+#Weak/Metric
+
+EXT_weak<-'
+#EXT Factors at baseline through 3 year follow up, with constraints on factor loadings
+#Note: while it looks like EXT_parc1 (t1-t5) is included twice, NA* tells lavaan to free the parameter, and then the l1 constraint is applied
+
+EXT_t1 =~ NA*EXT_parc1_t1+l1*EXT_parc1_t1+l2*EXT_parc2_t1+l3*EXT_parc3_t1+l4*EXT_parc4_t1+l5*EXT_parc5_t1 
+EXT_t2 =~ NA*EXT_parc1_t2+l1*EXT_parc1_t2+l2*EXT_parc2_t2+l3*EXT_parc3_t2+l4*EXT_parc4_t2+l5*EXT_parc5_t2
+EXT_t3 =~ NA*EXT_parc1_t3+l1*EXT_parc1_t3+l2*EXT_parc2_t3+l3*EXT_parc3_t3+l4*EXT_parc4_t3+l5*EXT_parc5_t3
+EXT_t4 =~ NA*EXT_parc1_t4+l1*EXT_parc1_t4+l2*EXT_parc2_t4+l3*EXT_parc3_t4+l4*EXT_parc4_t4+l5*EXT_parc5_t4
+
+#Latent Intercepts
+EXT_t1~1*0
+EXT_t2~1*0
+EXT_t3~1*0
+EXT_t4~1*0
+
+#Latent Variances
+EXT_t1~~1*EXT_t1
+EXT_t2~~EXT_t2
+EXT_t3~~EXT_t3
+EXT_t4~~EXT_t4
+
+#Estimate observed intercepts at each wave
+EXT_parc1_t1~1
+EXT_parc2_t1~1
+EXT_parc3_t1~1
+EXT_parc4_t1~1
+EXT_parc5_t1~1
+
+EXT_parc1_t2~1
+EXT_parc2_t2~1
+EXT_parc3_t2~1
+EXT_parc4_t2~1
+EXT_parc5_t2~1
+
+EXT_parc1_t3~1
+EXT_parc2_t3~1
+EXT_parc3_t3~1
+EXT_parc4_t3~1
+EXT_parc5_t3~1
+
+EXT_parc1_t4~1
+EXT_parc2_t4~1
+EXT_parc3_t4~1
+EXT_parc4_t4~1
+EXT_parc5_t4~1
+
+#Residual Covariances
+
+EXT_parc1_t1 ~~ EXT_parc1_t2
+EXT_parc1_t1 ~~ EXT_parc1_t3
+EXT_parc1_t1 ~~ EXT_parc1_t4
+EXT_parc1_t2 ~~ EXT_parc1_t3
+EXT_parc1_t2 ~~ EXT_parc1_t4
+EXT_parc1_t3 ~~ EXT_parc1_t4
+
+EXT_parc2_t1 ~~ EXT_parc2_t2
+EXT_parc2_t1 ~~ EXT_parc2_t3
+EXT_parc2_t1 ~~ EXT_parc2_t4
+EXT_parc2_t2 ~~ EXT_parc2_t3
+EXT_parc2_t2 ~~ EXT_parc2_t4
+EXT_parc2_t3 ~~ EXT_parc2_t4
+
+EXT_parc3_t1 ~~ EXT_parc3_t2
+EXT_parc3_t1 ~~ EXT_parc3_t3
+EXT_parc3_t1 ~~ EXT_parc3_t4
+EXT_parc3_t2 ~~ EXT_parc3_t3
+EXT_parc3_t2 ~~ EXT_parc3_t4
+EXT_parc3_t3 ~~ EXT_parc3_t4
+
+EXT_parc4_t1 ~~ EXT_parc4_t2
+EXT_parc4_t1 ~~ EXT_parc4_t3
+EXT_parc4_t1 ~~ EXT_parc4_t4
+EXT_parc4_t2 ~~ EXT_parc4_t3
+EXT_parc4_t2 ~~ EXT_parc4_t4
+EXT_parc4_t3 ~~ EXT_parc4_t4
+
+EXT_parc5_t1 ~~ EXT_parc5_t2
+EXT_parc5_t1 ~~ EXT_parc5_t3
+EXT_parc5_t1 ~~ EXT_parc5_t4
+EXT_parc5_t2 ~~ EXT_parc5_t3
+EXT_parc5_t2 ~~ EXT_parc5_t4
+EXT_parc5_t3 ~~ EXT_parc5_t4
+'
+
+EXT_weak.fit<-cfa(EXT_weak, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(EXT_weak.fit, fit.measures=T, standardized=T)
+EXT_config.weak_test<-compareFit(EXT_config.fit, EXT_weak.fit)
+summary(EXT_config.weak_test)
+
+sbs.chi(910.07, 767.72, 146, 134, 1.748, 1.704) #provides chi square test using scaled chi square indices 
+exp(-0.5*((767.72 - 134)/(11866-1)))-exp(-0.5*((910.07 - 146)/(11866-1))) #change in McDonald's NCI
+
+#Strong/Scalar
+
+EXT_strong<-'
+#EXT Factors at baseline through 3 year follow up, with constraints on factor loadings
+EXT_t1 =~ NA*EXT_parc1_t1+l1*EXT_parc1_t1+l2*EXT_parc2_t1+l3*EXT_parc3_t1+l4*EXT_parc4_t1+l5*EXT_parc5_t1 
+EXT_t2 =~ NA*EXT_parc1_t2+l1*EXT_parc1_t2+l2*EXT_parc2_t2+l3*EXT_parc3_t2+l4*EXT_parc4_t2+l5*EXT_parc5_t2
+EXT_t3 =~ NA*EXT_parc1_t3+l1*EXT_parc1_t3+l2*EXT_parc2_t3+l3*EXT_parc3_t3+l4*EXT_parc4_t3+l5*EXT_parc5_t3
+EXT_t4 =~ NA*EXT_parc1_t4+l1*EXT_parc1_t4+l2*EXT_parc2_t4+l3*EXT_parc3_t4+l4*EXT_parc4_t4+l5*EXT_parc5_t4
+
+#Baseline latent mean fixed at zero, others freed 
+EXT_t1 ~ 0*1
+EXT_t2 ~ 1
+EXT_t3 ~ 1
+EXT_t4 ~ 1
+
+#Latent Variances
+EXT_t1~~1*EXT_t1
+EXT_t2~~EXT_t2
+EXT_t3~~EXT_t3
+EXT_t4~~EXT_t4
+
+#Constrain Parcel Intercepts
+
+EXT_parc1_t1~t1*1
+EXT_parc2_t1~t2*1
+EXT_parc3_t1~t3*1
+EXT_parc4_t1~t4*1
+EXT_parc5_t1~t5*1
+
+EXT_parc1_t2~t1*1
+EXT_parc2_t2~t2*1
+EXT_parc3_t2~t3*1
+EXT_parc4_t2~t4*1
+EXT_parc5_t2~t5*1
+
+EXT_parc1_t3~t1*1
+EXT_parc2_t3~t2*1
+EXT_parc3_t3~t3*1
+EXT_parc4_t3~t4*1
+EXT_parc5_t3~t5*1
+
+EXT_parc1_t4~t1*1
+EXT_parc2_t4~t2*1
+EXT_parc3_t4~t3*1
+EXT_parc4_t4~t4*1
+EXT_parc5_t4~t5*1
+
+#Residual Covariances
+
+EXT_parc1_t1 ~~ EXT_parc1_t2
+EXT_parc1_t1 ~~ EXT_parc1_t3
+EXT_parc1_t1 ~~ EXT_parc1_t4
+EXT_parc1_t2 ~~ EXT_parc1_t3
+EXT_parc1_t2 ~~ EXT_parc1_t4
+EXT_parc1_t3 ~~ EXT_parc1_t4
+
+EXT_parc2_t1 ~~ EXT_parc2_t2
+EXT_parc2_t1 ~~ EXT_parc2_t3
+EXT_parc2_t1 ~~ EXT_parc2_t4
+EXT_parc2_t2 ~~ EXT_parc2_t3
+EXT_parc2_t2 ~~ EXT_parc2_t4
+EXT_parc2_t3 ~~ EXT_parc2_t4
+
+EXT_parc3_t1 ~~ EXT_parc3_t2
+EXT_parc3_t1 ~~ EXT_parc3_t3
+EXT_parc3_t1 ~~ EXT_parc3_t4
+EXT_parc3_t2 ~~ EXT_parc3_t3
+EXT_parc3_t2 ~~ EXT_parc3_t4
+EXT_parc3_t3 ~~ EXT_parc3_t4
+
+EXT_parc4_t1 ~~ EXT_parc4_t2
+EXT_parc4_t1 ~~ EXT_parc4_t3
+EXT_parc4_t1 ~~ EXT_parc4_t4
+EXT_parc4_t2 ~~ EXT_parc4_t3
+EXT_parc4_t2 ~~ EXT_parc4_t4
+EXT_parc4_t3 ~~ EXT_parc4_t4
+
+EXT_parc5_t1 ~~ EXT_parc5_t2
+EXT_parc5_t1 ~~ EXT_parc5_t3
+EXT_parc5_t1 ~~ EXT_parc5_t4
+EXT_parc5_t2 ~~ EXT_parc5_t3
+EXT_parc5_t2 ~~ EXT_parc5_t4
+EXT_parc5_t3 ~~ EXT_parc5_t4
+'
+
+EXT_strong.fit<-cfa(EXT_strong, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(EXT_strong.fit, fit.measures=T, standardized=T)
+EXT_weak.strong_test<-compareFit(EXT_strong.fit, EXT_weak.fit)
+summary(EXT_weak.strong_test)
+
+sbs.chi(1569.46, 910.07, 158, 146, 1.691, 1.748)
+exp(-0.5*((1569.46 - 158)/(11866-1)))-exp(-0.5*((910.07 - 146)/(11866-1))) #change in McDonald's NCI
+
+
+#Mod Indices
+lavTestScore(EXT_strong.fit, epc=T)
+modificationindices(EXT_strong.fit)
+
+
+##Test partial strong invariance
+
+EXT_strong.mod<-'
+#EXT Factors at baseline through 3 year follow up, with constraints on factor loadings
+EXT_t1 =~ NA*EXT_parc1_t1+l1*EXT_parc1_t1+l2*EXT_parc2_t1+l3*EXT_parc3_t1+l4*EXT_parc4_t1+l5*EXT_parc5_t1 
+EXT_t2 =~ NA*EXT_parc1_t2+l1*EXT_parc1_t2+l2*EXT_parc2_t2+l3*EXT_parc3_t2+l4*EXT_parc4_t2+l5*EXT_parc5_t2
+EXT_t3 =~ NA*EXT_parc1_t3+l1*EXT_parc1_t3+l2*EXT_parc2_t3+l3*EXT_parc3_t3+l4*EXT_parc4_t3+l5*EXT_parc5_t3
+EXT_t4 =~ NA*EXT_parc1_t4+l1*EXT_parc1_t4+l2*EXT_parc2_t4+l3*EXT_parc3_t4+l4*EXT_parc4_t4+l5*EXT_parc5_t4
+
+#Baseline latent mean fixed at zero, others freed 
+EXT_t1 ~ 0*1
+EXT_t2 ~ 1
+EXT_t3 ~ 1
+EXT_t4 ~ 1
+
+#Latent Variances
+EXT_t1~~1*EXT_t1
+EXT_t2~~EXT_t2
+EXT_t3~~EXT_t3
+EXT_t4~~EXT_t4
+
+#Constrain Parcel Intercepts
+
+EXT_parc1_t1~t1*1
+EXT_parc2_t1~t2*1
+EXT_parc3_t1~t3*1
+EXT_parc4_t1~1
+EXT_parc5_t1~1
+
+EXT_parc1_t2~t1*1
+EXT_parc2_t2~t2*1
+EXT_parc3_t2~t3*1
+EXT_parc4_t2~1
+EXT_parc5_t2~1
+
+EXT_parc1_t3~t1*1
+EXT_parc2_t3~t2*1
+EXT_parc3_t3~t3*1
+EXT_parc4_t3~1
+EXT_parc5_t3~1
+
+EXT_parc1_t4~t1*1
+EXT_parc2_t4~t2*1
+EXT_parc3_t4~t3*1
+EXT_parc4_t4~1
+EXT_parc5_t4~1
+
+#Residual Covariances
+
+EXT_parc1_t1 ~~ EXT_parc1_t2
+EXT_parc1_t1 ~~ EXT_parc1_t3
+EXT_parc1_t1 ~~ EXT_parc1_t4
+EXT_parc1_t2 ~~ EXT_parc1_t3
+EXT_parc1_t2 ~~ EXT_parc1_t4
+EXT_parc1_t3 ~~ EXT_parc1_t4
+
+EXT_parc2_t1 ~~ EXT_parc2_t2
+EXT_parc2_t1 ~~ EXT_parc2_t3
+EXT_parc2_t1 ~~ EXT_parc2_t4
+EXT_parc2_t2 ~~ EXT_parc2_t3
+EXT_parc2_t2 ~~ EXT_parc2_t4
+EXT_parc2_t3 ~~ EXT_parc2_t4
+
+EXT_parc3_t1 ~~ EXT_parc3_t2
+EXT_parc3_t1 ~~ EXT_parc3_t3
+EXT_parc3_t1 ~~ EXT_parc3_t4
+EXT_parc3_t2 ~~ EXT_parc3_t3
+EXT_parc3_t2 ~~ EXT_parc3_t4
+EXT_parc3_t3 ~~ EXT_parc3_t4
+
+EXT_parc4_t1 ~~ EXT_parc4_t2
+EXT_parc4_t1 ~~ EXT_parc4_t3
+EXT_parc4_t1 ~~ EXT_parc4_t4
+EXT_parc4_t2 ~~ EXT_parc4_t3
+EXT_parc4_t2 ~~ EXT_parc4_t4
+EXT_parc4_t3 ~~ EXT_parc4_t4
+
+EXT_parc5_t1 ~~ EXT_parc5_t2
+EXT_parc5_t1 ~~ EXT_parc5_t3
+EXT_parc5_t1 ~~ EXT_parc5_t4
+EXT_parc5_t2 ~~ EXT_parc5_t3
+EXT_parc5_t2 ~~ EXT_parc5_t4
+EXT_parc5_t3 ~~ EXT_parc5_t4
+'
+
+EXT_strong.mod.fit<-cfa(EXT_strong.mod, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(EXT_strong.mod.fit, fit.measures=T, standardized=T)
+EXT_weak.strong.mod_test<-compareFit(EXT_strong.mod.fit, EXT_weak.fit)
+summary(EXT_weak.strong.mod_test)
+
+sbs.chi(947.21, 910.07, 152, 146, 1.718, 1.748)
+exp(-0.5*((947.21 - 152)/(11866-1)))-exp(-0.5*((910.07 - 146)/(11866-1))) #change in McDonald's NCI
+
+
+#Get effect sizes for MI using dmacs package 
+devtools::install_github("ddueber/dmacs") 
+library(dmacs)
+lavaan_dmacs(EXT_strong.mod.fit, MEtype='long') #Input is the partial strong invariance model 
+
+#Get Mean/Variance values for dMACS table in manuscript 
+EXT_descript<-cbcl_wide %>% 
+  rowwise() %>% 
+  mutate(EXT_t1=sum(c(EXT_parc1_t1, EXT_parc2_t1, EXT_parc3_t1, EXT_parc4_t1, EXT_parc5_t1), na.rm=T),
+          EXT_t2=sum(c(EXT_parc1_t2, EXT_parc2_t2, EXT_parc3_t2, EXT_parc4_t2, EXT_parc5_t2), na.rm=T),
+          EXT_t3=sum(c(EXT_parc1_t3, EXT_parc2_t3, EXT_parc3_t3, EXT_parc4_t3, EXT_parc5_t3), na.rm=T),
+          EXT_t4=sum(c(EXT_parc1_t4, EXT_parc2_t4, EXT_parc3_t4, EXT_parc4_t4, EXT_parc5_t4), na.rm=T)) 
+
+describe(select(EXT_descript, EXT_t1, EXT_t2, EXT_t3, EXT_t4 ))
+
+
+###################
+#Antagonism
+###################
+
+#Configural
+
+ANT_config<-'
+#ANT Factors at baseline through 3 year follow up 
+ANT_t1 =~ ANT_parc1.2_t1+ANT_parc2.2_t1+ANT_parc3.2_t1+ANT_parc4.2_t1
+ANT_t2 =~ ANT_parc1.2_t2+ANT_parc2.2_t2+ANT_parc3.2_t2+ANT_parc4.2_t2
+ANT_t3 =~ ANT_parc1.2_t3+ANT_parc2.2_t3+ANT_parc3.2_t3+ANT_parc4.2_t3
+ANT_t4 =~ ANT_parc1.2_t4+ANT_parc2.2_t4+ANT_parc3.2_t4+ANT_parc4.2_t4
+
+#Estimate observed intercepts at each wave
+ANT_parc1.2_t1~1
+ANT_parc2.2_t1~1
+ANT_parc3.2_t1~1
+ANT_parc4.2_t1~1
+
+ANT_parc1.2_t2~1
+ANT_parc2.2_t2~1
+ANT_parc3.2_t2~1
+ANT_parc4.2_t2~1
+
+ANT_parc1.2_t3~1
+ANT_parc2.2_t3~1
+ANT_parc3.2_t3~1
+ANT_parc4.2_t3~1
+
+ANT_parc1.2_t4~1
+ANT_parc2.2_t4~1
+ANT_parc3.2_t4~1
+ANT_parc4.2_t4~1
+
+#Residual Covariances
+
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t2
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t3
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t4
+ANT_parc1.2_t2 ~~ ANT_parc1.2_t3
+ANT_parc1.2_t2 ~~ ANT_parc1.2_t4
+ANT_parc1.2_t3 ~~ ANT_parc1.2_t4
+
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t2
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t3
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t4
+ANT_parc2.2_t2 ~~ ANT_parc2.2_t3
+ANT_parc2.2_t2 ~~ ANT_parc2.2_t4
+ANT_parc2.2_t3 ~~ ANT_parc2.2_t4
+
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t2
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t3
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t4
+ANT_parc3.2_t2 ~~ ANT_parc3.2_t3
+ANT_parc3.2_t2 ~~ ANT_parc3.2_t4
+ANT_parc3.2_t3 ~~ ANT_parc3.2_t4
+
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t2
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t3
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t4
+ANT_parc4.2_t2 ~~ ANT_parc4.2_t3
+ANT_parc4.2_t2 ~~ ANT_parc4.2_t4
+ANT_parc4.2_t3 ~~ ANT_parc4.2_t4
+'
+
+ANT_config.fit<-cfa(ANT_config, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(ANT_config.fit, fit.measures=T, standardized=T)
+exp(-0.5*((312.54 - 74)/(11866-1))) #McDonald's NCI
+
+
+#Weak/Metric
+
+ANT_weak<-'
+#ANT Factors at baseline through 3 year follow up, with constraints on factor loadings
+ANT_t1 =~ NA*ANT_parc1.2_t1+l1*ANT_parc1.2_t1+l2*ANT_parc2.2_t1+l3*ANT_parc3.2_t1+l4*ANT_parc4.2_t1 
+ANT_t2 =~ NA*ANT_parc1.2_t2+l1*ANT_parc1.2_t2+l2*ANT_parc2.2_t2+l3*ANT_parc3.2_t2+l4*ANT_parc4.2_t2
+ANT_t3 =~ NA*ANT_parc1.2_t3+l1*ANT_parc1.2_t3+l2*ANT_parc2.2_t3+l3*ANT_parc3.2_t3+l4*ANT_parc4.2_t3
+ANT_t4 =~ NA*ANT_parc1.2_t4+l1*ANT_parc1.2_t4+l2*ANT_parc2.2_t4+l3*ANT_parc3.2_t4+l4*ANT_parc4.2_t4
+
+#Latent Intercepts
+ANT_t1~1*0
+ANT_t2~1*0
+ANT_t3~1*0
+ANT_t4~1*0
+
+#Latent Variances
+ANT_t1~~1*ANT_t1
+ANT_t2~~ANT_t2
+ANT_t3~~ANT_t3
+ANT_t4~~ANT_t4
+
+#Estimate observed intercepts at each wave
+ANT_parc1.2_t1~1
+ANT_parc2.2_t1~1
+ANT_parc3.2_t1~1
+ANT_parc4.2_t1~1
+
+ANT_parc1.2_t2~1
+ANT_parc2.2_t2~1
+ANT_parc3.2_t2~1
+ANT_parc4.2_t2~1
+
+ANT_parc1.2_t3~1
+ANT_parc2.2_t3~1
+ANT_parc3.2_t3~1
+ANT_parc4.2_t3~1
+
+ANT_parc1.2_t4~1
+ANT_parc2.2_t4~1
+ANT_parc3.2_t4~1
+ANT_parc4.2_t4~1
+
+#Residual Covariances
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t2
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t3
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t4
+ANT_parc1.2_t2 ~~ ANT_parc1.2_t3
+ANT_parc1.2_t2 ~~ ANT_parc1.2_t4
+ANT_parc1.2_t3 ~~ ANT_parc1.2_t4
+
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t2
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t3
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t4
+ANT_parc2.2_t2 ~~ ANT_parc2.2_t3
+ANT_parc2.2_t2 ~~ ANT_parc2.2_t4
+ANT_parc2.2_t3 ~~ ANT_parc2.2_t4
+
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t2
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t3
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t4
+ANT_parc3.2_t2 ~~ ANT_parc3.2_t3
+ANT_parc3.2_t2 ~~ ANT_parc3.2_t4
+ANT_parc3.2_t3 ~~ ANT_parc3.2_t4
+
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t2
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t3
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t4
+ANT_parc4.2_t2 ~~ ANT_parc4.2_t3
+ANT_parc4.2_t2 ~~ ANT_parc4.2_t4
+ANT_parc4.2_t3 ~~ ANT_parc4.2_t4
+'
+
+
+ANT_weak.fit<-cfa(ANT_weak, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(ANT_weak.fit, fit.measures=T, standardized=T)
+ANT_config.weak_test<-compareFit(ANT_config.fit, ANT_weak.fit)
+summary(ANT_config.weak_test)
+
+sbs.chi(338.15, 312.54, 83, 74, 3.029, 2.809)
+exp(-0.5*((338.15 - 83)/(11866-1)))-exp(-0.5*((312.54 - 74)/(11866-1))) #change in McDonald's NCI
+
+#Strong/Scalar
+
+ANT_strong<-'
+#ANT Factors at baseline through 3 year follow up, with constraints on factor loadings
+ANT_t1 =~ NA*ANT_parc1.2_t1+l1*ANT_parc1.2_t1+l2*ANT_parc2.2_t1+l3*ANT_parc3.2_t1+l4*ANT_parc4.2_t1 
+ANT_t2 =~ NA*ANT_parc1.2_t2+l1*ANT_parc1.2_t2+l2*ANT_parc2.2_t2+l3*ANT_parc3.2_t2+l4*ANT_parc4.2_t2
+ANT_t3 =~ NA*ANT_parc1.2_t3+l1*ANT_parc1.2_t3+l2*ANT_parc2.2_t3+l3*ANT_parc3.2_t3+l4*ANT_parc4.2_t3
+ANT_t4 =~ NA*ANT_parc1.2_t4+l1*ANT_parc1.2_t4+l2*ANT_parc2.2_t4+l3*ANT_parc3.2_t4+l4*ANT_parc4.2_t4
+
+#Latent Intercepts
+ANT_t1~1*0
+ANT_t2~1
+ANT_t3~1
+ANT_t4~1
+
+#Latent Variances
+ANT_t1~~1*ANT_t1
+ANT_t2~~ANT_t2
+ANT_t3~~ANT_t3
+ANT_t4~~ANT_t4
+
+#Constrain Parcel Intercepts
+ANT_parc1.2_t1~t1*1
+ANT_parc2.2_t1~t2*1
+ANT_parc3.2_t1~t3*1
+ANT_parc4.2_t1~t4*1
+
+ANT_parc1.2_t2~t1*1
+ANT_parc2.2_t2~t2*1
+ANT_parc3.2_t2~t3*1
+ANT_parc4.2_t2~t4*1
+
+ANT_parc1.2_t3~t1*1
+ANT_parc2.2_t3~t2*1
+ANT_parc3.2_t3~t3*1
+ANT_parc4.2_t3~t4*1
+
+ANT_parc1.2_t4~t1*1
+ANT_parc2.2_t4~t2*1
+ANT_parc3.2_t4~t3*1
+ANT_parc4.2_t4~t4*1
+
+#Residual Covariances
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t2
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t3
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t4
+ANT_parc1.2_t2 ~~ ANT_parc1.2_t3
+ANT_parc1.2_t2 ~~ ANT_parc1.2_t4
+ANT_parc1.2_t3 ~~ ANT_parc1.2_t4
+
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t2
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t3
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t4
+ANT_parc2.2_t2 ~~ ANT_parc2.2_t3
+ANT_parc2.2_t2 ~~ ANT_parc2.2_t4
+ANT_parc2.2_t3 ~~ ANT_parc2.2_t4
+
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t2
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t3
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t4
+ANT_parc3.2_t2 ~~ ANT_parc3.2_t3
+ANT_parc3.2_t2 ~~ ANT_parc3.2_t4
+ANT_parc3.2_t3 ~~ ANT_parc3.2_t4
+
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t2
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t3
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t4
+ANT_parc4.2_t2 ~~ ANT_parc4.2_t3
+ANT_parc4.2_t2 ~~ ANT_parc4.2_t4
+ANT_parc4.2_t3 ~~ ANT_parc4.2_t4
+'
+
+ANT_strong.fit<-cfa(ANT_strong, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(ANT_strong.fit, fit.measures=T, standardized=T)
+ANT_weak.strong_test<-compareFit(ANT_weak.fit, ANT_strong.fit)
+summary(ANT_weak.strong_test)
+
+sbs.chi(371.439, 338.15, 92, 83, 2.833, 3.029)
+exp(-0.5*((371.439 - 92)/(11866-1)))-exp(-0.5*((338.15 - 83)/(11866-1))) #change in McDonald's NCI
+
+
+#Since Antagonism shows strong invariance, test for strict invariance
+
+#Strict
+
+ANT_strict<-'
+#ANT Factors at baseline through 3 year follow up, with constraints on factor loadings
+ANT_t1 =~ NA*ANT_parc1.2_t1+l1*ANT_parc1.2_t1+l2*ANT_parc2.2_t1+l3*ANT_parc3.2_t1+l4*ANT_parc4.2_t1 
+ANT_t2 =~ NA*ANT_parc1.2_t2+l1*ANT_parc1.2_t2+l2*ANT_parc2.2_t2+l3*ANT_parc3.2_t2+l4*ANT_parc4.2_t2
+ANT_t3 =~ NA*ANT_parc1.2_t3+l1*ANT_parc1.2_t3+l2*ANT_parc2.2_t3+l3*ANT_parc3.2_t3+l4*ANT_parc4.2_t3
+ANT_t4 =~ NA*ANT_parc1.2_t4+l1*ANT_parc1.2_t4+l2*ANT_parc2.2_t4+l3*ANT_parc3.2_t4+l4*ANT_parc4.2_t4
+
+#Latent Intercepts
+ANT_t1~1*0
+ANT_t2~1
+ANT_t3~1
+ANT_t4~1
+
+#Latent Variances
+ANT_t1~~1*ANT_t1
+ANT_t2~~ANT_t2
+ANT_t3~~ANT_t3
+ANT_t4~~ANT_t4
+
+#Constrain Parcel Intercepts
+ANT_parc1.2_t1~t1*1
+ANT_parc2.2_t1~t2*1
+ANT_parc3.2_t1~t3*1
+ANT_parc4.2_t1~t4*1
+
+ANT_parc1.2_t2~t1*1
+ANT_parc2.2_t2~t2*1
+ANT_parc3.2_t2~t3*1
+ANT_parc4.2_t2~t4*1
+
+ANT_parc1.2_t3~t1*1
+ANT_parc2.2_t3~t2*1
+ANT_parc3.2_t3~t3*1
+ANT_parc4.2_t3~t4*1
+
+ANT_parc1.2_t4~t1*1
+ANT_parc2.2_t4~t2*1
+ANT_parc3.2_t4~t3*1
+ANT_parc4.2_t4~t4*1
+
+#Constrain Parcel Residuals
+ANT_parc1.2_t1 ~~ r1*ANT_parc1.2_t1
+ANT_parc2.2_t1 ~~ r2*ANT_parc2.2_t1
+ANT_parc3.2_t1 ~~ r3*ANT_parc3.2_t1
+ANT_parc4.2_t1 ~~ r4*ANT_parc4.2_t1
+
+ANT_parc1.2_t2 ~~ r1*ANT_parc1.2_t2
+ANT_parc2.2_t2 ~~ r2*ANT_parc2.2_t2
+ANT_parc3.2_t2 ~~ r3*ANT_parc3.2_t2
+ANT_parc4.2_t2 ~~ r4*ANT_parc4.2_t2
+
+ANT_parc1.2_t3 ~~ r1*ANT_parc1.2_t3
+ANT_parc2.2_t3 ~~ r2*ANT_parc2.2_t3
+ANT_parc3.2_t3 ~~ r3*ANT_parc3.2_t3
+ANT_parc4.2_t3 ~~ r4*ANT_parc4.2_t3
+
+ANT_parc1.2_t4 ~~ r1*ANT_parc1.2_t4
+ANT_parc2.2_t4 ~~ r2*ANT_parc2.2_t4
+ANT_parc3.2_t4 ~~ r3*ANT_parc3.2_t4
+ANT_parc4.2_t4 ~~ r4*ANT_parc4.2_t4
+
+#Residual Covariances
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t2
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t3
+ANT_parc1.2_t1 ~~ ANT_parc1.2_t4
+ANT_parc1.2_t2 ~~ ANT_parc1.2_t3
+ANT_parc1.2_t2 ~~ ANT_parc1.2_t4
+ANT_parc1.2_t3 ~~ ANT_parc1.2_t4
+
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t2
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t3
+ANT_parc2.2_t1 ~~ ANT_parc2.2_t4
+ANT_parc2.2_t2 ~~ ANT_parc2.2_t3
+ANT_parc2.2_t2 ~~ ANT_parc2.2_t4
+ANT_parc2.2_t3 ~~ ANT_parc2.2_t4
+
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t2
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t3
+ANT_parc3.2_t1 ~~ ANT_parc3.2_t4
+ANT_parc3.2_t2 ~~ ANT_parc3.2_t3
+ANT_parc3.2_t2 ~~ ANT_parc3.2_t4
+ANT_parc3.2_t3 ~~ ANT_parc3.2_t4
+
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t2
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t3
+ANT_parc4.2_t1 ~~ ANT_parc4.2_t4
+ANT_parc4.2_t2 ~~ ANT_parc4.2_t3
+ANT_parc4.2_t2 ~~ ANT_parc4.2_t4
+ANT_parc4.2_t3 ~~ ANT_parc4.2_t4
+'
+
+ANT_strict.fit<-cfa(ANT_strict, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(ANT_strict.fit, fit.measures=T, standardized=T)
+ANT_strong.strict_test<-compareFit(ANT_strong.fit, ANT_strict.fit)
+summary(ANT_strong.strict_test)
+
+sbs.chi(418.21, 371.44, 104, 92, 3.073, 2.833) 
+exp(-0.5*((418.21 - 104)/(11866-1)))-exp(-0.5*((371.44 - 92)/(11866-1))) #change in McDonald's NCI
+
+
+
+###################
+#Irritability
+###################
+
+#Configural
+
+IRR_config<-'
+#IRR Factors at baseline through 3 year follow up 
+IRR_t1 =~ IRR_parc1_t1+IRR_parc2_t1+IRR_parc3_t1+IRR_parc4_t1
+IRR_t2 =~ IRR_parc1_t2+IRR_parc2_t2+IRR_parc3_t2+IRR_parc4_t2
+IRR_t3 =~ IRR_parc1_t3+IRR_parc2_t3+IRR_parc3_t3+IRR_parc4_t3
+IRR_t4 =~ IRR_parc1_t4+IRR_parc2_t4+IRR_parc3_t4+IRR_parc4_t4
+
+#Estimate observed intercepts at each wave
+IRR_parc1_t1~1
+IRR_parc2_t1~1
+IRR_parc3_t1~1
+IRR_parc4_t1~1
+
+IRR_parc1_t2~1
+IRR_parc2_t2~1
+IRR_parc3_t2~1
+IRR_parc4_t2~1
+
+IRR_parc1_t3~1
+IRR_parc2_t3~1
+IRR_parc3_t3~1
+IRR_parc4_t3~1
+
+IRR_parc1_t4~1
+IRR_parc2_t4~1
+IRR_parc3_t4~1
+IRR_parc4_t4~1
+
+#Residual Covariances
+
+IRR_parc1_t1 ~~ IRR_parc1_t2
+IRR_parc1_t1 ~~ IRR_parc1_t3
+IRR_parc1_t1 ~~ IRR_parc1_t4
+IRR_parc1_t2 ~~ IRR_parc1_t3
+IRR_parc1_t2 ~~ IRR_parc1_t4
+IRR_parc1_t3 ~~ IRR_parc1_t4
+
+IRR_parc2_t1 ~~ IRR_parc2_t2
+IRR_parc2_t1 ~~ IRR_parc2_t3
+IRR_parc2_t1 ~~ IRR_parc2_t4
+IRR_parc2_t2 ~~ IRR_parc2_t3
+IRR_parc2_t2 ~~ IRR_parc2_t4
+IRR_parc2_t3 ~~ IRR_parc2_t4
+
+IRR_parc3_t1 ~~ IRR_parc3_t2
+IRR_parc3_t1 ~~ IRR_parc3_t3
+IRR_parc3_t1 ~~ IRR_parc3_t4
+IRR_parc3_t2 ~~ IRR_parc3_t3
+IRR_parc3_t2 ~~ IRR_parc3_t4
+IRR_parc3_t3 ~~ IRR_parc3_t4
+
+IRR_parc4_t1 ~~ IRR_parc4_t2
+IRR_parc4_t1 ~~ IRR_parc4_t3
+IRR_parc4_t1 ~~ IRR_parc4_t4
+IRR_parc4_t2 ~~ IRR_parc4_t3
+IRR_parc4_t2 ~~ IRR_parc4_t4
+IRR_parc4_t3 ~~ IRR_parc4_t4
+'
+
+IRR_config.fit<-cfa(IRR_config, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(IRR_config.fit, fit.measures=T, standardized=T)
+exp(-0.5*((166.25 - 74)/(11866-1))) #McDonald's NCI
+
+
+#Weak/Metric
+
+IRR_weak<-'
+#IRR Factors at baseline through 3 year follow up, with constraints on factor loadings
+IRR_t1 =~ NA*IRR_parc1_t1+l1*IRR_parc1_t1+l2*IRR_parc2_t1+l3*IRR_parc3_t1+l4*IRR_parc4_t1 
+IRR_t2 =~ NA*IRR_parc1_t2+l1*IRR_parc1_t2+l2*IRR_parc2_t2+l3*IRR_parc3_t2+l4*IRR_parc4_t2
+IRR_t3 =~ NA*IRR_parc1_t3+l1*IRR_parc1_t3+l2*IRR_parc2_t3+l3*IRR_parc3_t3+l4*IRR_parc4_t3
+IRR_t4 =~ NA*IRR_parc1_t4+l1*IRR_parc1_t4+l2*IRR_parc2_t4+l3*IRR_parc3_t4+l4*IRR_parc4_t4
+
+#Latent Intercepts
+IRR_t1~1*0
+IRR_t2~1*0
+IRR_t3~1*0
+IRR_t4~1*0
+
+#Latent Variances
+IRR_t1~~1*IRR_t1
+IRR_t2~~IRR_t2
+IRR_t3~~IRR_t3
+IRR_t4~~IRR_t4
+
+#Estimate observed intercepts at each wave
+IRR_parc1_t1~1
+IRR_parc2_t1~1
+IRR_parc3_t1~1
+IRR_parc4_t1~1
+
+IRR_parc1_t2~1
+IRR_parc2_t2~1
+IRR_parc3_t2~1
+IRR_parc4_t2~1
+
+IRR_parc1_t3~1
+IRR_parc2_t3~1
+IRR_parc3_t3~1
+IRR_parc4_t3~1
+
+IRR_parc1_t4~1
+IRR_parc2_t4~1
+IRR_parc3_t4~1
+IRR_parc4_t4~1
+
+#Residual Covariances
+IRR_parc1_t1 ~~ IRR_parc1_t2
+IRR_parc1_t1 ~~ IRR_parc1_t3
+IRR_parc1_t1 ~~ IRR_parc1_t4
+IRR_parc1_t2 ~~ IRR_parc1_t3
+IRR_parc1_t2 ~~ IRR_parc1_t4
+IRR_parc1_t3 ~~ IRR_parc1_t4
+
+IRR_parc2_t1 ~~ IRR_parc2_t2
+IRR_parc2_t1 ~~ IRR_parc2_t3
+IRR_parc2_t1 ~~ IRR_parc2_t4
+IRR_parc2_t2 ~~ IRR_parc2_t3
+IRR_parc2_t2 ~~ IRR_parc2_t4
+IRR_parc2_t3 ~~ IRR_parc2_t4
+
+IRR_parc3_t1 ~~ IRR_parc3_t2
+IRR_parc3_t1 ~~ IRR_parc3_t3
+IRR_parc3_t1 ~~ IRR_parc3_t4
+IRR_parc3_t2 ~~ IRR_parc3_t3
+IRR_parc3_t2 ~~ IRR_parc3_t4
+IRR_parc3_t3 ~~ IRR_parc3_t4
+
+IRR_parc4_t1 ~~ IRR_parc4_t2
+IRR_parc4_t1 ~~ IRR_parc4_t3
+IRR_parc4_t1 ~~ IRR_parc4_t4
+IRR_parc4_t2 ~~ IRR_parc4_t3
+IRR_parc4_t2 ~~ IRR_parc4_t4
+IRR_parc4_t3 ~~ IRR_parc4_t4
+'
+
+
+IRR_weak.fit<-cfa(IRR_weak, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(IRR_weak.fit, fit.measures=T, standardized=T)
+IRR_config.weak_test<-compareFit(IRR_config.fit, IRR_weak.fit)
+summary(IRR_config.weak_test)
+
+sbs.chi(222.48, 166.25, 83, 74, 1.744, 1.703)
+exp(-0.5*((222.483 - 83)/(11866-1)))-exp(-0.5*((166.25 - 74)/(11866-1))) #change in McDonald's NCI
+
+#Strong/Scalar
+
+IRR_strong<-'
+#IRR Factors at baseline through 3 year follow up, with constraints on factor loadings
+IRR_t1 =~ NA*IRR_parc1_t1+l1*IRR_parc1_t1+l2*IRR_parc2_t1+l3*IRR_parc3_t1+l4*IRR_parc4_t1 
+IRR_t2 =~ NA*IRR_parc1_t2+l1*IRR_parc1_t2+l2*IRR_parc2_t2+l3*IRR_parc3_t2+l4*IRR_parc4_t2
+IRR_t3 =~ NA*IRR_parc1_t3+l1*IRR_parc1_t3+l2*IRR_parc2_t3+l3*IRR_parc3_t3+l4*IRR_parc4_t3
+IRR_t4 =~ NA*IRR_parc1_t4+l1*IRR_parc1_t4+l2*IRR_parc2_t4+l3*IRR_parc3_t4+l4*IRR_parc4_t4
+
+#Latent Intercepts
+IRR_t1~1*0
+IRR_t2~1
+IRR_t3~1
+IRR_t4~1
+
+#Latent Variances
+IRR_t1~~1*IRR_t1
+IRR_t2~~IRR_t2
+IRR_t3~~IRR_t3
+IRR_t4~~IRR_t4
+
+#Constrain Parcel Intercepts
+IRR_parc1_t1~t1*1
+IRR_parc2_t1~t2*1
+IRR_parc3_t1~t3*1
+IRR_parc4_t1~t4*1
+
+IRR_parc1_t2~t1*1
+IRR_parc2_t2~t2*1
+IRR_parc3_t2~t3*1
+IRR_parc4_t2~t4*1
+
+IRR_parc1_t3~t1*1
+IRR_parc2_t3~t2*1
+IRR_parc3_t3~t3*1
+IRR_parc4_t3~t4*1
+
+IRR_parc1_t4~t1*1
+IRR_parc2_t4~t2*1
+IRR_parc3_t4~t3*1
+IRR_parc4_t4~t4*1
+
+#Residual Covariances
+IRR_parc1_t1 ~~ IRR_parc1_t2
+IRR_parc1_t1 ~~ IRR_parc1_t3
+IRR_parc1_t1 ~~ IRR_parc1_t4
+IRR_parc1_t2 ~~ IRR_parc1_t3
+IRR_parc1_t2 ~~ IRR_parc1_t4
+IRR_parc1_t3 ~~ IRR_parc1_t4
+
+IRR_parc2_t1 ~~ IRR_parc2_t2
+IRR_parc2_t1 ~~ IRR_parc2_t3
+IRR_parc2_t1 ~~ IRR_parc2_t4
+IRR_parc2_t2 ~~ IRR_parc2_t3
+IRR_parc2_t2 ~~ IRR_parc2_t4
+IRR_parc2_t3 ~~ IRR_parc2_t4
+
+IRR_parc3_t1 ~~ IRR_parc3_t2
+IRR_parc3_t1 ~~ IRR_parc3_t3
+IRR_parc3_t1 ~~ IRR_parc3_t4
+IRR_parc3_t2 ~~ IRR_parc3_t3
+IRR_parc3_t2 ~~ IRR_parc3_t4
+IRR_parc3_t3 ~~ IRR_parc3_t4
+
+IRR_parc4_t1 ~~ IRR_parc4_t2
+IRR_parc4_t1 ~~ IRR_parc4_t3
+IRR_parc4_t1 ~~ IRR_parc4_t4
+IRR_parc4_t2 ~~ IRR_parc4_t3
+IRR_parc4_t2 ~~ IRR_parc4_t4
+IRR_parc4_t3 ~~ IRR_parc4_t4
+'
+
+IRR_strong.fit<-cfa(IRR_strong, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(IRR_strong.fit, fit.measures=T, standardized=T)
+IRR_weak.strong_test<-compareFit(IRR_weak.fit, IRR_strong.fit)
+summary(IRR_weak.strong_test)
+
+sbs.chi(283.71, 222.483, 92, 83, 1.774, 1.744)
+exp(-0.5*((283.71 - 92)/(11866-1)))-exp(-0.5*((222.483 - 83)/(11866-1))) #change in McDonald's NCI
+
+
+#Since Irritability shows strong invariance, test for strict invariance
+
+#Strict
+
+IRR_strict<-'
+#IRR Factors at baseline through 3 year follow up, with constraints on factor loadings
+IRR_t1 =~ NA*IRR_parc1_t1+l1*IRR_parc1_t1+l2*IRR_parc2_t1+l3*IRR_parc3_t1+l4*IRR_parc4_t1 
+IRR_t2 =~ NA*IRR_parc1_t2+l1*IRR_parc1_t2+l2*IRR_parc2_t2+l3*IRR_parc3_t2+l4*IRR_parc4_t2
+IRR_t3 =~ NA*IRR_parc1_t3+l1*IRR_parc1_t3+l2*IRR_parc2_t3+l3*IRR_parc3_t3+l4*IRR_parc4_t3
+IRR_t4 =~ NA*IRR_parc1_t4+l1*IRR_parc1_t4+l2*IRR_parc2_t4+l3*IRR_parc3_t4+l4*IRR_parc4_t4
+
+#Latent Intercepts
+IRR_t1~1*0
+IRR_t2~1
+IRR_t3~1
+IRR_t4~1
+
+#Latent Variances
+IRR_t1~~1*IRR_t1
+IRR_t2~~IRR_t2
+IRR_t3~~IRR_t3
+IRR_t4~~IRR_t4
+
+#Constrain Parcel Intercepts
+IRR_parc1_t1~t1*1
+IRR_parc2_t1~t2*1
+IRR_parc3_t1~t3*1
+IRR_parc4_t1~t4*1
+
+IRR_parc1_t2~t1*1
+IRR_parc2_t2~t2*1
+IRR_parc3_t2~t3*1
+IRR_parc4_t2~t4*1
+
+IRR_parc1_t3~t1*1
+IRR_parc2_t3~t2*1
+IRR_parc3_t3~t3*1
+IRR_parc4_t3~t4*1
+
+IRR_parc1_t4~t1*1
+IRR_parc2_t4~t2*1
+IRR_parc3_t4~t3*1
+IRR_parc4_t4~t4*1
+
+#Constrain Parcel Residuals
+IRR_parc1_t1 ~~ r1*IRR_parc1_t1
+IRR_parc2_t1 ~~ r2*IRR_parc2_t1
+IRR_parc3_t1 ~~ r3*IRR_parc3_t1
+IRR_parc4_t1 ~~ r4*IRR_parc4_t1
+
+IRR_parc1_t2 ~~ r1*IRR_parc1_t2
+IRR_parc2_t2 ~~ r2*IRR_parc2_t2
+IRR_parc3_t2 ~~ r3*IRR_parc3_t2
+IRR_parc4_t2 ~~ r4*IRR_parc4_t2
+
+IRR_parc1_t3 ~~ r1*IRR_parc1_t3
+IRR_parc2_t3 ~~ r2*IRR_parc2_t3
+IRR_parc3_t3 ~~ r3*IRR_parc3_t3
+IRR_parc4_t3 ~~ r4*IRR_parc4_t3
+
+IRR_parc1_t4 ~~ r1*IRR_parc1_t4
+IRR_parc2_t4 ~~ r2*IRR_parc2_t4
+IRR_parc3_t4 ~~ r3*IRR_parc3_t4
+IRR_parc4_t4 ~~ r4*IRR_parc4_t4
+
+#Residual Covariances
+IRR_parc1_t1 ~~ IRR_parc1_t2
+IRR_parc1_t1 ~~ IRR_parc1_t3
+IRR_parc1_t1 ~~ IRR_parc1_t4
+IRR_parc1_t2 ~~ IRR_parc1_t3
+IRR_parc1_t2 ~~ IRR_parc1_t4
+IRR_parc1_t3 ~~ IRR_parc1_t4
+
+IRR_parc2_t1 ~~ IRR_parc2_t2
+IRR_parc2_t1 ~~ IRR_parc2_t3
+IRR_parc2_t1 ~~ IRR_parc2_t4
+IRR_parc2_t2 ~~ IRR_parc2_t3
+IRR_parc2_t2 ~~ IRR_parc2_t4
+IRR_parc2_t3 ~~ IRR_parc2_t4
+
+IRR_parc3_t1 ~~ IRR_parc3_t2
+IRR_parc3_t1 ~~ IRR_parc3_t3
+IRR_parc3_t1 ~~ IRR_parc3_t4
+IRR_parc3_t2 ~~ IRR_parc3_t3
+IRR_parc3_t2 ~~ IRR_parc3_t4
+IRR_parc3_t3 ~~ IRR_parc3_t4
+
+IRR_parc4_t1 ~~ IRR_parc4_t2
+IRR_parc4_t1 ~~ IRR_parc4_t3
+IRR_parc4_t1 ~~ IRR_parc4_t4
+IRR_parc4_t2 ~~ IRR_parc4_t3
+IRR_parc4_t2 ~~ IRR_parc4_t4
+IRR_parc4_t3 ~~ IRR_parc4_t4
+'
+
+IRR_strict.fit<-cfa(IRR_strict, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(IRR_strict.fit, fit.measures=T, standardized=T)
+IRR_strong.strict_test<-compareFit(IRR_strong.fit, IRR_strict.fit)
+summary(IRR_strong.strict_test)
+
+
+
+#################
+###Disinhibition 
+#################
+
+
+#Configural
+
+DIS_config<-'
+#DIS Factors at baseline through 3 year follow up 
+DIS_t1 =~ DIS_parc1.2_t1+DIS_parc2.2_t1+DIS_parc3.2_t1+DIS_parc4.2_t1
+DIS_t2 =~ DIS_parc1.2_t2+DIS_parc2.2_t2+DIS_parc3.2_t2+DIS_parc4.2_t2
+DIS_t3 =~ DIS_parc1.2_t3+DIS_parc2.2_t3+DIS_parc3.2_t3+DIS_parc4.2_t3
+DIS_t4 =~ DIS_parc1.2_t4+DIS_parc2.2_t4+DIS_parc3.2_t4+DIS_parc4.2_t4
+
+#Estimate observed intercepts at each wave
+DIS_parc1.2_t1~1
+DIS_parc2.2_t1~1
+DIS_parc3.2_t1~1
+DIS_parc4.2_t1~1
+
+DIS_parc1.2_t2~1
+DIS_parc2.2_t2~1
+DIS_parc3.2_t2~1
+DIS_parc4.2_t2~1
+
+DIS_parc1.2_t3~1
+DIS_parc2.2_t3~1
+DIS_parc3.2_t3~1
+DIS_parc4.2_t3~1
+
+DIS_parc1.2_t4~1
+DIS_parc2.2_t4~1
+DIS_parc3.2_t4~1
+DIS_parc4.2_t4~1
+
+#Residual Covariances
+
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t2
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t3
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t4
+DIS_parc1.2_t2 ~~ DIS_parc1.2_t3
+DIS_parc1.2_t2 ~~ DIS_parc1.2_t4
+DIS_parc1.2_t3 ~~ DIS_parc1.2_t4
+
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t2
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t3
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t4
+DIS_parc2.2_t2 ~~ DIS_parc2.2_t3
+DIS_parc2.2_t2 ~~ DIS_parc2.2_t4
+DIS_parc2.2_t3 ~~ DIS_parc2.2_t4
+
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t2
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t3
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t4
+DIS_parc3.2_t2 ~~ DIS_parc3.2_t3
+DIS_parc3.2_t2 ~~ DIS_parc3.2_t4
+DIS_parc3.2_t3 ~~ DIS_parc3.2_t4
+
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t2
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t3
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t4
+DIS_parc4.2_t2 ~~ DIS_parc4.2_t3
+DIS_parc4.2_t2 ~~ DIS_parc4.2_t4
+DIS_parc4.2_t3 ~~ DIS_parc4.2_t4
+'
+
+DIS_config.fit<-cfa(DIS_config, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(DIS_config.fit, fit.measures=T, standardized=T)
+exp(-0.5*((264.19 - 74)/(11866-1))) #McDonald's NCI
+
+#Weak/Metric
+
+DIS_weak<-'
+#DIS Factors at baseline through 3 year follow up, with constraints on factor loadings
+DIS_t1 =~ NA*DIS_parc1.2_t1+l1*DIS_parc1.2_t1+l2*DIS_parc2.2_t1+l3*DIS_parc3.2_t1+l4*DIS_parc4.2_t1 
+DIS_t2 =~ NA*DIS_parc1.2_t2+l1*DIS_parc1.2_t2+l2*DIS_parc2.2_t2+l3*DIS_parc3.2_t2+l4*DIS_parc4.2_t2
+DIS_t3 =~ NA*DIS_parc1.2_t3+l1*DIS_parc1.2_t3+l2*DIS_parc2.2_t3+l3*DIS_parc3.2_t3+l4*DIS_parc4.2_t3
+DIS_t4 =~ NA*DIS_parc1.2_t4+l1*DIS_parc1.2_t4+l2*DIS_parc2.2_t4+l3*DIS_parc3.2_t4+l4*DIS_parc4.2_t4
+
+#Latent Intercepts
+DIS_t1~1*0
+DIS_t2~1*0
+DIS_t3~1*0
+DIS_t4~1*0
+
+#Latent Variances
+DIS_t1~~1*DIS_t1
+DIS_t2~~DIS_t2
+DIS_t3~~DIS_t3
+DIS_t4~~DIS_t4
+
+#Estimate observed intercepts at each wave
+DIS_parc1.2_t1~1
+DIS_parc2.2_t1~1
+DIS_parc3.2_t1~1
+DIS_parc4.2_t1~1
+
+DIS_parc1.2_t2~1
+DIS_parc2.2_t2~1
+DIS_parc3.2_t2~1
+DIS_parc4.2_t2~1
+
+DIS_parc1.2_t3~1
+DIS_parc2.2_t3~1
+DIS_parc3.2_t3~1
+DIS_parc4.2_t3~1
+
+DIS_parc1.2_t4~1
+DIS_parc2.2_t4~1
+DIS_parc3.2_t4~1
+DIS_parc4.2_t4~1
+
+#Residual Covariances
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t2
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t3
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t4
+DIS_parc1.2_t2 ~~ DIS_parc1.2_t3
+DIS_parc1.2_t2 ~~ DIS_parc1.2_t4
+DIS_parc1.2_t3 ~~ DIS_parc1.2_t4
+
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t2
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t3
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t4
+DIS_parc2.2_t2 ~~ DIS_parc2.2_t3
+DIS_parc2.2_t2 ~~ DIS_parc2.2_t4
+DIS_parc2.2_t3 ~~ DIS_parc2.2_t4
+
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t2
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t3
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t4
+DIS_parc3.2_t2 ~~ DIS_parc3.2_t3
+DIS_parc3.2_t2 ~~ DIS_parc3.2_t4
+DIS_parc3.2_t3 ~~ DIS_parc3.2_t4
+
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t2
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t3
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t4
+DIS_parc4.2_t2 ~~ DIS_parc4.2_t3
+DIS_parc4.2_t2 ~~ DIS_parc4.2_t4
+DIS_parc4.2_t3 ~~ DIS_parc4.2_t4
+'
+
+
+DIS_weak.fit<-cfa(DIS_weak, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(DIS_weak.fit, fit.measures=T, standardized=T)
+DIS_config.weak_test<-compareFit(DIS_config.fit, DIS_weak.fit)
+summary(DIS_config.weak_test)
+
+sbs.chi(387.31, 264.19, 83, 74, 1.707, 1.668) 
+exp(-0.5*((387.31 - 83)/(11866-1)))-exp(-0.5*((264.19 - 74)/(11866-1))) #change in McDonald's NCI
+
+#Strong/Scalar
+
+DIS_strong<-'
+#DIS Factors at baseline through 3 year follow up, with constraints on factor loadings
+DIS_t1 =~ NA*DIS_parc1.2_t1+l1*DIS_parc1.2_t1+l2*DIS_parc2.2_t1+l3*DIS_parc3.2_t1+l4*DIS_parc4.2_t1 
+DIS_t2 =~ NA*DIS_parc1.2_t2+l1*DIS_parc1.2_t2+l2*DIS_parc2.2_t2+l3*DIS_parc3.2_t2+l4*DIS_parc4.2_t2
+DIS_t3 =~ NA*DIS_parc1.2_t3+l1*DIS_parc1.2_t3+l2*DIS_parc2.2_t3+l3*DIS_parc3.2_t3+l4*DIS_parc4.2_t3
+DIS_t4 =~ NA*DIS_parc1.2_t4+l1*DIS_parc1.2_t4+l2*DIS_parc2.2_t4+l3*DIS_parc3.2_t4+l4*DIS_parc4.2_t4
+
+#Baseline latent mean fixed at zero, others freed 
+DIS_t1 ~ 0*1
+DIS_t2 ~ 1
+DIS_t3 ~ 1
+DIS_t4 ~ 1
+
+#Latent Variances
+DIS_t1~~1*DIS_t1
+DIS_t2~~DIS_t2
+DIS_t3~~DIS_t3
+DIS_t4~~DIS_t4
+
+#Constrain Parcel Intercepts
+DIS_parc1.2_t1~t1*1
+DIS_parc2.2_t1~t2*1
+DIS_parc3.2_t1~t3*1
+DIS_parc4.2_t1~t4*1
+
+DIS_parc1.2_t2~t1*1
+DIS_parc2.2_t2~t2*1
+DIS_parc3.2_t2~t3*1
+DIS_parc4.2_t2~t4*1
+
+DIS_parc1.2_t3~t1*1
+DIS_parc2.2_t3~t2*1
+DIS_parc3.2_t3~t3*1
+DIS_parc4.2_t3~t4*1
+
+DIS_parc1.2_t4~t1*1
+DIS_parc2.2_t4~t2*1
+DIS_parc3.2_t4~t3*1
+DIS_parc4.2_t4~t4*1
+
+#Residual Covariances
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t2
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t3
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t4
+DIS_parc1.2_t2 ~~ DIS_parc1.2_t3
+DIS_parc1.2_t2 ~~ DIS_parc1.2_t4
+DIS_parc1.2_t3 ~~ DIS_parc1.2_t4
+
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t2
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t3
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t4
+DIS_parc2.2_t2 ~~ DIS_parc2.2_t3
+DIS_parc2.2_t2 ~~ DIS_parc2.2_t4
+DIS_parc2.2_t3 ~~ DIS_parc2.2_t4
+
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t2
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t3
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t4
+DIS_parc3.2_t2 ~~ DIS_parc3.2_t3
+DIS_parc3.2_t2 ~~ DIS_parc3.2_t4
+DIS_parc3.2_t3 ~~ DIS_parc3.2_t4
+
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t2
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t3
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t4
+DIS_parc4.2_t2 ~~ DIS_parc4.2_t3
+DIS_parc4.2_t2 ~~ DIS_parc4.2_t4
+DIS_parc4.2_t3 ~~ DIS_parc4.2_t4
+'
+
+DIS_strong.fit<-cfa(DIS_strong, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(DIS_strong.fit, fit.measures=T, standardized=T)
+DIS_weak.strong_test<-compareFit(DIS_weak.fit, DIS_strong.fit)
+summary(DIS_weak.strong_test)
+
+sbs.chi(840.08, 387.31, 92, 83, 1.637, 1.707) 
+exp(-0.5*((840.08 - 92)/(11866-1)))-exp(-0.5*((387.31 - 83)/(11866-1))) #change in McDonald's NCI
+
+
+#Mod Indices
+lavTestScore(DIS_strong.fit, epc=T)
+modificationindices(DIS_strong.fit)
+
+#Partial Strong/Scalar
+
+DIS_strong.mod<-'
+#DIS Factors at baseline through 3 year follow up, with constraints on factor loadings
+DIS_t1 =~ NA*DIS_parc1.2_t1+l1*DIS_parc1.2_t1+l2*DIS_parc2.2_t1+l3*DIS_parc3.2_t1+l4*DIS_parc4.2_t1 
+DIS_t2 =~ NA*DIS_parc1.2_t2+l1*DIS_parc1.2_t2+l2*DIS_parc2.2_t2+l3*DIS_parc3.2_t2+l4*DIS_parc4.2_t2
+DIS_t3 =~ NA*DIS_parc1.2_t3+l1*DIS_parc1.2_t3+l2*DIS_parc2.2_t3+l3*DIS_parc3.2_t3+l4*DIS_parc4.2_t3
+DIS_t4 =~ NA*DIS_parc1.2_t4+l1*DIS_parc1.2_t4+l2*DIS_parc2.2_t4+l3*DIS_parc3.2_t4+l4*DIS_parc4.2_t4
+
+#Baseline latent mean fixed at zero, others freed 
+DIS_t1 ~ 0*1
+DIS_t2 ~ 1
+DIS_t3 ~ 1
+DIS_t4 ~ 1
+
+#Latent Variances
+DIS_t1~~1*DIS_t1
+DIS_t2~~DIS_t2
+DIS_t3~~DIS_t3
+DIS_t4~~DIS_t4
+
+#Constrain Parcel Intercepts
+DIS_parc1.2_t1~t1*1
+DIS_parc2.2_t1~t2*1
+DIS_parc3.2_t1~1
+DIS_parc4.2_t1~1
+
+DIS_parc1.2_t2~t1*1
+DIS_parc2.2_t2~t2*1
+DIS_parc3.2_t2~t3*1
+DIS_parc4.2_t2~t4*1
+
+DIS_parc1.2_t3~t1*1
+DIS_parc2.2_t3~t2*1
+DIS_parc3.2_t3~t3*1
+DIS_parc4.2_t3~t4*1
+
+DIS_parc1.2_t4~t1*1
+DIS_parc2.2_t4~t2*1
+DIS_parc3.2_t4~1
+DIS_parc4.2_t4~1
+
+#Residual Covariances
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t2
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t3
+DIS_parc1.2_t1 ~~ DIS_parc1.2_t4
+DIS_parc1.2_t2 ~~ DIS_parc1.2_t3
+DIS_parc1.2_t2 ~~ DIS_parc1.2_t4
+DIS_parc1.2_t3 ~~ DIS_parc1.2_t4
+
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t2
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t3
+DIS_parc2.2_t1 ~~ DIS_parc2.2_t4
+DIS_parc2.2_t2 ~~ DIS_parc2.2_t3
+DIS_parc2.2_t2 ~~ DIS_parc2.2_t4
+DIS_parc2.2_t3 ~~ DIS_parc2.2_t4
+
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t2
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t3
+DIS_parc3.2_t1 ~~ DIS_parc3.2_t4
+DIS_parc3.2_t2 ~~ DIS_parc3.2_t3
+DIS_parc3.2_t2 ~~ DIS_parc3.2_t4
+DIS_parc3.2_t3 ~~ DIS_parc3.2_t4
+
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t2
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t3
+DIS_parc4.2_t1 ~~ DIS_parc4.2_t4
+DIS_parc4.2_t2 ~~ DIS_parc4.2_t3
+DIS_parc4.2_t2 ~~ DIS_parc4.2_t4
+DIS_parc4.2_t3 ~~ DIS_parc4.2_t4
+'
+
+DIS_strong.mod.fit<-cfa(DIS_strong.mod, data=cbcl_wide, missing='FIML', estimator='MLR')
+summary(DIS_strong.mod.fit, fit.measures=T, standardized=T)
+DIS_weak.strong_test<-compareFit(DIS_weak.fit, DIS_strong.mod.fit)
+summary(DIS_weak.strong_test)
+
+sbs.chi(524.247, 387.31, 88, 83, 1.668, 1.637) 
+exp(-0.5*((387.307 - 83)/(11866-1)))-exp(-0.5*((524.247 - 88)/(11866-1))) #change in McDonald's NCI
+
+
+
+
+#Get effect sizes for MI using dmacs package 
+lavaan_dmacs(DIS_strong.mod.fit, MEtype='long') #partial strong invariance model is input 
+
+#Get values for dMACS table in manuscript 
+DIS_descript<-cbcl_wide %>% 
+  rowwise() %>% 
+  mutate(DIS_t1=sum(c(DIS_parc1.2_t1, DIS_parc2.2_t1, DIS_parc3.2_t1, DIS_parc4.2_t1), na.rm=T),
+         DIS_t2=sum(c(DIS_parc1.2_t2, DIS_parc2.2_t2, DIS_parc3.2_t2, DIS_parc4.2_t2), na.rm=T),
+         DIS_t3=sum(c(DIS_parc1.2_t3, DIS_parc2.2_t3, DIS_parc3.2_t3, DIS_parc4.2_t3), na.rm=T),
+         DIS_t4=sum(c(DIS_parc1.2_t4, DIS_parc2.2_t4, DIS_parc3.2_t4, DIS_parc4.2_t4), na.rm=T)) 
+
+describe(select(DIS_descript, DIS_t1, DIS_t2, DIS_t3, DIS_t4))
+
+
+
+
+########
+##For MPLUS Only
+########
+
+####Code to include site/family IDs
+
+
+#Subset specific assessment periods 
+site_df_r<-subset(site_df, eventname %in% c("baseline_year_1_arm_1",
+                                          "1_year_follow_up_y_arm_1",
+                                          "2_year_follow_up_y_arm_1",
+                                          "3_year_follow_up_y_arm_1"))
+
+#Recode time to make code easier to work with 
+site_df_r <-site_df_r %>%
+  mutate(eventname_r=as_factor(case_match(eventname, 
+                                          'baseline_year_1_arm_1'~'t1',
+                                          "1_year_follow_up_y_arm_1"~'t2',
+                                          "2_year_follow_up_y_arm_1"~'t3',
+                                          "3_year_follow_up_y_arm_1"~'t4'))) 
+
+df_list.MPlus<-list(cbcl_long, #note that 'cbcl_long' is from previous code, prior to converting it to wide format
+                    site_df_r)
+
+abcd_merged.MPlus <- df_list.MPlus %>% 
+  reduce(left_join, by=c('src_subject_id','eventname_r'))
+
+abcd_merged.MPlus_subset<-abcd_merged.MPlus %>% 
+  select(src_subject_id, eventname_r, site_id_l, rel_family_id, EXT_parc1:DIS_parc4.2)
+
+#Convert to wide         
+abcd_merged.MPlus_wide<- abcd_merged.MPlus_subset %>% 
+  pivot_wider(id_cols = "src_subject_id",  
+              names_from = "eventname_r",
+              values_from=c(site_id_l, rel_family_id,
+                            EXT_parc1, EXT_parc2, EXT_parc3, EXT_parc4, EXT_parc5,
+                            ANT_parc1.2, ANT_parc2.2, ANT_parc3.2, ANT_parc4.2,
+                            IRR_parc1, IRR_parc2, IRR_parc3, IRR_parc4,
+                            DIS_parc1.2, DIS_parc2.2, DIS_parc3.2, DIS_parc4.2),
+              names_glue = "{.value}_{eventname_r}")
+
+#Subset site id, fam id, and parcels
+MPlus_final<-abcd_merged.MPlus_wide %>% 
+  select(site_id_l_t1, rel_family_id_t1,
+         EXT_parc1_t1:EXT_parc1_t4,
+         EXT_parc2_t1:EXT_parc2_t4,
+         EXT_parc3_t1:EXT_parc3_t4,
+         EXT_parc4_t1:EXT_parc4_t4,
+         EXT_parc5_t1:EXT_parc5_t4,
+         ANT_parc1.2_t1:ANT_parc1.2_t4,
+         ANT_parc2.2_t1:ANT_parc2.2_t4,
+         ANT_parc3.2_t1:ANT_parc3.2_t4,
+         ANT_parc4.2_t1:ANT_parc4.2_t4,
+         IRR_parc1_t1:IRR_parc1_t4,
+         IRR_parc2_t1:IRR_parc2_t4,
+         IRR_parc3_t1:IRR_parc3_t4,
+         IRR_parc4_t1:IRR_parc4_t4,
+         DIS_parc1.2_t1:DIS_parc1.2_t4,
+         DIS_parc2.2_t1:DIS_parc2.2_t4,
+         DIS_parc3.2_t1:DIS_parc3.2_t4,
+         DIS_parc4.2_t1:DIS_parc4.2_t4)
+
+MPlus_final$site_id_l_t1<-as.numeric(gsub("[a-zA-Z ]", "", MPlus_final$site_id_l_t1)) #remove string portion of site variable (Mplus can't have text in data)
+MPlus_final$rel_family_id_t1<-replace(MPlus_final$rel_family_id_t1, MPlus_final$rel_family_id_t1==0, 2) #Mplus requires positive integers for clusters so 0 can't be used; 2 is not assigned so is used as substitute value
+
+#Replace NA with 9999
+MPlus_final[is.na(MPlus_final)] <- 9999 #Replace NAs w/ 9999
+
+#Data for Mplus; top row will need to be deleted 
+write.csv(MPlus_final, "ABCD_CBCL_wide.csv", row.names = F)
+
+	
+
+############
+####Sensitivity Analyses 
+############
+
+
+#Bass-ackwards (Use Alternative Factoring Method; Weighted Least Squares)
+
+#Run EFA with WLS extraction, but no rotation method
+CBCL_wls<-fa.poly(cbcl_ext_base[,3:47], nfactors=4, fm="wls", rotate="none") #Factoring Method: WLS; Rotation=None
+CBCL.loadings_wls<-as.matrix(unclass(CBCL_wls$fa$loadings)) #extract factor loadings
+
+#Use cfQ() function from GPArotation package, which applies oblique equamax rotation to WLS factor loadings
+CBCL_equmax_solution<-cfQ(CBCL.loadings_wls, 
+                          Tmat=diag(ncol(CBCL.loadings_wls)),
+                          kappa=0, 
+                          normalize=FALSE, 
+                          eps=1e-5, 
+                          maxit=1000) 
+
+#Compare loadings
+CBCL_4_minres_promax<-fa.poly(cbcl_ext_base[,3:47], nfactors = 4, fm="minres", rotate = "promax") #run fa.poly w/ four factors so item loadings are in order (needed for congruence coefficients)
+original_loadings<-as.data.frame(unclass(CBCL_4_minres_promax$fa$loadings))
+CBCL.loadings_wls_df<-as.data.frame(CBCL_equmax_solution$loadings)
+
+#Factor Congruence (Tucker Congruence Coefficients)
+factor.congruence(original_loadings, CBCL.loadings_wls_df) #Near perfect congruence 
+
+
+
+###Examine impact of variability in item-parcel assignments
+
+
+library(lavaan)
+library(semTools)
+
+cbcl_ext <-cbcl_ext %>%
+  mutate(eventname_r=as_factor(case_match(eventname, 
+                                          'baseline_year_1_arm_1'~'t1',
+                                          "1_year_follow_up_y_arm_1"~'t2',
+                                          "2_year_follow_up_y_arm_1"~'t3',
+                                          "3_year_follow_up_y_arm_1"~'t4',
+                                          "4_year_follow_up_y_arm_1"~'t5'))) #won't use 4 year follow up
+
+#Subset externalizing items
+cbcl_long_item<-cbcl_ext %>% 
+  select(src_subject_id, eventname_r, 
+         cbcl_q66_p, Disobey_comp, cbcl_q72_p, cbcl_q80_p, cbcl_q09_p, cbcl_q85_p, cbcl_q61_p, cbcl_q15_p, cbcl_q67_p,
+         cbcl_q17_p, cbcl_q94_p, cbcl_q96_p, cbcl_q87_p, cbcl_q01_p, cbcl_q64_p, cbcl_q41_p, cbcl_q43_p, cbcl_q88_p, 
+         cbcl_q04_p, cbcl_q03_p, cbcl_q62_p, cbcl_q86_p, AttThreat_comp, cbcl_q37_p, cbcl_q07_p, cbcl_q16_p, cbcl_q39_p,
+         cbcl_q90_p, Steal_comp, cbcl_q46_p, cbcl_q109_p, DistrHyp_comp, cbcl_q74_p, cbcl_q89_p, cbcl_q13_p, cbcl_q19_p,
+         cbcl_q95_p, cbcl_q34_p, cbcl_q26_p, cbcl_q68_p, cbcl_q93_p, cbcl_q36_p, Destroy_comp, PeerProb_comp, cbcl_q27_p)
+
+#Convert to wide         
+cbcl_wide_item<- cbcl_long_item %>% 
+  pivot_wider(id_cols = "src_subject_id", 
+              names_from = "eventname_r",
+              values_from=c(cbcl_q66_p, Disobey_comp, cbcl_q72_p, cbcl_q80_p, cbcl_q09_p, cbcl_q85_p, cbcl_q61_p, cbcl_q15_p, cbcl_q67_p,
+                              cbcl_q17_p, cbcl_q94_p, cbcl_q96_p, cbcl_q87_p, cbcl_q01_p, cbcl_q64_p, cbcl_q41_p, cbcl_q43_p, cbcl_q88_p, 
+                              cbcl_q04_p, cbcl_q03_p, cbcl_q62_p, cbcl_q86_p, AttThreat_comp, cbcl_q37_p, cbcl_q07_p, cbcl_q16_p, cbcl_q39_p,
+                              cbcl_q90_p, Steal_comp, cbcl_q46_p, cbcl_q109_p, DistrHyp_comp, cbcl_q74_p, cbcl_q89_p, cbcl_q13_p, cbcl_q19_p,
+                              cbcl_q95_p, cbcl_q34_p, cbcl_q26_p, cbcl_q68_p, cbcl_q93_p, cbcl_q36_p, Destroy_comp, PeerProb_comp, cbcl_q27_p ),
+              names_glue = "{.value}_{eventname_r}")
+
+
+#Broad-based Externalizing
+
+#Need to specify lavaan model using items instead of parcels
+EXT_base_model.item<-'
+EXT_t1 =~ cbcl_q66_p_t1+ Disobey_comp_t1+ cbcl_q72_p_t1+ cbcl_q80_p_t1+ cbcl_q09_p_t1+ cbcl_q85_p_t1+ cbcl_q61_p_t1+ cbcl_q15_p_t1+ cbcl_q67_p_t1+
+cbcl_q17_p_t1+ cbcl_q94_p_t1+ cbcl_q96_p_t1+ cbcl_q87_p_t1+ cbcl_q01_p_t1+ cbcl_q64_p_t1+ cbcl_q41_p_t1+ cbcl_q43_p_t1+ cbcl_q88_p_t1+ 
+cbcl_q04_p_t1+ cbcl_q03_p_t1+ cbcl_q62_p_t1+ cbcl_q86_p_t1+ AttThreat_comp_t1+ cbcl_q37_p_t1+ cbcl_q07_p_t1+ cbcl_q16_p_t1+ cbcl_q39_p_t1+
+cbcl_q90_p_t1+ Steal_comp_t1+ cbcl_q46_p_t1+cbcl_q109_p_t1+ DistrHyp_comp_t1+ cbcl_q74_p_t1+ cbcl_q89_p_t1+ cbcl_q13_p_t1+ cbcl_q19_p_t1+
+cbcl_q95_p_t1+ cbcl_q34_p_t1+ cbcl_q26_p_t1+ cbcl_q68_p_t1+ cbcl_q93_p_t1+ cbcl_q36_p_t1+ Destroy_comp_t1+ PeerProb_comp_t1+ cbcl_q27_p_t1'
+
+#Broad-based Externalizing Model using parcels 
+
+EXT_base_model.parc<-'
+EXT_t1 =~ EXT_parc1_t1 + EXT_parc2_t1 + EXT_parc3_t1 + EXT_parc4_t1 + EXT_parc5_t1'
+
+
+EXT_sens<-parcelAllocation(model=EXT_base_model.parc, 
+                 data=cbcl_wide_item, 
+                 parcel.names=c('EXT_parc1_t1', 'EXT_parc2_t1', 'EXT_parc3_t1', 'EXT_parc4_t1', 'EXT_parc5_t1'), 
+                 item.syntax=EXT_base_model.item, 
+                 nAlloc = 500, #run 500 different item-parcel allocations 
+                 fun = "cfa", #apply cfa() function from lavaan to data
+                 iseed=444, #set seed for reproducibility 
+                 std.lv=T, #standardize latent factor and observed variables to get fully standardized solution 
+                 std.ov=T,
+                 missing='FIML',
+                 estimator='MLR',
+                 fit.measures = c("chisq.scaled", "rmsea.scaled", "tli.scaled", "cfi.scaled"),
+                 alpha = 0.05) #sig. at alpha=.05
+
+
+##Antagonism
+
+#Item-based model 
+ANT_base_model.item<-'
+ANT_EXT =~ AttThreat_comp_t1+ cbcl_q72_p_t1+ cbcl_q94_p_t1+ cbcl_q37_p_t1+ 
+cbcl_q67_p_t1+ cbcl_q15_p_t1+ cbcl_q43_p_t1+ cbcl_q16_p_t1+
+cbcl_q90_p_t1+ Disobey_comp_t1+ cbcl_q39_p_t1+
+cbcl_q96_p_t1+ cbcl_q26_p_t1+ Steal_comp_t1+ Destroy_comp_t1+ cbcl_q74_p_t1'
+
+#Using parcels
+ANT_base_model.parc<-'
+ANT_EXT =~ ANT_parc1.2_t1 + ANT_parc2.2_t1 + ANT_parc3.2_t1 + ANT_parc4.2_t1 '
+
+
+ANT_sens<-parcelAllocation(model=ANT_base_model.parc,  
+                           data=cbcl_wide_item, 
+                           parcel.names=c('ANT_parc1.2_t1', 'ANT_parc2.2_t1', 'ANT_parc3.2_t1', 'ANT_parc4.2_t1'), 
+                           item.syntax=ANT_base_model.item, 
+                           nAlloc = 500,
+                           fun = "cfa", #apply cfa() function from lavaan to data
+                           iseed=444,
+                           std.lv=T, #standardize latent factor and observed variables to get fully standardized solution 
+                           std.ov=T,
+                           missing='FIML',
+                           estimator='MLR',
+                           fit.measures = c("chisq.scaled", "rmsea.scaled", "tli.scaled", "cfi.scaled"),
+                           alpha = 0.05) #sig. at alpha=.05
+
+
+##Irritability
+
+#Item-based model 
+IRR_base_model.item<-'
+IRR_EXT =~ cbcl_q87_p_t1+ cbcl_q109_p_t1+ cbcl_q86_p_t1+
+cbcl_q19_p_t1+ cbcl_q68_p_t1+ cbcl_q88_p_t1+
+cbcl_q27_p_t1+ cbcl_q34_p_t1+ cbcl_q03_p_t1+
+cbcl_q95_p_t1+ cbcl_q89_p_t1 '
+
+#Using parcels
+IRR_base_model.parc<-'
+IRR_EXT =~ IRR_parc1_t1 + IRR_parc2_t1 + IRR_parc3_t1 + IRR_parc4_t1 '
+
+
+IRR_sens<-parcelAllocation(model=IRR_base_model.parc,  
+                           data=cbcl_wide_item, 
+                           parcel.names=c('IRR_parc1_t1', 'IRR_parc2_t1', 'IRR_parc3_t1', 'IRR_parc4_t1'), 
+                           item.syntax=IRR_base_model.item, 
+                           nAlloc = 500,
+                           fun = "cfa", #apply cfa() function from lavaan to data
+                           iseed=555,
+                           std.lv=T, #standardize latent factor and observed variables to get fully standardized solution 
+                           std.ov=T,
+                           missing='FIML',
+                           estimator='MLR',
+                           fit.measures = c("chisq.scaled", "rmsea.scaled", "tli.scaled", "cfi.scaled"),
+                           alpha = 0.05) #sig. at alpha=.05
+
+
+
+#Disinhibition 
+
+#Item-based model
+DIS_base_model.item<-'
+DIS_EXT =~ cbcl_q01_p_t1+ DistrHyp_comp_t1+ cbcl_q46_p_t1+ cbcl_q09_p_t1+
+cbcl_q64_p_t1+ cbcl_q66_p_t1+ cbcl_q80_p_t1+ cbcl_q85_p_t1+ 
+cbcl_q13_p_t1+ cbcl_q61_p_t1+ cbcl_q36_p_t1+ cbcl_q04_p_t1+
+cbcl_q62_p_t1+ cbcl_q17_p_t1+ cbcl_q93_p_t1'
+
+#Parcel model
+DIS_base_model.parc<-'
+DIS_EXT =~ DIS_parc1.2_t1 + DIS_parc2.2_t1 + DIS_parc3.2_t1 + DIS_parc4.2_t1 '
+
+
+DIS_sens<-parcelAllocation(model=DIS_base_model.parc, 
+                 data=cbcl_wide_item, 
+                 parcel.names=c('DIS_parc1.2_t1', 'DIS_parc2.2_t1', 'DIS_parc3.2_t1', 'DIS_parc4.2_t1'), 
+                 item.syntax=DIS_base_model.item, 
+                 nAlloc = 500,
+                 fun = "cfa", #apply cfa() function from lavaan to data
+                 iseed=444,
+                 std.lv=T, #standardize latent factor and observed variables to get fully standardized solution 
+                 std.ov=T,
+                 missing='FIML',
+                 estimator='MLR',
+                 fit.measures = c("chisq.scaled", "rmsea.scaled", "tli.scaled", "cfi.scaled"),
+                 alpha = 0.05) #sig. at alpha=.05
+
+
+
+###Examine the impact of clustering variables (Site and Family)
+
+##See MPlus output on https://osf.io/ec36x/?view_only=d63a1452f133421b9e1bef34a41675f1
+ 
+```

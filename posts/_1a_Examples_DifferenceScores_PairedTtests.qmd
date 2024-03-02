@@ -1,0 +1,370 @@
+---
+title: "Difference Scores: Paired Samples T-test"
+author: "Biostatistics Working Group"
+---
+
+## Overview
+
+<p>
+
+This example assesses growth in a subsample of ABCD participants from Baseline (T0) to the 1-Year follow-up (T1), using weight as a representative metric. The analysis is conducted in two primary steps: 1) a difference score is calculated between baseline and Year_1 weight measurements for each participant; 2) a one-sample t-test is used to test whether the difference score is statistically different than a null hypothesis of zero change. Finally, a visual inspection is further conducted via a scatterplot to graphically represent the relationship between participant's weight at Baseline and Year_1. The ensuing analysis and interpretations are detailed in the subsequent sections.
+
+</p>
+
+## Preliminary Setup
+
+::: panel-tabset
+### Install Packages {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+> **This code installs the r packages necessary for this example, if
+> they are not already installed**
+
+```{r pckg-install}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+# Create a list of required packages
+packages_required <- c("tidyverse","easystats","lme4","gtsummary","report","broom","gridExtra")
+
+# Check which packages are not installed and install them
+packages_to_install <- setdiff(packages_required, rownames(installed.packages()))
+if (length(packages_to_install) > 0) {
+    install.packages(packages_to_install)
+}
+
+# Load the required packages
+lapply(packages_required, library, character.only = TRUE)
+
+```
+:::
+
+### Load Packages
+
+::: blue
+**This code loads the r libraries necessary for this example**
+
+```{r lib-load}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+library(tidyverse)    # Collection of R packages for data science
+library(easystats)    # Collection of R packages statistical modeling, visualization, and reporting
+library(gtsummary)    # Publication-ready tables
+library(report)       # Easy reporting of regression analyses
+library(broom)        # Tidy and augment statistical models output
+library(gridExtra)    # Arrange multiple grid-based plots on a page
+
+```
+:::
+
+### Config Options
+
+::: blue
+**This code configures knitr code chunk options**
+
+```{r config}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, 
+                      comment=NA, cache=T, code_folding=T,
+                      R.options=list(width=220, digits = 3),
+                      fig.align='center', 
+                      out.width='75%', fig.asp=.75)
+```
+:::
+:::
+
+## Descriptives Overview
+
+::: panel-tabset
+### Read and View Data {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+**This code reads in and shows the data to be used in the current
+example**
+
+```{r read-data}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+#| cache: FALSE
+
+# Set the data paths
+data_path_1 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"
+data_path_2 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+data_demographics <- readRDS(data_path_1)
+data_nonimaging <- readRDS(data_path_2)
+
+# Subset the nonimaging data to include desired variables
+selected_vars <- c("src_subject_id", "eventname", "nihtbx_totalcomp_fc", "anthroweightcalc", "anthroweightcalc")
+subset_data <- data_nonimaging[, selected_vars]
+
+library(dplyr)
+# # Merge the datasets on 'src_subject_id' and 'eventname'
+merged_data <- data_demographics %>%
+  full_join(subset_data, by = c("src_subject_id", "eventname"))
+
+# Inspect the merged data structure
+str(merged_data)
+
+# Define event names to be retained in the analysis and convert variables to appropriate data types
+eventnames_to_include <- c("baseline_year_1_arm_1",
+                           "1_year_follow_up_y_arm_1",
+                           "2_year_follow_up_y_arm_1",
+                           "3_year_follow_up_y_arm_1",
+                           "4_year_follow_up_y_arm_1")
+
+df <- merged_data %>%
+  filter(eventname %in% eventnames_to_include) %>%
+  mutate(
+    src_subject_id = as.factor(src_subject_id),
+    eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),
+    age = as.numeric(age),
+    sex = as.factor(sex),
+    race.4level = as.factor(race.4level),
+    hisp = as.factor(hisp),
+    high.educ.bl = as.factor(high.educ.bl),
+    household.income.bl = as.factor(household.income.bl),
+    acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),
+    rel_family_id.bl = as.factor(rel_family_id.bl),
+    site_id_l = as.factor(site_id_l),
+    nihtbx_totalcomp_fc = as.numeric(nihtbx_totalcomp_fc),
+    anthroweightcalc = as.numeric(anthroweightcalc),
+    anthroweightcalc = as.numeric(anthroweightcalc)
+  ) %>%
+  # Exclude cases from unused assessment waves
+  filter(!is.na(eventname))
+
+```
+:::
+
+### Descriptives
+
+::: blue
+**This code creates a descriptives table**
+
+```{r descriptives}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+
+descriptives_table <- df %>%
+  select(eventname, sex, race.4level, hisp, anthroweightcalc) %>%
+  mutate(eventname = factor(eventname, labels = c("Baseline", "Year 1","Year 2","Year 3","Year 4"))) %>%
+  mutate(sex = factor(sex, labels = c("Female", "Male"))) %>%
+  tbl_summary(
+    by = eventname,
+    missing = "no",
+    label = list(sex ~ "Sex", race.4level ~ "Race", hisp ~ "Hispanic", 
+                 anthroweightcalc ~ "Weight"),
+    statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),
+  ) %>%
+modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+  bold_labels() %>%
+  italicize_levels() %>%
+  modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+theme_gtsummary_compact()
+
+descriptives_table
+```
+
+:::
+:::
+
+## Results
+
+::: panel-tabset
+### Build Model: Step I {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+The code snippet below tells R to compute a difference score by subtracting each participant's weight at T1 from their weight at T0. Relevant summary statistics are also provided.
+
+**STEP 1: Compute Difference Score**
+
+```{r build-model-ttest-1}
+#| message: FALSE
+#| warning: FALSE
+#| echo: TRUE
+#| class.source: 'fold-hide'
+
+# Function to compute difference scores
+compute_difference <- function(df, variable_name) {
+    # Define the event names of interest
+    baseline_event <- "baseline_year_1_arm_1"
+    followup_event <- "1_year_follow_up_y_arm_1"
+
+    # Compute the difference between Baseline and Year 1 data for the given variable
+    diff_data <- df %>%
+        filter(eventname %in% c(baseline_event, followup_event)) %>% # Filter for specific event names
+        select(src_subject_id, eventname, all_of(variable_name)) %>% # Select required columns
+        spread(eventname, variable_name) %>% # Convert data from long to wide format
+        mutate(diff = get(followup_event) - get(baseline_event)) %>% # Compute difference between the two time points
+        mutate(group_resid = (diff) - mean(diff)) %>% # compute residuals (group_resid).
+      drop_na(diff) # Exclude rows with NA in the computed difference
+    
+    # Summarize the computed difference scores
+    diff_summary <- summary(diff_data$diff)
+
+    # Return the difference data and its summary
+    list(data = diff_data, summary = diff_summary)
+}
+
+# List of variables for which difference scores are to be computed
+variables_of_interest <- c("anthroweightcalc")
+
+# Compute and store difference scores and summaries for each variable in a list
+difference_and_summary_list <- lapply(variables_of_interest, function(var) {
+    compute_difference(df, var)
+})
+
+# Extract the difference data for the 'anthroweightcalc' variable
+weight_diff_data <- difference_and_summary_list[[1]]$data
+
+# Merge the 'diff' column back to the main df using 'src_subject_id' as the key
+df <- left_join(df, weight_diff_data %>% select(src_subject_id, diff), by = "src_subject_id")
+
+```
+
+**Descriptive Statistics for the Difference Score**
+```{r model-checking}
+# Compute statistical summaries for the difference score variable
+lapply(difference_and_summary_list, function(item) {
+    print(item$summary)
+})
+
+gaze <- df %>%
+  mutate(diff = baseline_event - followup_event) %>%
+  mutate(group_resid = diff - mean(diff))
+
+gaze <- weight_diff_data %>%
+  mutate(diff1 = baseline_year_1_arm_1 - 1_year_follow_up_y_arm_1) %>%
+  mutate(group_resid = diff - mean(diff))
+
+dff.y
+
+qqPlot(gaze_residual$group_resid)
+
+shapiro.test(gaze_residual$group_resid)
+
+```
+
+This summary of the difference score variable indicates that the differences range from a decrease of `r min(weight_diff_data$diff, na.rm = TRUE)` units to an increase of `r max(weight_diff_data$diff, na.rm = TRUE)` units. The median difference is `r median(weight_diff_data$diff, na.rm = TRUE)` units, and the average difference is approximately `r mean(weight_diff_data$diff, digits = 2, na.rm = TRUE)` units. There are `r sum(is.na(weight_diff_data$diff))` missing values in this difference score dataset.
+
+**Descriptive Statistics for the weight Variable**
+```{r}
+## Summary statistics
+# Compute summary statistics for weight by eventname
+summary <- df %>%
+    group_by(eventname) %>%
+    get_summary_stats(anthroweightcalc, type = "mean_sd")
+
+data.frame(summary)
+```
+
+The summary statistics provide insights into the weight variable across different `eventname` categories. At baseline, the average weight is approximately `r summary$mean[summary$eventname == "baseline_year_1_arm_1"]` units with a standard deviation of `r summary$sd[summary$eventname == "baseline_year_1_arm_1"]`. Over the years, there’s a noticeable increase in average weight: by the first year, it’s about `r summary$mean[summary$eventname == "1_year_follow_up_y_arm_1"]` units, and it continues to rise, reaching approximately `r summary$mean[summary$eventname == "4_year_follow_up_y_arm_1"]` units by the fourth year. The standard deviation remains relatively consistent over the years, suggesting similar variability in weight measurements across these time points.
+
+:::
+
+### Build Model: Step 2 {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+
+A one-sample t-test is computed to examine whether the average difference score is different than zero (indicating change).
+
+**STEP 2: Conduct t-test on Difference Score**
+
+```{r build-model-ttest-2}
+#| class.source: 'fold-hide'
+#| message: FALSE
+#| warning: FALSE
+#| echo: TRUE
+
+# Extract the difference scores for weight from the computed list
+diff_data <- difference_and_summary_list[[1]]$data$diff
+
+# Perform a one-sample t-test on the difference scores for weight
+test_result <- t.test(diff_data, mu = 0, na.rm = TRUE)
+
+test_result
+
+gaze_test <- t.test(anthroweightcalc ~ eventname, 
+                    paired = TRUE, 
+                    data = df) %>% 
+  tidy()
+
+```
+
+This one-sample t-test evaluates whether the average difference score deviates significantly from 0. The model output provides:
+
+i. a t-statistic of `r test_result$statistic`;
+ii. degrees of freedom of `r test_result$parameter`;
+iii. a p-value of `r test_result$p.value`;
+iv. a mean estimate of `r test_result$estimate["mean of x"]`;
+v. 95% confidence intervals from `r test_result$conf.int[1]` to `r test_result$conf.int[2]`.
+
+v. 95% confidence intervals from `r round(test_result$conf.int[1], 3)` to `r round(test_result$conf.int[2], 3)`.
+
+With a t-value of `r test_result$statistic` and a p-value of `r test_result$p.value`, we can determine the significance of the difference. The average difference score across the sample is approximately `r round(test_result$estimate["mean of x"], 2)`. Furthermore, we can be 95% confident that the true mean difference score in the population lies between approximately `r round(test_result$conf.int[1], 2)` and `r round(test_result$conf.int[2], 2)`. This indicates the degree to which there's a change in weight from Baseline to Year 1.
+
+:::
+
+### Model Plots
+
+::: blue
+```{r scatterplot}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| code-summary: testing
+
+# Filter data for Baseline
+baseline_data <- df %>% filter(eventname == "Baseline")
+
+# Filter data for Year_1 and join with Baseline data
+joined_data <- baseline_data %>%
+    left_join(df %>% filter(eventname == "Year_1"), by = "src_subject_id", suffix = c("_baseline", "_year1"))
+
+# Create scatterplot
+scatterplot <- ggplot(df, aes(x = anthroweightcalc, y = diff)) +
+    geom_point(aes(color = sex), alpha = 0.5) + # Setting alpha to ensure points are visible
+    geom_smooth(method = "lm", color = "red") + # Adding linear regression line
+    labs(
+        title = "Scatterplot of anthroweightcalc vs. Difference Score",
+        x = "anthroweightcalc",
+        y = "Difference Score"
+    ) +
+    theme_minimal()
+
+scatterplot
+
+```
+
+The scatterplot visually depicts the relationship between individuals' weights at baseline and their weights at Year_1. Each point on the plot represents an individual, with their baseline weight plotted on the x-axis and their Year_1 weight on the y-axis. A noticeable positive linear trend can be observed, as highlighted by the blue regression line, indicating that those who were taller at baseline generally remained taller at Year_1. The strength and direction of this relationship can be further quantified with correlation coefficients, but visually, the data suggests a strong positive association between baseline and Year_1 weights.
+
+:::
+:::
+
+## Wrapping Up
+
+::: panel-tabset
+### Write-up {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+In the study sample, the average weight at baseline was approximately `r summary$mean[summary$eventname == "baseline_year_1_arm_1"]` units with a standard deviation of `r summary$sd[summary$eventname == "baseline_year_1_arm_1"]`, which showed a noticeable increase to an average of `r summary$mean[summary$eventname == "1_year_follow_up_y_arm_1"]` units by Year_1. A one-sample t-test was conducted to determine if the mean difference in weight from baseline to Year_1 significantly deviated from zero. The results indicated a statistically significant increase with a mean difference of approximately `r round(test_result$estimate, 2)` units (`r round(test_result$conf.int[1], 2)` to `r round(test_result$conf.int[2], 2)`), t(`r test_result$parameter`) = `r round(test_result$statistic, 3)`, p < `r test_result$p.value`. Further, a scatterplot visualizing the relationship between baseline and Year_1 weights showed a strong positive linear trend. This suggests that participants who were taller at baseline generally remained taller at Year_1, reaffirming the consistent growth trend observed in the data.
+
+:::
+:::
+
+
+

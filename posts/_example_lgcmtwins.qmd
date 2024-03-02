@@ -1,0 +1,434 @@
+---
+title: "Dynamic growth of ADHD symptoms in the youth: estimating variance components of latent growth curve factors in the ABCD Study"
+author: "Luis FS Castro-de-Araujo a,b,*,  Michael C Neale a"
+#a. Virginia Institute for Psychiatric and Behavioral Genetics, Virginia Commonwealth University, # p: +1 804 502-4074 P.O. Box 980126, Richmond, VA 23298‑0126, USA. luis.araujo@vcuhealth.org . 
+#b. Dept of Psychiatry, The University of Melbourne, Austin Health, Victoria, Australia.
+
+reader-mode: true
+---
+
+## Overview
+
+1. Introduction
+Attention-Deficit/Hyperactivity Disorder (ADHD) is a common externalizing neurodevelopmental disorder that affects 5-7% of children and adolescents in the population (Sousa et al., 2012). It is characterized by persistent patterns of inattention, hyperactivity, and impulsivity.  Despite its high prevalence, studying ADHD during child development poses several challenges, including the need for longitudinal studies with large sample sizes and multiple waves of data collection to capture meaningful changes over time. 
+
+Longitudinal studies are essential for understanding the dynamic growth of ADHD symptoms and identifying potential risk and protective factors. However, conducting longitudinal studies can be logistically challenging and time-consuming. Fortunately, the Adolescent Brain Cognitive Development (ABCD) study provides a unique opportunity to examine the trajectory of ADHD symptoms over time (http://abcdstudy.org). The ABCD study is a large-scale, longitudinal study which aims to track the development of approximately 11,000 children across the United States. This study collects data on various domains, including neuroimaging, genetics, cognitive function, and environmental factors, allowing for a comprehensive analysis of the factors influencing the dynamic growth of ADHD.  A subcohort of twins is included in the ABCD study, which allows for analyses using classical twin designs. 
+
+ADHD's symptoms are known to be highly heritable (Faraone and Larsson, 2019) with environmental events also being associated, e.g., prenatal substance use by mothers, low birth weight, environmental toxins (Faraone and Biederman, 2005; Hinshaw, 2018). These influences likely interfere with growth patterns, such that genetic influences might happen earlier in development and environmental effects may be more present at later stages of development. However, this is currently not well understood. Twin designs are particularly informative in these cases, as they can distinguish genetic, environmental and causal effects in the dynamic changes that are occurring during development (Neale & Cardon 1992).  Therefore, individual differences in latent growth trajectories may be accounted for by these background factors.
+
+Previous research has found sex differences in the prevalence and manifestation of ADHD symptoms, with males being more commonly diagnosed with the disorder (Hinshaw, 2018; Sousa et al., 2012). The effect of sex on ADHD is not well known beyond the differences in prevalence in the population. Twin designs can also be informative in these cases, as it is possible to identify whether the sources of variation differ according to sex. However, in the ABCD Study(r), the lack of male-female DZ pairs limits the analysis to whether the variance components are the same size in males and females, rather than whether the same factors operate in the two sexes.
+To analyze the growth pattern of ADHD symptoms in the youth, we will use a non-linear latent growth model extended with the classic twin-design.  This approach allows us to estimate a growth curve model with variance components (intercept, linear, quadratic etc.) each of which may have  genetic, shared environmental and unique environmental contributions. Furthermore,  we will test whether there are  significant sex influences to the growth pattern, with the hypothesis that ADHD symptoms  reduce over time as kids grow, and that there is a noticeable sex difference in the sources of variation. 
+
+2. Methods
+2.1. Data source
+The data for this analysis were obtained from the Adolescent Brain Cognitive Development (ABCD) study, a large-scale, longitudinal study that aims to track the development of approximately 11,000 children across the United States. The study collects data on various domains, including neuroimaging, genetics, cognitive function, and environmental factors (Maes et al., 2022). This analysis will use the twins that participated in the ABCD study (n= 1,541), to estimate sources of variation in individuals’ growth curves.
+
+The instrument used to assess ADHD symptoms and their trajectory over time is the Child Behavior Checklist (CBCL) ADHD subscale, which includes questions for inattention, hyperactivity, and impulsivity (Achenbach, 2001). CBCL is a widely used measure of child and adolescent behavior problems, its ADHD subscale tracks DSM diagnosis reliably (Achenbach, 2013). CBCL has been reported to have  a 0.77 sensitivity  and  0.73 specificity to diagnose ADHD in comparison to the reference standard (clinical evaluation by qualified professional) (Chang et al., 2016).  In general, the DSM-oriented CBCL scales present a high Cronbach's alpha of 0.92 and the CBCL ADHD subscale shows an area under curve (AUC) for diagnostic efficiency of 0.75 (Jiang et al., 2023)
+
+2.3. Data analysis
+We used R version 4.2.2 (https://cran.r-project.org/) in all further steps of our analyses. All analyses were performed using R, with the OpenMx and umx packages used for structural equation modeling (SEM) analysis (Bates et al., 2019; Neale et al., 2016). The estimation was based on full information maximum likelihood (FIML) with the SLSQP optimizer. We checked identification using an OpenMx utility (mxCheckIdentification) (Hunter et al., 2021). Descriptive information of the data is reported in Table 1. 
+
+2.4. Model Specification
+A non-linear ACE twin growth curve model was specified. The model consists of allowing A, C, and E variances from the  classic twin model to affect each of latent growth factors in a Cholesky decomposition structure originally reported by (Neale and McArdle, 2000). However, for this study we introduced a quadratic latent factor equivalent to the specifications by (Pritikin et al., 2019; Schmitt et al., 2019). A diagram for one twin is presented in Figure 1. This model was locally identified with either the mean structure for the latent factors, or for the measured CBCL scores. All the models included controls for lifetime use of ADHD medications.
+
+3. Results
+The sample comprises 1,541 twins at baseline, with 867 DZs and 674 MZs. Missingness level for the analyzed data set was moderate (20%, Supplement). The sample is mostly white (66.2%), male (50.6%), with a mean age of 10.14 (SD 0.55) at baseline. Demographic characteristics stratified by study waves are shown in Table 1. 
+
+The full twin-model includes a dominance factor (ACDE), however due to identification issues either the C or the D factor must be removed for the analysis. In the literature of ADHD and twin modeling, ADHD is often treated as an AE model. In other words, neither C or D are significant and often are removed from the model (Boomsma et al., 2010), but the AE model was rejected for the ADHD data in the ABCD study.
+
+A non-linear latent growth curve model was fitted to twin data from the ABCD study to characterize the growth dynamics of ADHD symptoms over the study waves. The model specification is presented in Figure 2. It consists of a latent growth curve with genetic, shared and exclusive environmental added as a Cholesky structure influencing each of the latent factors. Initially, only a mean structure for the latent variables was added, but is not shown in Figure 2, as the model is not identified with means for both latent factors and manifested variables. The estimated model fitted well (χ²(104) = 285.84, p < 0.001; CFI = 0.959; TLI = 0.965; RMSEA = 0.045 [95%CI 0.04-0.05]) – while the chi-squared is significant, the sample size is large. We found a negative linear component with a mean of -0.065 and  a small negative quadratic component with a mean of -0.003.  A useful parallel that can be made to understand the linear and quadratic components is to think of them as speed and acceleration of growth. Our findings suggest that the ADHD symptoms are reducing with age during the early waves, and that the reduction is slowly accelerating in later waves. Estimates for each parameter can be found in Table 2.
+
+To obtain the modeled means, the model was fitted a second time with a mean structure for the measured variables (and removing the mean structure for the latent variables).  Due to identification issues, it is not possible to retain both the latent and the manifest means in this model. Model fit was good (χ²(102) =278.77, p < 0.001; CFI = 0.959; TLI = 0.965; RMSEA = 0.045 [95%CI 0.04-0.05]), and the modeled means were obtained and plotted as an overlay of a spaghetti plot with each subject score across all study waves (Figure 2).
+
+In order to assess sex differences  in the growth curve the model was fitted to males and females separately, and twice the negative log-likelihood (-2lnL) was extracted for each model. The sum of the -2lnLs for each sex (males -2lnL = 12432, Fit:χ²(104) = 266.43, p < 0.001; CFI = 0.933; TLI = 0.942; RMSEA = 0.058; females -2lnL =  112, Fit: χ²(104) = 229.25, p < 0.001; CFI = 0.939; TLI = 0.947; RMSEA = 0.054) was lower than the fit statistics for when the model was fitted to the combined male and female data set (total -2lnL =  24109). Thus, the likelihood ratio test for heterogeneity between groups is 24109-(12432+11526)=151 with degrees of freedom equal to 26,  the difference between the numbers of free parameters in two models, which equals the number of parameters in the single-sex  models. This overall heterogeneity test of male-female differences in means, variances and covariances is highly significant (Table 4), which justifies further exploration to identify the primary sources of the difference. The latent variable means were equated across sexes, and a model comparison to the unrestricted model was performed.  Equating the means caused a substantial loss of fit of 31.446 -2lnL units for only three degrees of freedom (Table 5).  
+
+Finally, equating the paths from the A, C, and E components to the phenotype across sexes generated a model that fitted significantly worse than the unrestricted multiple groups model, with a difference in fit of 24062 -2lnL, 24093 AIC and 18 df (p < 0.001). The intercept, linear and quadratic means for females changed from 1.63, -0.02, and -0.005 in the multiple groups model to 1.63, -0.01, -0.006 in the multiple groups model with equated ACE paths. The change for males was from 2.586, -0.11, 0.0007 in the multiple groups model to 2.56, -0.02 0.0008 in the equated ACE paths model. Altogether, these results show significant sex effects on both the means and sources of variance of growth of the ADHD symptoms.  Figure 3 shows the estimates and standard errors for both models after equating the ACE paths between sexes.
+
+4. Discussion
+We present results from a non-linear latent growth model extended with twin design, which allows decomposing growth factor variances into genetic, shared and unique environmental variances. It was found that there were significant linear and quadratic elements in the growth pattern, suggesting reduction of ADHD symptoms over time, with a trend of stabilization in later waves. Furthermore, the model was fit to data on males and females subjects, then a multiple groups model was fit to the data. This approach allowed us to assess the statistical significance of sex differences on the model parameters. The differences found were highly significant and substantial, revealing sex moderation of both means and variance components of ADHD development.
+
+This approach hints at the genetic, shared, and unique environmental effects on the linear latent factor  (0.3, 0.23,  0.02, respectively), suggesting an interplay between genetic liability and environmental factors  in the reduction found in ADHD during the development. We noticed that in our data there was support for a full ACE model during our ACE reduction tests, however in the literature ADHD is often considered an AE condition. Notwithstanding, the C influence was consistently small.
+
+The prevalence of ADHD is very different between males and females in the literature (Sousa et al., 2012), thus suggesting a sex effect on this phenotype. The male to female prevalence ratio is about 3:1 according to (Green et al., 2019; Willcutt, 2012), with males showing more hyperactivity and impulsivity than females (Biederman et al., 1999).  Sex-chromosome aneuplodies like Turner syndrome often present with attention related symptoms, suggesting that these symptoms may be related to X chromosome loci (Green et al., 2019). Our findings suggest a sex moderation on the ADHD symptom levels and growth, extending what was found in previous literature. We did not test whether the sex differences are limited to either the level, the linear growth or the quadratic components, such analyses are feasible and worthwhile of future explorations.
+
+Some limitations of this study should be considered. The ACE model assumes no dominance or epistasis and that all genetic effects are additive and there is no gene-environment covariation or interaction. It is likely that there is substantial G-E covariance for cognitive abilities (Abdellaoui and Verweij, 2021; Demange et al., 2021). Further modeling might include polygenic scores for cognitive ability to operate as instrumental variables, as has been shown for Markov-type autoregressive models by (Singh et al., 2023).  The latter is considered a strong assumption, although methods for GxE interaction were developed  and adjustments for these effects are becoming a possibility (Boker et al., 2023). The classical twin design also assumes equal environment (EEA), which predicts that MZs and DZs are equally correlated in their exposure to environmental events that affect ADHD. Additionally, the CBCL is not a diagnostic tool, although it is known that it is highly correlated with structured diagnostic instruments and closely matches the DSM (Achenbach, 2013). Finally, the model specification used a path coefficient specification, instead of the variance component style (Verhulst et al., 2019). The path analysis specification is limited, notably the fact that the variances cannot be negative. This has the potential to bias the estimation of the ACE variances in the Cholesky structure of this LCM, especially after equating them across sexes as we did here. The findings, however, clearly demonstrate the existence of sex moderation in liability to ADHD symptoms.
+
+This study contributes to our understanding of the development of ADHD symptoms in youth. Further research should continue to explore the complex interplay between genetic and environmental factors in the development and trajectory of ADHD symptoms.  In particular the sex effect on growth could be further explored with a full sex limitation model allowing examination of whether the same factors influence males and females (Neale and Cardon, 1992).  To do so would require data from a large sample of opposite-sex pairs; unfortunately this is not the case for the ABCD Study®, which omitted opposite sex twin pairs to preserve statistical power for within-sex analyses. Nevertheless, the ABCD Study® data combined with genetically informative latent growth curve modeling represents an exceptional opportunity to model and understand the development of a huge array of physical and psychological characteristics. Perhaps the greatest opportunities lie with multivariate applications of the genetically informed latent growth curve model, to gain understanding of how brain, cognition, psychopathology and substance co-occur and  cause changes across these phenotypic boundaries.  
+
+Table 1: Main demographic characteristics of the ABCD sample, stratified by study wave. n, number of observations; SD, standard deviation. 
+
+Baseline
+Follow-up year 1
+Follow-up year 2
+Follow-up year 3
+Follow-up year 4
+n
+1541
+1487
+1437
+1376
+713
+Cbcl adhd scores (mean (SD))
+2.00 (2.57)
+1.94 (2.54)
+1.82 (2.53)
+1.81 (2.45)
+1.60 (2.22)
+sex = M (%)
+780 ( 50.6)
+751 ( 50.5)
+722 ( 50.2)
+685 ( 49.8)
+356 ( 49.9)
+Twin zygosity = MZ (%)
+674 ( 43.7)
+645 ( 43.4)
+624 ( 43.4)
+589 ( 42.8)
+317 ( 44.5)
+Age (mean (SD))
+10.14 (0.55)
+11.17 (0.57)
+12.23 (0.59)
+13.11 (0.58)
+14.48 (0.62)
+Race/Ethnicity (%)
+
+White
+1020 ( 66.2)
+994 ( 66.8)
+972 ( 67.6)
+937 ( 68.1)
+503 ( 70.5)
+Black
+219 ( 14.2)
+206 ( 13.9)
+194 ( 13.5)
+180 ( 13.1)
+85 ( 11.9)
+
+Hispanic
+152 (  9.9)
+145 (  9.8)
+135 (  9.4)
+131 (  9.5)
+68 (  9.5)
+
+Asian
+3 (  0.2)
+3 (  0.2)
+3 (  0.2)
+3 (  0.2)
+1 (  0.1)
+
+Other
+145 (  9.4)
+137 (  9.2)
+132 (  9.2)
+123 (  8.9)
+56 (  7.9)
+
+NA
+2 (  0.1)
+2 (  0.1)
+1 (  0.1)
+2 (  0.1)
+0 (  0.0)
+
+ADHD medication lifetime use = present (%)
+171 ( 11.1)
+168 ( 11.3)
+162 ( 11.3)
+146 ( 10.6)
+82 ( 11.5)
+
+Table 2.Whole twin sample means and standard deviations (SD), and MZ and DZ twin pair correlations for the CBCL ADHD scores in the ABCD Study® sample. 
+
+Var
+Mean
+SD
+rMZ (403)
+rDZ (1724)
+base
+2.16
+2.70
+0.65 (0.03)
+0.28 (0.04)
+flw1
+2.01
+2.60
+0.67 (0.03)
+0.24 (0.04)
+flw2
+1.89
+2.54
+0.61 (0.04)
+0.25 (0.04)
+flw3
+1.86
+2.47
+0.6 (0.04)
+0.25 (0.04)
+flw4
+1.68
+2.31
+0.57 (0.05)
+0.24 (0.06)
+
+Table 3. Estimates for the non-linear growth curve model. Model Fit: χ²(104) = 285.84, p < 0.001; CFI = 0.959; TLI = 0.965; RMSEA = 0.04 [95%CI 0.03,0.05]. Path diagram of the model specification is shown in Figure 1. This model was specified with path coefficients, and the naming consists of the origin of the arrow to the destination, so a1_to_intercept is the path from the genetic variance to the intercept latent factor. Paths marked “with” means it has two arrows and represent the residual for that observed variable. The observed are base, flw1, flw2, flw3 and flw4. These are coding to the baseline cbcl scores, and each follow-up year. Meani, meanl and mean q, marks the means of the latent factors for the intercept, linear and quadratic effects.
+
+Name
+Estimate
+SE
+type
+a1_to_intercept
+2.111
+0.129
+Factor to factor
+a1_to_linear
+-0.305
+0.129
+Factor to factor
+a1_to_quadratic
+0.044
+0.029
+Factor to factor
+a2_to_linear
+-0.534
+0.197
+Factor to factor
+a2_to_quadratic
+0.061
+0.05
+Factor to factor
+a3_to_quadratic
+0
+0.069
+Factor to factor
+c1_to_intercept
+0.777
+0.318
+Factor to factor
+c1_to_linear
+0.233
+0.332
+Factor to factor
+c1_to_quadratic
+-0.103
+0.064
+Factor to factor
+c2_to_linear
+0.433
+0.373
+Factor to factor
+c2_to_quadratic
+-0.089
+0.093
+Factor to factor
+c3_to_quadratic
+0
+0.033
+Factor to factor
+e1_to_intercept
+-0.879
+0.085
+Factor to factor
+e1_to_linear
+-0.023
+0.115
+Factor to factor
+e1_to_quadratic
+0.011
+0.029
+Factor to factor
+e2_to_linear
+-0.18
+0.31
+Factor to factor
+e2_to_quadratic
+0.052
+0.086
+Factor to factor
+e3_to_quadratic
+0
+0.023
+Factor to factor
+meani
+2.122
+0.081
+Mean
+meanl
+-0.066
+0.047
+Mean
+meanq
+-0.003
+0.011
+Mean
+base_with_base
+1.148
+0.116
+Residual
+flw1_with_flw1
+1.549
+0.083
+Residual
+flw2_with_flw2
+1.631
+0.094
+Residual
+flw3_with_flw3
+1.579
+0.091
+Residual
+flw4_with_flw4
+1.052
+0.164
+Residual
+
+
+Table 4. Comparison of growth curve model-fitting results from fitting to data on males and females with separate set of parameters for the two groups vs. a model where all model parameters are equated e multiple groups model was significantly better than the single group one.
+
+
+Model
+EP
+Δ Fit
+Δ df
+p
+AIC
+Δ AIC
+Compare with Model
+Fit units
+Multigroup
+52
+
+
+
+
+
+
+24062
+0
+
+
+-2lnL
+Single group
+49
+150.168
+26
+< 0.001
+2411
+98.168
+Multigroup
+-2lnL
+
+
+
+Table 5. Comparison of multiple groups growth curve model with the same model but means of the intercept, linear effect and quadratic effects factors are equated across sexes.
+
+
+Model
+EP
+Δ Fit
+Δ df
+p
+AIC
+Δ AIC
+Compare with Model
+Fit units
+Multigroup
+52
+
+
+
+
+
+
+24062
+0
+
+
+-2lnL
+Equated means
+49
+37.446
+3
+< 0.001
+24094
+31.446
+Multigroup
+-2lnL
+
+
+
+Figure 1. 
+
+Diagram with model specification. This represents a non-linear growth curve model for one twin with linear and quadratic components across five time points of the study. This model is identified either with the growth factors means or the observed variables means (not shown). We estimated both. Also, not shown is the control variable for ADHD lifetime medication use, which was specified as a definition variable. Estimated values for this specification can be found in Table 3. Base, baseline; flw1, follow-up year 1; flw2, follow-up year 2; flw3, follow-up year 3; flw4, follow-up year 4.
+ 
+
+
+Figure 2.
+
+Spaghetti plot with each individual CBCL ADHD scores across waves. Values tend to reduce over time; red dots mark the maximum likelihood estimates of the mean at each wave, which also show slight reduction over time. The means were directly estimated as single parameters for the observed scores at each wave of measurement, instead of being specified at the latent factor level.
+Figure 3. Estimates and standard errors for each parameter in the multiple groups model and after fixing ACE paths equal across sexes (ace_equated)
+
+
+
+Declarations
+Funding
+
+
+There was no funding for this study.   
+
+
+Conflicts of interest
+Authors report no conflicts of interest
+Ethics approval
+Not applicable
+Consent for publication
+Not applicable
+Availability of data and material
+Data sharing not applicable to this article as no datasets were generated or analyzed during the current study.
+Code availability
+Code is available in a repository for replication.
+Author contributions
+
+
+
+
+References
+Abdellaoui, A., Verweij, K.J.H., 2021. Dissecting polygenic signals from genome-wide association studies on human behaviour. Nat. Hum. Behav. 5, 686–694. https://doi.org/10.1038/s41562-021-01110-y
+Achenbach, T.M., 2013. DSM-Oriented Guide for the Achenbach System of Empirically Based Assessment (ASEBA®).
+Achenbach, T.M., 2001. Manual for ASEBA school-age forms & profiles. Univ. Vt. Res. Cent. Child. Youth Fam.
+Bates, T.C., Maes, H., Neale, M.C., 2019. umx: Twin and Path-Based Structural Equation Modeling in R. Twin Res. Hum. Genet. 22, 27–41. https://doi.org/10.1017/thg.2019.2
+Biederman, J., Faraone, S.V., Mick, E., Williamson, S., Wilens, T.E., Spencer, T.J., Weber, W., Jetton, J., Kraus, I., Pert, J., Zallen, B., 1999. Clinical correlates of ADHD in females: findings from a large group of girls ascertained from pediatric and psychiatric referral sources. J. Am. Acad. Child Adolesc. Psychiatry 38, 966–975. https://doi.org/10.1097/00004583-199908000-00012
+Boker, S.M., von Oertzen, T., Pritikin, J.N., Hunter, M.D., Brick, T.R., Brandmaier, A.M., Neale, M.C., 2023. Products of Variables in Structural Equation Models. Struct. Equ. Model. Multidiscip. J. 30, 708–718. https://doi.org/10.1080/10705511.2022.2141749
+Boomsma, D.I., Saviouk, V., Hottenga, J.-J., Distel, M.A., de Moor, M.H.M., Vink, J.M., Geels, L.M., van Beek, J.H.D.A., Bartels, M., de Geus, E.J.C., Willemsen, G., 2010. Genetic Epidemiology of Attention Deficit Hyperactivity Disorder (ADHD Index) in Adults. PLoS ONE 5, e10621. https://doi.org/10.1371/journal.pone.0010621
+Chang, L.-Y., Wang, M.-Y., Tsai, P.-S., 2016. Diagnostic Accuracy of Rating Scales for Attention-Deficit/Hyperactivity Disorder: A Meta-analysis. Pediatrics 137, e20152749. https://doi.org/10.1542/peds.2015-2749
+Demange, P.A., Malanchini, M., Mallard, T.T., Biroli, P., Cox, S.R., Grotzinger, A.D., Tucker-Drob, E.M., Abdellaoui, A., Arseneault, L., van Bergen, E., Boomsma, D.I., Caspi, A., Corcoran, D.L., Domingue, B.W., Harris, K.M., Ip, H.F., Mitchell, C., Moffitt, T.E., Poulton, R., Prinz, J.A., Sugden, K., Wertz, J., Williams, B.S., de Zeeuw, E.L., Belsky, D.W., Harden, K.P., Nivard, M.G., 2021. Investigating the genetic architecture of noncognitive skills using GWAS-by-subtraction. Nat. Genet. 53, 35–44. https://doi.org/10.1038/s41588-020-00754-2
+Faraone, S.V., Biederman, J., 2005. What is the prevalence of adult ADHD? Results of a population screen of 966 adults. J. Atten. Disord. 9, 384–91. https://doi.org/10.1177/1087054705281478
+Faraone, S.V., Larsson, H., 2019. Genetics of attention deficit hyperactivity disorder. Mol. Psychiatry 24, 562–575. https://doi.org/10.1038/s41380-018-0070-0
+Green, T., Flash, S., Reiss, A.L., 2019. Sex differences in psychiatric disorders: what we can learn from sex chromosome aneuploidies. Neuropsychopharmacology 44, 9–21. https://doi.org/10.1038/s41386-018-0153-2
+Hinshaw, S.P., 2018. Attention Deficit Hyperactivity Disorder (ADHD): Controversy, Developmental Mechanisms, and Multiple Levels of Analysis. Annu. Rev. Clin. Psychol. 14, 291–316. https://doi.org/10.1146/annurev-clinpsy-050817-084917
+Hunter, M.D., Garrison, S.M., Burt, S.A., Rodgers, J.L., 2021. The Analytic Identification of Variance Component Models Common to Behavior Genetics. Behav. Genet. 51, 425–437. https://doi.org/10.1007/s10519-021-10055-x
+Jiang, Z., Wang, D., Xu, H., Zhang, A., Zhao, Q., Yan, J., Wang, X., Zhang, W., Li, Yanlin, Yang, K., Hu, S., Cui, Y., Li, Ying, 2023. Diagnostic efficiency and psychometric properties of CBCL DSM-oriented scales in a large sample of Chinese school-attending students aged 5-16. Asian J. Psychiatry 88, 103724. https://doi.org/10.1016/j.ajp.2023.103724
+Maes, H.H.M., Lapato, D.M., Schmitt, J.E., Luciana, M., Banich, M.T., Bjork, J.M., Hewitt, J.K., Madden, P.A., Heath, A.C., Barch, D.M., Thompson, W.K., Iacono, W.G., Neale, M.C., 2022. Genetic and Environmental Variation in Continuous Phenotypes in the ABCD Study®. Behav. Genet. https://doi.org/10.1007/s10519-022-10123-w
+Neale, M.C., Cardon, L.R., 1992. Methodology for genetic studies of twins and families, Methodology for genetic studies of twins and families. Kluwer Academic/Plenum Publishers, New York, NY, US. https://doi.org/10.1007/978-94-015-8018-2
+Neale, M.C., Hunter, M.D., Pritikin, J.N., Zahery, M., Brick, T.R., Kirkpatrick, R.M., Estabrook, R., Bates, T.C., Maes, H.H., Boker, S.M., 2016. OpenMx 2.0: Extended Structural Equation and Statistical Modeling. Psychometrika 81, 535–549. https://doi.org/10.1007/s11336-014-9435-8
+Neale, M.C., McArdle, J.J., 2000. Structured latent growth curves for twin data. Twin Res. 3, 165–177. https://doi.org/10.1375/twin.3.3.165
+Pritikin, J.N., Schmitt, J.E., Neale, M.C., 2019. Cloud computing for voxel-wise SEM analysis of MRI data. Struct. Equ. Model. Multidiscip. J. 26, 470–480. https://doi.org/10.1080/10705511.2018.1521285
+Schmitt, J.E., Raznahan, A., Clasen, L.S., Wallace, G.L., Pritikin, J.N., Lee, N.R., Giedd, J.N., Neale, M.C., 2019. The Dynamic Associations Between Cortical Thickness and General Intelligence are Genetically Mediated. Cereb. Cortex N. Y. N 1991 29, 4743–4752. https://doi.org/10.1093/cercor/bhz007
+Singh, M., Dolan, C.V., Neale, M.C., 2023. Integrating Cross-Lagged Panel Models with Instrumental Variables to Extend the Temporal Generalizability of Causal Inference. Multivar. Behav. Res. 1–2. https://doi.org/10.1080/00273171.2022.2160954
+Sousa, A. de F., Isabel, C., Castanho, J., Polanczyk, G., Rohde, L., 2012. Attention-defficit hyperactivity disorders, in: Rey, J. (Ed.), E-Textbook of Child and Adolescent Mental Health. International Association for Child and Adolescent Psychiatry and Allied Professions, Geneva.
+Verhulst, B., Prom-Wormley, E., Keller, M., Medland, S., Neale, M.C., 2019. Type I Error Rates and Parameter Bias in Multivariate Behavioral Genetic Models. Behav. Genet. 49, 99. https://doi.org/10.1007/s10519-018-9942-y
+Willcutt, E.G., 2012. The prevalence of DSM-IV attention-deficit/hyperactivity disorder: a meta-analytic review. Neurother. J. Am. Soc. Exp. Neurother. 9, 490–499. https://doi.org/10.1007/s13311-012-0135-8
+
+
+
+
+Supplemental material
+Figure S1. 
+
+Missingness levels for the analyzed variables.
+
+

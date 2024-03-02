@@ -1,0 +1,125 @@
+
+ABCD worked example when the outcome variable is highly skewed. CBCL ADHD summary score was the outcome of interest. This variable is both overdispersed and zero-inflated. 
+
+overdispersment and zero-inflation can be verified using packages like the DHARMa package in R.
+
+glmmTMB was used to model CBCL ADHD. Alternative packages that can also be used include the brms and glmmAdapative package.
+
+examples include a fixed effect for interview age and sex (reference = female). interview age was scaled to improve model run time. 
+
+a random intercept was included for the family structure. A random intercept was not included for study site after review of the intraclass correlation coefficient. 
+
+a random slope was included for the study visit. A fixed effect was also included for study visit. 
+
+zero inflated models included the same covariates.
+
+parallel processing was used to speed up the model run time. 
+
+comparison of different distributions is not included here.
+
+dataset annual_ABCD includes only participants that completed all five annual visits included in this example.
+
+  
+```{r}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+#| cache: FALSE
+
+library(dplyr)
+
+# Set the data paths
+data_path_1 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"
+data_path_2 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+data_demographics <- readRDS(data_path_1)
+data_nonimaging <- readRDS(data_path_2)
+
+data_nonimaging_r <-  data_nonimaging %>%
+  filter(eventname == "baseline_year_1_arm_1" | 
+           eventname == "1_year_follow_up_y_arm_1" |
+           eventname == "2_year_follow_up_y_arm_1" | 
+           eventname == "3_year_follow_up_y_arm_1" |
+           eventname == "4_year_follow_up_y_arm_1")
+
+# Subset the nonimaging data to include desired variables
+selected_vars <- c("src_subject_id", "eventname",
+                   "cbcl_q04_p","cbcl_q08_p","cbcl_q10_p",
+                   "cbcl_q41_p","cbcl_q78_p","cbcl_q93_p","cbcl_q104_p")
+
+subset_data <- data_nonimaging_r[, selected_vars]
+
+#below requires the demo5.0 dataframe to extract the sex variable
+xy1 <- data_demographics[,c("src_subject_id", "eventname", "sex", "age","rel_family_id.bl")]
+
+annual_ABCD <-  merge(subset_data, xy1, all.x =TRUE, by=c("eventname", "src_subject_id"))
+
+#Manual creation of the CBCL ADHD variable. May need to convert these to numeric first.These
+#were originally factor variables that I manually mutated using dplyr.
+
+# Assuming annual_ABCD is your data frame
+annual_ABCD$CBCL_ADHD <- rowSums(annual_ABCD[c("cbcl_q04_p", "cbcl_q08_p",
+                                               "cbcl_q10_p", "cbcl_q41_p", 
+                                               "cbcl_q78_p", "cbcl_q93_p", 
+                                               "cbcl_q104_p")], na.rm = TRUE)
+
+#making a numeric study visit variable
+annual_ABCD<- annual_ABCD %>% 
+  mutate(visit = case_when(
+    eventname == "baseline_year_1_arm_1" ~ 1,
+    eventname == "1_year_follow_up_y_arm_1" ~ 2,
+    eventname == "2_year_follow_up_y_arm_1" ~3,
+    eventname == "3_year_follow_up_y_arm_1" ~ 4,
+    eventname == "4_year_follow_up_y_arm_1" ~ 5))
+
+###removing any participants with fewer than 5 CBCL ADHD datapoints
+annual_ABCD <- annual_ABCD %>% 
+  group_by(src_subject_id) %>% 
+  filter(n() >= 5)
+
+```
+
+## 
+```{r}
+
+library(glmmTMB)
+
+#Generalized Poisson Model
+model_GenPois <- glmmTMB(CBCL_ADHD ~ 1 +  age + sex + 
+                           factor(visit)+(1+visit| rel_family_id.bl),
+                         family=genpois(link="log"), data=annual_ABCD, 
+                         REML=FALSE, control = glmmTMBControl(parallel = 16))
+
+summary(model_GenPois)
+
+```
+
+
+```{r}
+
+confint(model_GenPois)
+```
+
+Interpretation:In the model without the ZI term, a 1-SD increase in interview age was associated with a -0.03 (95% CI: -0.08, 0.024, p-value=0.27) decrease in CBCL ADHD score. This was non-significant. Being male (reference=female) was associated with a 0.445-point increase in CBCL ADHD score (95% CI: 0.39, 0.5, p-value <0.0001). 
+
+## Truncated Generalized Poisson Model
+```{r}
+
+system.time(Model_ZIGenPois <- glmmTMB(CBCL_ADHD ~ 1 +  age + sex +
+                                         factor(visit) + (1+visit| rel_family_id.bl),
+                                       family=truncated_genpois(link="log"),
+                                       ziformula=~1 + age + sex + factor(visit) +
+                                         (1+visit| rel_family_id.bl),
+                                       data=annual_ABCD, REML=FALSE, control =
+                                         glmmTMBControl(parallel = 16)))
+
+summary(Model_ZIGenPois)
+```
+
+```{r}
+confint(model_GenPois)
+```
+
+Interpretation: In the model with the ZI term: In those with a CBCL ADHD score > 0, a 1-SD increase in interview age was associated with -0.002-point decrease in CBCL ADHD score (95% -0.05, 0.044, p value = 0.94). In those with a CBCL ADHD score > 0, being male was associated with a 0.27-point increase in CBCL ADHD score (95% CI: 0.22, 0.31, p-value < 0.0001). In the model with the ZI term: In those with a CBCL ADHD score = 0, a 1-SD increase in interview age was associated with 0.17-point increase in CBCL ADHD score (95% 0.018, 0.32, p value = 0.0282). In those with a CBCL ADHD score = 0, being male was associated with a -0.86-point decrease in CBCL ADHD score (95% CI: -1.00, -0.71, p-value < 0.0001). 

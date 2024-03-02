@@ -1,0 +1,332 @@
+---
+title: "State-Trait Models"
+author: "Biostatistics Working Group"
+---
+
+# XXXXXXXXXXX {.unnumbered}
+
+## Overview
+
+<p>
+
+XXXXXXXXXXX Models xxxxxxx. This xxxxxxx.
+
+In this example, we will utilize xxxxxx models to analyze xxxxxx obtained across multiple measurement occasions for a sample of youth participating in the ABCD Study. Our primary objective is to understand xxxxxx, while factoring in the clustered nature of observations within individuals over time. XXXX models facilitate this by xxxxx.
+
+</p>
+
+## Preliminary Setup
+
+::: panel-tabset
+### Install Packages {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+> **This code installs the r packages necessary for this example, if
+> they are not already installed**
+
+```{r pckg-install}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+# Create a list of required packages
+packages_required <- c("tidyverse","rstatix","DT")
+
+# Check which packages are not installed and install them
+packages_to_install <- setdiff(packages_required, rownames(installed.packages()))
+if (length(packages_to_install) > 0) {
+    install.packages(packages_to_install)
+}
+
+# Load the required packages
+lapply(packages_required, library, character.only = TRUE)
+
+```
+:::
+
+### Load Packages
+
+::: blue
+**This code loads the r libraries necessary for this example**
+
+```{r lib-load}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+library(tidyverse)    # Collection of R packages for data science
+library(rstatix)      # Pipe-friendly framework for basic statistical tests
+library(DT)           # Rendering interactive data tables
+
+
+```
+:::
+
+### Config Options
+
+::: blue
+**This code configures knitr code chunk options**
+
+```{r config}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, 
+                      comment=NA, cache=T, code_folding=T,
+                      R.options=list(width=220, digits = 3),
+                      fig.align='center', 
+                      out.width='75%', fig.asp=.75)
+```
+:::
+:::
+
+## Descriptives Overview
+
+::: panel-tabset
+### Read and View Data {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+**This code reads in and shows the data to be used in the current
+example**
+
+```{r read-data}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+#| cache: FALSE
+
+# Set the data paths
+data_path_1 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"
+data_path_2 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+data_demographics <- readRDS(data_path_1)
+data_nonimaging <- readRDS(data_path_2)
+
+# Subset the nonimaging data to include desired variables
+selected_vars <- c("src_subject_id", "eventname", "nihtbx_totalcomp_fc", "anthroweightcalc", "anthroheightcalc")
+subset_data <- data_nonimaging[, selected_vars]
+
+library(dplyr)
+# # Merge the datasets on 'src_subject_id' and 'eventname'
+merged_data <- data_demographics %>%
+  full_join(subset_data, by = c("src_subject_id", "eventname"))
+
+# Inspect the merged data structure
+str(merged_data)
+
+# Define event names to be retained in the analysis and convert variables to appropriate data types
+eventnames_to_include <- c("baseline_year_1_arm_1",
+                           "1_year_follow_up_y_arm_1",
+                           "2_year_follow_up_y_arm_1",
+                           "3_year_follow_up_y_arm_1",
+                           "4_year_follow_up_y_arm_1")
+
+df <- merged_data %>%
+  filter(eventname %in% eventnames_to_include) %>%
+  mutate(
+    src_subject_id = as.factor(src_subject_id),
+    eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),
+    age = as.numeric(age),
+    sex = as.factor(sex),
+    race.4level = as.factor(race.4level),
+    hisp = as.factor(hisp),
+    high.educ.bl = as.factor(high.educ.bl),
+    household.income.bl = as.factor(household.income.bl),
+    acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),
+    rel_family_id.bl = as.factor(rel_family_id.bl),
+    site_id_l = as.factor(site_id_l),
+    nihtbx_totalcomp_fc = as.numeric(nihtbx_totalcomp_fc),
+    anthroweightcalc = as.numeric(anthroweightcalc),
+    anthroheightcalc = as.numeric(anthroheightcalc)
+  ) %>%
+  # Exclude cases from unused assessment waves
+  filter(!is.na(eventname))
+
+```
+:::
+
+### Descriptives
+
+::: blue
+**This code creates a descriptives table**
+
+```{r descriptives}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+
+# Define a function to compute descriptives
+compute_descriptives <- function(data, event_name) {
+  # For factor variables
+  sex_desc <- paste0(table(data$sex), " (", round(100 * prop.table(table(data$sex)), 1), "%)")
+  race_desc <- paste0(table(data$race.4level), " (", round(100 * prop.table(table(data$race.4level)), 1), "%)")
+  
+  # For numeric variables
+  age_desc <- paste0(round(mean(data$age, na.rm = TRUE), 2), " (", round(sd(data$age, na.rm = TRUE), 2), ")")
+  weight_desc <- paste0(round(mean(data$anthroweightcalc, na.rm = TRUE), 2), " (", round(sd(data$anthroweightcalc, na.rm = TRUE), 2), ")")
+  height_desc <- paste0(round(mean(data$anthroheightcalc, na.rm = TRUE), 2), " (", round(sd(data$anthroheightcalc, na.rm = TRUE), 2), ")")
+  
+  # Combine into a data frame
+  desc_df <- data.frame(
+    Variable = c("Sex - Female", "Sex - Male or other", "Race - Asian", "Race - Black", "Race - Other/Mixed", "Race - White", "Age", "Weight", "Height"),
+    Value = c(sex_desc, race_desc, age_desc, weight_desc, height_desc)
+  )
+  
+  # Rename the Value column based on event name
+  colnames(desc_df)[2] <- event_name
+  return(desc_df)
+}
+
+# Compute descriptives for each event
+baseline_desc <- compute_descriptives(subset(df, eventname == "baseline_year_1_arm_1"), "baseline_year_1_arm_1")
+one_year_desc <- compute_descriptives(subset(df, eventname == "1_year_follow_up_y_arm_1"), "1_year_follow_up_y_arm_1")
+two_year_desc <- compute_descriptives(subset(df, eventname == "2_year_follow_up_y_arm_1"), "2_year_follow_up_y_arm_1")
+three_year_desc <- compute_descriptives(subset(df, eventname == "3_year_follow_up_y_arm_1"), "3_year_follow_up_y_arm_1")
+
+# Join all data frames side-by-side
+final_table <- baseline_desc %>%
+  left_join(one_year_desc, by = "Variable") %>%
+  left_join(two_year_desc, by = "Variable") %>%
+  left_join(three_year_desc, by = "Variable")
+
+# Adjust for the required format
+final_table[1:6, 3:5] <- NA
+
+# Round numeric values to two decimal places
+numeric_cols <- sapply(final_table, is.numeric)
+final_table[numeric_cols] <- lapply(final_table[numeric_cols], round, 2)
+
+# Create heading rows with the same columns as final_table
+heading_rows <- data.frame(
+  Variable = c("Sex", "Race"),
+  baseline_year_1_arm_1 = NA_real_,
+  `1_year_follow_up_y_arm_1` = NA_real_,
+  `2_year_follow_up_y_arm_1` = NA_real_,
+  `3_year_follow_up_y_arm_1` = NA_real_
+)
+
+# Set column names of heading_rows to match final_table
+colnames(heading_rows) <- colnames(final_table)
+
+# Introduce group labels and adjust the "Variable" column
+final_table <- rbind(
+                    heading_rows[1,], 
+                    final_table[1:2,],
+                    heading_rows[2,], 
+                    final_table[3:6,], 
+                    final_table[7:9,]
+                    )
+
+# Update the Variable column to remove redundant factor variable name
+final_table$Variable <- gsub("Sex - ", "", final_table$Variable)
+final_table$Variable <- gsub("Race - ", "", final_table$Variable)
+final_table$Variable[final_table$Variable == "Male or other"] <- "Male"
+
+# Add non-breaking spaces for increased indentation
+final_table$Variable[final_table$Variable %in% c("Female", "Male", "Asian", "Black", "Other/Mixed", "White")] <- 
+  paste0(rep("&nbsp;", 6), final_table$Variable[final_table$Variable %in% c("Female", "Male", "Asian", "Black", "Other/Mixed", "White")])
+
+# Update column headers
+colnames(final_table)[2:5] <- c("Baseline", "Year 1", "Year 2", "Year 3")
+
+# Display the table interactively without row names, with updated column headers, and with HTML entities rendered
+datatable(final_table, 
+          colnames = c("", "Baseline", "Year 1", "Year 2", "Year 3"),
+          options = list(pageLength = nrow(final_table), autoWidth = TRUE),
+          rownames = FALSE, escape = FALSE,
+          caption = "Descriptives Table")  # Add table title
+
+```
+
+:::
+:::
+
+## Results 
+<div class = "blue">
+
+::: panel-tabset
+### Build Model {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+
+------
+
+**STEP 1: Convert dataframe from long-to-wide format**
+```{r long-to-wide}
+#| class.source: 'fold-hide'
+#| message: FALSE
+#| warning: FALSE
+#| echo: TRUE
+
+# Split the data into static (unchanging) and changing variables
+# Static variables are taken only from the baseline measurement occasion
+df_static <- df %>%
+  filter(eventname == "baseline_year_1_arm_1") %>%
+  select(src_subject_id, site_id_l, sex)
+
+df_changing <- df %>%
+  select(src_subject_id, eventname, anthroweightcalc, anthroheightcalc)
+
+# Convert the changing variables from long format to wide format
+df_wide_changing <- df_changing %>%
+  gather(variable, value, -src_subject_id, -eventname) %>%
+  unite("variable_event", variable, eventname) %>%
+  spread(variable_event, value)
+
+# Merge the static and changing data frames based on the 'src_subject_id' variable
+df_wide <- df_static %>%
+  left_join(df_wide_changing, by = "src_subject_id")
+
+# Rename columns to shorter names for easier reference
+df_wide <- df_wide %>% 
+        rename("anthroweightcalc_0"="anthroweightcalc_baseline_year_1_arm_1",
+               "anthroweightcalc_1"="anthroweightcalc_1_year_follow_up_y_arm_1",
+               "anthroweightcalc_2"="anthroweightcalc_2_year_follow_up_y_arm_1",
+               "anthroweightcalc_3"="anthroweightcalc_3_year_follow_up_y_arm_1",
+               "anthroweightcalc_4"="anthroweightcalc_4_year_follow_up_y_arm_1",
+               "anthroheightcalc_0"="anthroheightcalc_baseline_year_1_arm_1",
+               "anthroheightcalc_1"="anthroheightcalc_1_year_follow_up_y_arm_1",
+               "anthroheightcalc_2"="anthroheightcalc_2_year_follow_up_y_arm_1",
+               "anthroheightcalc_3"="anthroheightcalc_3_year_follow_up_y_arm_1",
+               "anthroheightcalc_4"="anthroheightcalc_4_year_follow_up_y_arm_1"
+               )
+
+# Reorder columns in the dataframe
+df_wide <- df_wide %>% select(src_subject_id, site_id_l, sex, anthroweightcalc_0, anthroweightcalc_1, anthroweightcalc_2, anthroweightcalc_3, anthroweightcalc_4, anthroheightcalc_0, anthroheightcalc_1, anthroheightcalc_2, anthroheightcalc_3, anthroheightcalc_4)
+
+```
+  
+The code fits a xxxx to examine the 'xxxxx' variable across time points ('eventname'). It incorporates xxxxxx. The results of the model are then printed to provide a detailed summary of the fitted model parameters.
+
+**STEP 2: Compute xxxxx**
+
+```{r}
+# Define the model
+model <- '
+  # Trait component
+  trait =~ 1 * anthroheightcalc_0 + 1 * anthroheightcalc_1 + 1 * anthroheightcalc_2 + 1 * anthroheightcalc_3
+
+  # State component
+  state =~ anthroheightcalc_0 + anthroheightcalc_1 + anthroheightcalc_2 + anthroheightcalc_3
+
+  # Residual variances
+  anthroheightcalc_0 ~~ anthroheightcalc_0
+  anthroheightcalc_1 ~~ anthroheightcalc_1
+  anthroheightcalc_2 ~~ anthroheightcalc_2
+  anthroheightcalc_3 ~~ anthroheightcalc_3
+'
+```
+
+```{r}
+# Estimate the State-Trait Model
+fit <- sem(model, data = df_wide, missing = "FIML")
+
+summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+
+```
