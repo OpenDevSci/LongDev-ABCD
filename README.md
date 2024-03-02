@@ -10,7 +10,7 @@
   </a>
 </p>
 
-<h1 align="center">midFEMA</h1>
+<h1 align="center">LAP</h1>
 
 <p align="center">
   <strong>Longitudinal Analysis using data from the ABCD© Study.</strong>
