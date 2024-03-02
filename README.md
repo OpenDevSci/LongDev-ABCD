@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/openresearchcollabs/midFEMA">
-    <img src="img/logo.jpg" alt="Logo" width="120" height="120"/>
+    <img src="img/lights.jpg" alt="Logo" width="120" height="120"/>
   </a>
 </p>
 
