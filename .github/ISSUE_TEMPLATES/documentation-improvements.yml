@@ -1,0 +1,53 @@
+name: Documentation Improvement
+description: Propose improvements or request clarifications in the documentation.
+title: "[Docs]: "
+labels: ["documentation", "help wanted"]
+assignees: 
+  - # Optional: Assign to a default maintainer or team for review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for contributing to our documentation!
+        Please help us improve by filling out this form with details about the documentation issue.
+
+  - type: input
+    id: document-location
+    attributes:
+      label: Document Location
+      description: Please provide a link to the documentation page in question.
+      placeholder: ex. "https://github.com/yourproject/documentation/readme.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-content
+    attributes:
+      label: Current Content
+      description: Describe the current content or issue. What is confusing or missing?
+      placeholder: "Detail the current issue with the documentation."
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-improvement
+    attributes:
+      label: Suggested Improvement
+      description: How do you suggest we improve or clarify the documentation?
+      placeholder: "Provide your suggestions for improvement."
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context or screenshots that would be helpful?
+      placeholder: "Add any other context or screenshots about the documentation issue here."
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        **We greatly appreciate your efforts to improve our documentation. Thank you!**

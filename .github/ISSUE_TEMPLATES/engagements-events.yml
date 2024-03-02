@@ -1,0 +1,93 @@
+name: Community Engagement or Event Proposal
+description: Propose a community event, meetup, or collaborative session.
+title: "[Event Proposal]: "
+labels: ["event", "community engagement"]
+assignees: 
+  - # Optional: Assign to a default maintainer or team for organizing community events
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Proposing a Community Event
+        Thank you for your interest in enhancing our community! Please fill out this form with details about your event proposal.
+
+  - type: input
+    id: event-name
+    attributes:
+      label: Event Name
+      description: What is the name of your proposed event?
+      placeholder: ex. "Open Source Contribution Workshop"
+    validations:
+      required: true
+
+  - type: textarea
+    id: event-description
+    attributes:
+      label: Event Description
+      description: Please provide a detailed description of the event.
+      placeholder: "Describe the purpose, activities, and what attendees can expect from your event."
+    validations:
+      required: true
+
+  - type: input
+    id: event-date
+    attributes:
+      label: Proposed Date(s)
+      description: When are you proposing to hold the event? Please provide specific dates if possible.
+      placeholder: ex. "July 20, 2024, or any weekday in late July"
+    validations:
+      required: false
+
+  - type: input
+    id: event-location
+    attributes:
+      label: Location
+      description: Where do you propose to hold the event? Include physical or virtual location details.
+      placeholder: "Online via Zoom, or at ABC Community Center, City, Country"
+    validations:
+      required: false
+
+  - type: textarea
+    id: target-audience
+    attributes:
+      label: Target Audience
+      description: Who is the intended audience for this event? Are there any prerequisites for attendees?
+      placeholder: "This event is aimed at intermediate-level contributors with a basic understanding of Git and GitHub."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-outcomes
+    attributes:
+      label: Expected Outcomes
+      description: What do you hope to achieve with this event? How does it benefit the community or project?
+      placeholder: "Our goal is to onboard new contributors and tackle several key issues marked as 'good first issues'."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: requirements
+    attributes:
+      label: Event Requirements
+      description: Does your event require any specific resources or support from the project maintainers?
+      options:
+        - label: Financial support for tools or services
+        - label: Promotion and outreach
+        - label: Technical content or speakers
+        - label: None
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional Information
+      description: Any other information, links, or resources that would be helpful for evaluating your proposal?
+      placeholder: "Feel free to add any additional information about your event proposal here."
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        **Thank you for submitting your event proposal! We're excited about the possibility of engaging our community in new and meaningful ways.**

@@ -1,0 +1,48 @@
+name: Manuscript Development Task
+description: Assign and track tasks for manuscript development.
+title: "[Manuscript Task]: "
+labels: ["manuscript", "writing"]
+assignees: 
+  - # Assign to the team member responsible for the task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Manuscript Development Task Details
+        Provide detailed information about the manuscript task being assigned. This will help ensure clarity and efficiency in our writing process.
+
+  - type: input
+    id: task-title
+    attributes:
+      label: Task Title
+      description: A brief title for the task (e.g., Write Introduction, Create Figure 2).
+      placeholder: ex. "Draft Results Section"
+    validations:
+      required: true
+
+  - type: textarea
+    id: task-description
+    attributes:
+      label: Task Description
+      description: Describe the task in detail. Include any specific instructions or expectations.
+      placeholder: "Detail what needs to be done, including any specific analyses, figures, or references to include."
+    validations:
+      required: true
+
+  - type: textarea
+    id: deadline
+    attributes:
+      label: Deadline
+      description: Specify the deadline for this task, if applicable.
+      placeholder: "MM/DD/YYYY"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-resources
+    attributes:
+      label: Additional Resources
+      description: Link to any resources, documents, or data that may be helpful in completing this task.
+      placeholder: "Include links to relevant resources or documents."
+    validations:
+      required: false

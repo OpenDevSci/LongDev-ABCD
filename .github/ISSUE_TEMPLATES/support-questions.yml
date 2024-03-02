@@ -1,0 +1,65 @@
+name: User Support Question
+description: Ask for help or clarification on using the project.
+title: "[Support]: "
+labels: ["question", "support"]
+assignees: 
+  - # Optional: Assign to a default maintainer or team for review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Looking for help?
+        We're here to assist! Please provide as much detail as possible so we can best support you.
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Please describe your environment where the issue occurs (OS, version).
+      placeholder: ex. "Windows 10, version 21H1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Issue Description
+      description: What issue are you experiencing or what question do you have?
+      placeholder: "Describe what you're trying to do and where you're getting stuck."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: If applicable, describe the steps to reproduce the issue.
+      placeholder: "1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error"
+    validations:
+      required: false
+
+  - type: textarea
+    id: attempted-solutions
+    attributes:
+      label: What have you tried so far?
+      description: Have you attempted any solutions or troubleshooting steps?
+      placeholder: "List any steps you've tried to resolve the issue on your own."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context, links, or screenshots that would be helpful?
+      placeholder: "Add any other context about the problem here."
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        **Thank you for reaching out with your question. We aim to respond as soon as possible.**

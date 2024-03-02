@@ -1,0 +1,12 @@
+{
+  "name": "midFEMA R Analysis",
+  "image": "ghcr.io/rocker-org/verse:latest",
+  "features": {
+    "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {}
+  },
+  "settings": {    
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "postCreateCommand": "R -e 'install.packages(\"tidyverse\", repos = \"https://cloud.r-project.org/\")'"
+}
+

@@ -1,0 +1,66 @@
+name: Data Analysis Request
+description: Request a new analysis or propose an analysis plan.
+title: "[Analysis Request]: "
+labels: ["analysis", "data"]
+assignees: 
+  - # Assign to the team member responsible for data analysis
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Data Analysis Request Details
+        Please provide all necessary details about the analysis you are requesting or proposing. The more specific you are, the easier it will be for us to understand and implement your request.
+
+  - type: input
+    id: analysis-title
+    attributes:
+      label: Analysis Title
+      description: A brief title for the analysis request.
+      placeholder: ex. "Longitudinal Analysis of Variable X on Outcome Y"
+    validations:
+      required: true
+
+  - type: textarea
+    id: analysis-objective
+    attributes:
+      label: Analysis Objective
+      description: Clearly describe the objective or hypothesis of the proposed analysis.
+      placeholder: "What are you aiming to discover or demonstrate with this analysis?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: dataset-details
+    attributes:
+      label: Dataset Details
+      description: Describe the dataset(s) to be used, including any specific variables or time points.
+      placeholder: "Provide details on the dataset and specific variables of interest."
+    validations:
+      required: true
+
+  - type: textarea
+    id: statistical-methods
+    attributes:
+      label: Statistical Methods
+      description: Specify the statistical methods or models to be used (e.g., regression, SEM).
+      placeholder: "Detail the statistical methods or models that should be applied."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-outcomes
+    attributes:
+      label: Expected Outcomes
+      description: Describe the expected outcomes or findings you anticipate from this analysis.
+      placeholder: "Outline any hypotheses or expected findings."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Any other notes, references, or requirements for the analysis.
+      placeholder: "Add any additional notes or references relevant to this analysis request."
+    validations:
+      required: false

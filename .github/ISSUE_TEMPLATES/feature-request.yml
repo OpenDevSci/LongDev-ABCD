@@ -1,0 +1,73 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for the project.
+title: "[Feature Request]: "
+labels: ["feature request", "enhancement"]
+assignees: 
+  - # Optional: Assign to a default maintainer or team for review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thanks for taking the time to contribute to our project!
+        Please provide as much detail as possible to help us understand your feature request in context.
+
+  - type: input
+    id: title
+    attributes:
+      label: Feature Title
+      description: A concise title for the feature request.
+      placeholder: ex. "Add OAuth 2.0 Support"
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-summary
+    attributes:
+      label: Feature Summary
+      description: Describe the feature you'd like to see added and its benefits.
+      placeholder: "Please provide a detailed description of the feature and how it would benefit users of the project."
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What problem does this feature solve? Why is it needed?
+      placeholder: "Explain why this feature is important and should be prioritized."
+    validations:
+      required: true
+
+  - type: textarea
+    id: potential-implementation
+    attributes:
+      label: Potential Implementation
+      description: Do you have ideas on how this feature could be implemented?
+      placeholder: "Share any ideas you have on how this feature could be implemented."
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: user-research
+    attributes:
+      label: User Research
+      description: Have you conducted any user research to validate this feature's need?
+      options:
+        - label: Yes, I have conducted user research.
+        - label: No, I have not conducted user research but can provide insights on its necessity.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information or screenshots that would be helpful?
+      placeholder: "Add any other context, links, or screenshots about the feature request here."
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        **Thank you for your feature request! We appreciate your contribution to making this project better.**

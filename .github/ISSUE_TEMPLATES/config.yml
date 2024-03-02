@@ -1,0 +1,41 @@
+# Example config.yml for a collaborative research project's issue template chooser
+
+blank_issues_enabled: false  # Disables the ability for contributors to open a blank issue
+
+contact_links:
+  - name: Project Wiki
+    url: https://github.com/openresearchcollabs/midFEMA/wiki
+    about: Please check our wiki for a detailed documentation before submitting an issue.
+
+  - name: General Inquiry
+    url: https://github.com/openresearchcollabs/midFEMA/discussions
+    about: Have a question or need clarification? Start a discussion instead.
+
+issue_forms:
+  - name: bug-report
+    description: Create a report to help us improve. Use this form for reporting bugs in the project.
+    template: bug_report.yml
+
+  - name: feature-request
+    description: Suggest an idea for this project. Use this form to propose new features or enhancements.
+    template: feature_request.yml
+
+  - name: data-analysis-request
+    description: Request a new analysis or propose an analysis plan. Ideal for proposing specific statistical analyses or models.
+    template: data_analysis_request.yml
+
+  - name: manuscript-development-tasks
+    description: Assign tasks related to manuscript development. Use this for tasks like writing sections, creating figures, or conducting literature reviews.
+    template: manuscript_development_task.yml
+
+  - name: documentation-improvements
+    description: Propose improvements or request clarifications in the documentation.
+    template: documentation_improvement.yml
+
+  - name: support-questions
+    description: Need help or have a question about the project? Use this form to ask for support.
+    template: user_support_question.yml
+
+  - name: engagements-events
+    description: Propose a community event, meetup, or collaborative session. Ideal for enhancing community engagement and collaboration.
+    template: community_engagement_event_proposal.yml
