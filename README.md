@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/openresearchcollabs/LAP-ABCD">
-    <img src="img/lights.jpg" alt="Logo" width="120" height="120"/>
+    <img src="img/lights.png" alt="Logo" width="120" height="120"/>
   </a>
 </p>
 
@@ -17,14 +17,14 @@
   <br />
   Utilizing Longitudinal Analysis within the Adolescent Brain and Cognitive Development (ABCD) study.
   <br />
-  <a href="https://github.com/openresearchcollabs/midFEMA"><strong>Explore the Documentation »</strong></a>
+  <a href="https://github.com/openresearchcollabs/LAP-ABCD"><strong>Explore the Documentation »</strong></a>
   <br />
-  <a href="https://github.com/openresearchcollabs/midFEMA/issues">Report Bug</a> •
-  <a href="https://github.com/openresearchcollabs/midFEMA/issues">Request Feature</a>
+  <a href="https://github.com/openresearchcollabs/LAP-ABCD/issues">Report Bug</a> •
+  <a href="https://github.com/openresearchcollabs/LAP-ABCD/issues">Request Feature</a>
 </p>
 
 <p align="center">
-tags: `Longitudinal` `fMRI` `DBD` `FEMA` `MID`
+tags: `Longitudinal` `xxxxx` `xxxxx` `xxxxx` `xxxxx`
 </p>
 
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
@@ -51,20 +51,19 @@ tags: `Longitudinal` `fMRI` `DBD` `FEMA` `MID`
 
 ## About the Project
 
-This is the repository for the midFEMA research project. 
+This is the repository for the xxxxx research project. 
 
-The **midFEMA** research project is aimed at identifying and analyzing neurodevelopmental biomarkers for severe behavioral and emotional problems in youth. By leveraging Fast and Efficient Mixed‐Effects Analysis (FEMA) in conjunction with voxelwise task-based reward activation measurements, we aim to uncover insights into brain development and functioning across a large, prospectively followed sample of approximately 9,000 youth aged 9–16 years from the Adolescent Brain and Cognitive Development (ABCD) study.
+The **xxxxx** research project is aimed xxxxxxx from the Adolescent Brain and Cognitive Development (ABCD) study.
 
-https://github.com/openresearchcollabs/midFEMA
+https://github.com/openresearchcollabs/LAP-ABCD
 
-https://github.com/openresearchcollabs/midFEMA/issues
+https://github.com/openresearchcollabs/LAP-ABCD/issues
 
 ## Features
 
-- **Biomarker Identification**: Pinpointing critical biomarkers for behavioral and emotional challenges.
-- **Longitudinal Neuroimaging**: Leveraging longitudinal study data to track neurodevelopment over time.
-- **Dev Containers**: Offering pre-configured development environments for immediate research productivity.
-- **Comprehensive Documentation**: Facilitating easy access to guides, tutorials, and project documentation.
+- **xxxxx**: xxxxxxxxx.
+- **xxxxx**: xxxxxxxxx.
+- **xxxxx**: xxxxxxxxx.
 
 ## Getting Started
 xxxxxxxxxx
@@ -76,7 +75,7 @@ See the [open issues](https://github.com/github_username/repo_name/issues) and t
 We welcome contributions from the community! For more information on how to get involved, please read our [Contribution Guide](/docs/Contributing.md).
 
 ## Codespace
-xxxxxxx [midFEMA Codespace](/docs/Codespaces-Setup.md). 
+xxxxxxx [LAP-ABCD Codespace](/docs/Codespaces-Setup.md). 
 
 ## License
 Distributed under the MIT License. See [LICENSE](/docs/LICENSE) for more information.
@@ -84,7 +83,7 @@ Distributed under the MIT License. See [LICENSE](/docs/LICENSE) for more informa
 ## Contact
 Join our Slack channel for discussions: Join Slack
 
-Project Link: https://github.com/openresearchcollabs/midFEMA
+Project Link: https://github.com/openresearchcollabs/LAP-ABCD
 
 ## Acknowledgments
 - [Your Acknowledgment Here]
