@@ -93,6 +93,13 @@ Project Link: https://github.com/openresearchcollabs/LAP-ABCD
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+-----
+
+[Subscribe to our newsletter](#){ .md-button }
+
+[Send :fontawesome-solid-paper-plane:](#){ .md-button }
+
+
 
 
 
