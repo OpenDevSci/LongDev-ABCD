@@ -1,12 +1,10 @@
-** Add buttons (e.g., `Contribute`) **
-
 <a name="readme-top"></a>
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/openresearchcollabs/midFEMA?quickstart=1)
+[![](https://github.com/codespaces/badge.svg)](https://codespaces.new/openresearchcollabs/LAP-ABCD?quickstart=1)
 
 <p align="center">
   <a href="https://github.com/openresearchcollabs/LAP-ABCD">
-    <img src="img/lights.png" alt="Logo" width="120" height="120"/>
+    <img src="img/lights.png" alt="Logo" width="200" height="200"/>
   </a>
 </p>
 
@@ -85,21 +83,19 @@ Join our Slack channel for discussions: Join Slack
 
 Project Link: https://github.com/openresearchcollabs/LAP-ABCD
 
-## Acknowledgments
+## Acknowledgmentszz
 - [Your Acknowledgment Here]
 - [Another Acknowledgment Here]
 - [And Another Here]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 -----
 
-[Subscribe to our newsletter](#){ .md-button }
-
-[Send :fontawesome-solid-paper-plane:](#){ .md-button }
+** Add buttons (e.g., `Contribute`) **
 
 
+I am leading a collaborative open-source project for the Biostatistics Working Group of the large-scale longitudinal ABCD Study (https://abcdstudy.org/). The overarching goal of the project is to provide the field with a hub to facilitate longitudinal analysis learning and implementation. At present, the project is focused on two primary and overlapping goals. First is the development of an academic manuscript that provides a detailed overview of different types of longitudinal methods (see manuscript draft, attached). Second is the development of a basic website that contains code (primarily R code) that demonstrates longitudinal methods that can be used for their own purposes. To facilitate organization of this project I am building a Github Repository.
 
 
 

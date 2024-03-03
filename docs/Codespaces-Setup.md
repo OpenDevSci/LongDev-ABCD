@@ -1,6 +1,6 @@
-# MidFEMA Codespace Setup Guide 🚀
+# LAP-ABCD Codespace Setup Guide 🚀
 
-Welcome to the midFEMA Codespace setup guide! This document is designed to help you navigate and effectively use GitHub Codespaces for the midFEMA project, focusing on basic R analysis and Quarto for writing-ups. It's tailored for collaborators with minimal background in Codespaces, VS Code, IDEs, development containers, Docker environments, etc.
+Welcome to the LAP-ABCD Codespace setup guide! This document is designed to help you navigate and effectively use GitHub Codespaces for the LAP-ABCD project, focusing on basic R analysis and Quarto for writing-ups. It's tailored for collaborators with minimal background in Codespaces, VS Code, IDEs, development containers, Docker environments, etc.
 
 ## Understanding Codespaces and Dev Containers 🧐
 
@@ -15,18 +15,18 @@ GitHub Codespaces are Dev Containers but hosted in the cloud. Accessed through V
 ### Working Together 🤝
 The combination of VS Code, Dev Containers, and GitHub Codespaces allows you to develop from almost anywhere, on any machine. It's perfect for standardizing development setups across a team and handling multiple repo environments efficiently.
 
-## Getting Started with midFEMA Codespace 🌱
+## Getting Started with LAP-ABCD Codespace 🌱
 
-Accessing and using the midFEMA Codespace is straightforward and doesn't require complex setup steps.
+Accessing and using the LAP-ABCD Codespace is straightforward and doesn't require complex setup steps.
 
-### Accessing midFEMA Codespace 👩‍💻
+### Accessing LAP-ABCD Codespace 👩‍💻
 
-1. **Navigate** to the midFEMA repository on GitHub.
+1. **Navigate** to the LAP-ABCD repository on GitHub.
 2. **Click** on the "Code" dropdown button.
 3. **Select** "Open with Codespaces".
 4. **Choose** an existing Codespace to open or click "New codespace" to create a new one.
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/openresearchcollabs/midFEMA?quickstart=1)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/openresearchcollabs/LAP-ABCD?quickstart=1)
 
 This badge is also prominently displayed at the top of our project's root README for quick access.
 
@@ -44,8 +44,8 @@ Leverage Codespaces to streamline your continuous integration workflows, ensurin
 This repository is equipped with a Development Container configuration suitable for both Dev Containers and GitHub Codespaces.
 
 - **For Local Use**: Utilize the **Dev Containers: Clone Repository in Container Volume...** command in VS Code for optimal performance.
-- **Quick Start**: If you've got VS Code and Docker, [click here](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/openresearchcollabs/midFEMA) to auto-setup everything. This process clones the repo, sets up the dev container, and gets you ready to code.
+- **Quick Start**: If you've got VS Code and Docker, [click here](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/openresearchcollabs/LAP-ABCD) to auto-setup everything. This process clones the repo, sets up the dev container, and gets you ready to code.
 
 ## Seeking Help 🆘
 
-Encountering setup issues or have questions? Don't hesitate to reach out through our project's [GitHub Discussions](https://github.com/openresearchcollabs/midFEMA/discussions) or the project's [Slack workspace](https://join.slack.com/t/fiusunlab/shared_invite/zt-2c06cewsn-umIms6iXpnKa8NPwnsf_Xg). We're here to ensure your Codespace experience is smooth and productive.
+Encountering setup issues or have questions? Don't hesitate to reach out through our project's [GitHub Discussions](https://github.com/openresearchcollabs/LAP-ABCD/discussions) or the project's [Slack workspace](https://join.slack.com/t/fiusunlab/shared_invite/zt-2c06cewsn-umIms6iXpnKa8NPwnsf_Xg). We're here to ensure your Codespace experience is smooth and productive.

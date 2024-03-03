@@ -1,6 +1,6 @@
-# Contributing to midFEMA 🌟
+# Contributing to LAP-ABCD 🌟
 
-Welcome to the midFEMA contributing guide! We're thrilled to have you join our community of researchers, developers, and contributors. This comprehensive guide outlines how you can contribute to advancing our understanding of neurodevelopmental biomarkers in youth.
+Welcome to the LAP-ABCD contributing guide! We're thrilled to have you join our community of researchers, developers, and contributors. This comprehensive guide outlines how you can contribute to advancing our understanding of neurodevelopmental biomarkers in youth.
 
 ## Table of Contents
 - [Getting Started 🚀](#getting-started-)
@@ -8,7 +8,7 @@ Welcome to the midFEMA contributing guide! We're thrilled to have you join our c
 - [GitHub Codespaces ☁️](#github-codespaces-)
 - [Communication 📢](#communication-)
 - [Contributing Code](#contributing-code)
-  - [Creating a midFEMA Repository](#creating-a-midfema-repository)
+  - [Creating a LAP-ABCD Repository](#creating-a-LAP-ABCD-repository)
   - [Getting Code into the Project Repository](#getting-code-into-the-project-repository)
   - [Composition of Pull Requests](#composition-of-pull-requests)
   - [Reviewing Pull Requests](#reviewing-pull-requests)
@@ -27,7 +27,7 @@ Welcome to the midFEMA contributing guide! We're thrilled to have you join our c
 
 ## Getting Started 🚀
 
-Before diving into contributions, please familiarize yourself with our [project's README](README.md). It provides an essential overview of midFEMA, setting the stage for meaningful contributions.
+Before diving into contributions, please familiarize yourself with our [project's README](README.md). It provides an essential overview of LAP-ABCD, setting the stage for meaningful contributions.
 
 ### External Contributors
 
@@ -36,7 +36,7 @@ For those not a repository member:
 2. Clone your fork locally.
 3. Create a new branch for your changes.
 4. Push changes to your fork.
-5. Open a pull request against the main midFEMA repository.
+5. Open a pull request against the main LAP-ABCD repository.
 
 ### Repository Members
 
@@ -48,14 +48,14 @@ Members with push access:
 
 ## GitHub Projects 🗂
 
-**Accessing and Using midFEMA GitHub Projects**:
+**Accessing and Using LAP-ABCD GitHub Projects**:
 - **Access**: Find our project board under the "Projects" tab in our GitHub repository or via this [link](https://github.com/orgs/openresearchcollabs/projects/7).
 - **Usage**: View tasks, update statuses, and collaborate on issue and pull request links associated with each task card.
 
 ## GitHub Codespaces ☁️
 
 **Accessing and Using Codespaces**:
-- Start a new Codespace by clicking the "Open in GitHub Codespaces" badge at the top of our [README](README.md) file. See the [Codespaces Setup file](/docs/Codespaces-Setup.md) for instructions on accessing and using the midFEMA repository Codespace.
+- Start a new Codespace by clicking the "Open in GitHub Codespaces" badge at the top of our [README](README.md) file. See the [Codespaces Setup file](/docs/Codespaces-Setup.md) for instructions on accessing and using the LAP-ABCD repository Codespace.
 
 ## Communication 📢
 
@@ -65,7 +65,7 @@ We prioritize effective communication:
 
 ## Contributing Code
 
-### Creating a midFEMA Repository
+### Creating a LAP-ABCD Repository
 
 1. Clone this repository into one that your account owns.
 2. Commit to your repository first, then move code back to the project repository through pull requests.
@@ -94,6 +94,6 @@ We expect all contributors to maintain code that performs reproducible analyses,
 
 Encounter an issue or have a suggestion? Please open an issue for discussion. For immediate help, reach out in our [Slack channel](https://join.slack.com/t/fiusunlab/shared_invite/zt-2c06cewsn-umIms6iXpnKa8NPwnsf_Xg).
 
-Thank you for contributing to midFEMA!
+Thank you for contributing to LAP-ABCD!
 
 [Back to top](#table-of-contents)

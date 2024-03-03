@@ -1,12 +1,12 @@
-# 🗨️ Engaging in midFEMA Discussions
+# 🗨️ Engaging in LAP-ABCD Discussions
 
-Welcome to the midFEMA Discussions! 🎉 This space is designed for the midFEMA community to share ideas 💡, ask questions ❓, and collaborate 🤝 openly. Whether you're a researcher, contributor, or just someone with an interest in neurodevelopmental biomarkers, your input is valuable. Here’s how you can get involved.
+Welcome to the LAP-ABCD Discussions! 🎉 This space is designed for the LAP-ABCD community to share ideas 💡, ask questions ❓, and collaborate 🤝 openly. Whether you're a researcher, contributor, or just someone with an interest in neurodevelopmental biomarkers, your input is valuable. Here’s how you can get involved.
 
 ## Why Use Discussions? 🤔
 
-Discussions provide a forum for ideas, questions, and conversations about the midFEMA project. They allow for:
+Discussions provide a forum for ideas, questions, and conversations about the LAP-ABCD project. They allow for:
 
-- **🔍 Community Support**: Get help from the midFEMA community with questions you have.
+- **🔍 Community Support**: Get help from the LAP-ABCD community with questions you have.
 - **💭 Idea Sharing**: Share your ideas for new features or improvements.
 - **🔉 Feedback Collection**: Provide feedback on the project and discuss potential changes.
 - **📚 Knowledge Exchange**: Share insights, articles, and resources related to neurodevelopmental biomarkers and related fields.
@@ -16,9 +16,9 @@ Discussions provide a forum for ideas, questions, and conversations about the mi
 ### Starting a Discussion
 
 1. **Choose the Right Category**: Select the category that best fits the topic you want to discuss. Our categories include:
-   - **General Q&A**: For general questions about the midFEMA project.
+   - **General Q&A**: For general questions about the LAP-ABCD project.
    - **Ideas**: For suggestions and ideas on how to improve the project.
-   - **Show and Tell**: Share what you've built using midFEMA or related resources.
+   - **Show and Tell**: Share what you've built using LAP-ABCD or related resources.
    - **Research Discussions**: For deeper discussions on research topics, findings, and methodologies.
 2. **Create a New Discussion**: Click the "New Discussion" button within the chosen category.
 3. **Use a Descriptive Title**: Make your title concise but informative to attract the right audience.
@@ -42,7 +42,7 @@ If you encounter any issues or have questions about using Discussions, please re
 
 ## Code of Conduct
 
-Participation in the midFEMA Discussions requires adherence to our [Code of Conduct](LINK_TO_CODE_OF_CONDUCT). By engaging in discussions, you agree to uphold this community's standards.
+Participation in the LAP-ABCD Discussions requires adherence to our [Code of Conduct](LINK_TO_CODE_OF_CONDUCT). By engaging in discussions, you agree to uphold this community's standards.
 
-Thank you for contributing to the midFEMA community through Discussions. Your insights, questions, and feedback help drive the project forward and foster a vibrant community.
+Thank you for contributing to the LAP-ABCD community through Discussions. Your insights, questions, and feedback help drive the project forward and foster a vibrant community.
 
