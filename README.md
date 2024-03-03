@@ -8,12 +8,12 @@
   </a>
 </p>
 
-<h1 align="center">LAP</h1>
+<h1 align="center">Longitudinal Analysis Portal (LAP) for ABCD Study</h1>
 
 <p align="center">
-  <strong>Longitudinal Analysis using data from the ABCD© Study.</strong>
+  <strong>Empowering Longitudinal Analysis through Open Collaboration.</strong>
   <br />
-  Utilizing Longitudinal Analysis within the Adolescent Brain and Cognitive Development (ABCD) study.
+  A hub for learning, sharing, and implementing longitudinal analysis methods within the Adolescent Brain and Cognitive Development (ABCD) study.
   <br />
   <a href="https://github.com/openresearchcollabs/LAP-ABCD"><strong>Explore the Documentation »</strong></a>
   <br />
@@ -22,80 +22,90 @@
 </p>
 
 <p align="center">
-tags: `Longitudinal` `xxxxx` `xxxxx` `xxxxx` `xxxxx`
+tags: `Longitudinal Analysis`, `ABCD Study`, `Biostatistics`, `Open Science`, `R Programming`
 </p>
 
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Chat on Slack](https://img.shields.io/badge/chat-on%20slack-yellow.svg)
 
-## To-Do List
-
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
 ## Table of Contents
 - [About the Project](#about-the-project)
 - [Features](#features)
 - [Getting Started](#getting-started)
   - [Installation](#installation)
+  - [Prerequisites](#prerequisites)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [Discussion & Issues](#discussion--issues)
+- [Codespace](#codespace)
 - [License](#license)
 - [Contact](#contact)
 - [Acknowledgments](#acknowledgments)
 
 ## About the Project
 
-This is the repository for the xxxxx research project. 
-
-The **xxxxx** research project is aimed xxxxxxx from the Adolescent Brain and Cognitive Development (ABCD) study.
-
-https://github.com/openresearchcollabs/LAP-ABCD
-
-https://github.com/openresearchcollabs/LAP-ABCD/issues
+The Longitudinal Analysis Portal (LAP) serves as an open-source hub designed to foster collaboration, learning, and application of longitudinal analysis methods. This project, underpinned by data from the ABCD study, aims to bridge the gap between complex biostatistical methods and their practical implementation. Through LAP, we seek to advance the understanding of adolescent brain and cognitive development by enabling researchers and students alike to access, contribute to, and learn from a rich repository of knowledge and code.
 
 ## Features
 
-- **xxxxx**: xxxxxxxxx.
-- **xxxxx**: xxxxxxxxx.
-- **xxxxx**: xxxxxxxxx.
+- **Comprehensive Method Overviews**: Detailed explanations and comparisons of various longitudinal analysis methods.
+- **R Code Snippets**: Ready-to-use code examples to help researchers apply methods to their own data.
+- **Collaborative Environment**: Tools and guidelines for contributing to both the academic manuscript and codebase.
+- **Educational Resources**: Guides, tutorials, and links to further readings for those new to longitudinal analysis.
 
 ## Getting Started
-xxxxxxxxxx
 
-## Discussion & Issues
-See the [open issues](https://github.com/github_username/repo_name/issues) and the [discussion board](https://github.com/github_username/repo_name/discussion) for a full list of proposed features (and known issues).
+To get a local copy up and running follow these simple steps.
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/openresearchcollabs/LAP-ABCD.git
+   cd LAP-ABCD
+   ```
+
+[Additional steps specific to the project]
+
+### Prerequisites
+R (Version xx or later)
+[Other prerequisites]
+
+### Usage
+For examples on how to use the provided R code snippets for your analysis, please refer to the Usage section.
 
 ## Contributing
-We welcome contributions from the community! For more information on how to get involved, please read our [Contribution Guide](/docs/Contributing.md).
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated. Check out our Contribution Guide for more information on how to get started.
+
+## Discussion & Issues
+Engage with the community by joining discussions and sharing your insights. Visit our Issues page for a list of current discussions and to raise new ones.
 
 ## Codespace
-xxxxxxx [LAP-ABCD Codespace](/docs/Codespaces-Setup.md). 
+Set up your own development environment in minutes using LAP-ABCD Codespace.
 
 ## License
-Distributed under the MIT License. See [LICENSE](/docs/LICENSE) for more information.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Contact
-Join our Slack channel for discussions: Join Slack
+For general queries or direct contributions, join our Slack channel: Join Slack
 
 Project Link: https://github.com/openresearchcollabs/LAP-ABCD
 
-## Acknowledgmentszz
-- [Your Acknowledgment Here]
-- [Another Acknowledgment Here]
-- [And Another Here]
-
+## Acknowledgments
+Thanks to all contributors and the ABCD Study organizers.
+Special thanks to [XYZ] for providing essential datasets.
+Acknowledge funders or supporters.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
------
 
-** Add buttons (e.g., `Contribute`) **
+### Add Buttons for Quick Actions
 
-
-I am leading a collaborative open-source project for the Biostatistics Working Group of the large-scale longitudinal ABCD Study (https://abcdstudy.org/). The overarching goal of the project is to provide the field with a hub to facilitate longitudinal analysis learning and implementation. At present, the project is focused on two primary and overlapping goals. First is the development of an academic manuscript that provides a detailed overview of different types of longitudinal methods (see manuscript draft, attached). Second is the development of a basic website that contains code (primarily R code) that demonstrates longitudinal methods that can be used for their own purposes. To facilitate organization of this project I am building a Github Repository.
-
+```markdown
+<p align="center">
+  <a href="https://github.com/openresearchcollabs/LAP-ABCD/issues/new?assignees=&labels=bug&template=bug_report.md">Report Bug</a> •
+  <a href="https://github.com/openresearchcollabs/LAP-ABCD/issues/new?assignees=&labels=enhancement&template=feature_request.md">Request Feature</a> •
+  <a href="/docs/Contributing.md">Contribute</a>
+</p>
 
 
