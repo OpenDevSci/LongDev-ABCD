@@ -93,7 +93,7 @@ head(my_data)
 
 
 ## Introduction
-_Introduce the research topic, state the research problem, and outline the study's objectives. Provide background information to set the context. This is an exmaple in-text citation_ @netwok2020.
+_Introduce the research topic, state the research problem, and outline the study's objectives. Provide background information to set the context. This is an exmaple in-text citation_ @kenny2001.
 `r lorem::ipsum(paragraphs = 3)`
 
 
