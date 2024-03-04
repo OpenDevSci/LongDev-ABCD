@@ -6,11 +6,11 @@ project:
     - examples.qmd
     - index.qmd
     - manuscript.qmd
-    - 1a_Examples_DifferenceScores_PairedTtests.qmd
-    - 1b_Examples_DifferenceScores_SimpleRegression.qmd
-    - 2_Examples_ResidualizedChangeScores.qmd
-    - 3a_Examples_LinearMixedModels.qmd
-    - 3b_Examples_LinearMixedModels.qmd
+    # - 1a_Examples_DifferenceScores_PairedTtests.qmd
+    # - 1b_Examples_DifferenceScores_SimpleRegression.qmd
+    # - 2_Examples_ResidualizedChangeScores.qmd
+    # - 3a_Examples_LinearMixedModels.qmd
+    # - 3b_Examples_LinearMixedModels.qmd
     # - 4_Examples_SignedRankTest.qmd
     # - 5_Examples_MarginalModels.qmd
     # - 6_Examples_GeneralizedEstimatingEquations.qmd
@@ -54,7 +54,7 @@ website:
 
   sidebar:
     - title: "Manuscript"
-      logo: "./figures/lights.png"
+      logo: "./img/lights.png"
       pinned: true
       tools:
         - icon: github
@@ -68,70 +68,71 @@ website:
       background: light
       collapse-level: 1
       contents:
-        - manuscript.qmd
+       - manuscript.qmd
     - title: "Examples"
       contents:
         - examples.qmd
-        - section: "Traditional Linear Models"
-          contents:
-            - section: "Difference Scores"
-              contents:
-                - 1a_Examples_DifferenceScores_PairedTtests.qmd
-                - 1b_Examples_DifferenceScores_SimpleRegression.qmd
-            - section: "Residualized Change Scores"
-              contents:
-                - 2_Examples_ResidualizedChangeScores.qmd
-            - section: "Linear Mixed Models"
-              contents:
-                - 3a_Examples_LinearMixedModels.qmd
-                - 3b_Examples_LinearMixedModels.qmd
-        - section: "Traditional Non-linear Models"
-          contents:
-            - section: "Signed-Rank Test"
-              contents:
-                - 4_Examples_SignedRankTest.qmd
-            - section: "Marginal Models"
-              contents:
-                - 5_Examples_MarginalModels.qmd
-            - section: "Generalized Estimating Equations"
-              contents:
-                - 6_Examples_GeneralizedEstimatingEquations.qmd
-            - section: "Generalized Linear Mixed-Effects Models"
-              contents:
-                - 7_Examples_GeneralizedLinearMixedEffectsModels.qmd
-        - section: "SEM Approaches"
-          contents:
-            - section: "Autoregressive Crosslagged Panel Models"
-              contents:
-                - 8_Examples_AutoregressiveCrosslaggedPanelModels.qmd
-            - section: "Latent Change Scores Models"
-              contents:
-                - 9_Examples_LatentChangeScoresModels.qmd
-            - section: "LatentGrowthCurveModels"
-              contents:
-                - 10_Examples_LatentGrowthCurveModels.qmd
-            - section: "Multivariate Latent Growth Curve Models"
-              contents:
-                - 11_Examples_MultivariateLatentGrowthCurveModels.qmd
-            - section: "Latent Transition Analysis"
-              contents:
-                - 12_Examples_LatentTransitionAnalysis.qmd
-            - section: "Growth Mixture Models"
-              contents:
-                - 13_Examples_GrowthMixtureModels.qmd
-            - section: "State-Trait Models"
-              contents:
-                - 14_Examples_StateTraitModels.qmd
-        - section: "Advanced SEM"
-          contents:
-            - 15_Examples_RandomInterceptCrosslaggedPanelModels.qmd
-            - 16_Examples_LatentCurveModelsStructuredResiduals.qmd
-        - section: "Longitudinal Neuroimaging"
-          contents:
-            - blank.qmd
-        - section: "Twin Modeling & Genetics Designs"
-          contents:
-            - blank.qmd
+        # - section: "Traditional Linear Models"
+        #   contents:
+        #     - section: "Difference Scores"
+        #       contents:
+        #         - 1a_Examples_DifferenceScores_PairedTtests.qmd
+        #         - 1b_Examples_DifferenceScores_SimpleRegression.qmd
+        #     - section: "Residualized Change Scores"
+        #       contents:
+        #         - 2_Examples_ResidualizedChangeScores.qmd
+        #     - section: "Linear Mixed Models"
+        #       contents:
+        #         - 3a_Examples_LinearMixedModels.qmd
+        #         - 3b_Examples_LinearMixedModels.qmd
+        # - section: "Traditional Non-linear Models"
+        #   contents:
+        #     - section: "Signed-Rank Test"
+        #       contents:
+        #         - 4_Examples_SignedRankTest.qmd
+        #     - section: "Marginal Models"
+        #       contents:
+        #         - 5_Examples_MarginalModels.qmd
+        #     - section: "Generalized Estimating Equations"
+        #       contents:
+        #         - 6_Examples_GeneralizedEstimatingEquations.qmd
+        #     - section: "Generalized Linear Mixed-Effects Models"
+        #       contents:
+        #         - 7_Examples_GeneralizedLinearMixedEffectsModels.qmd
+        # - section: "SEM Approaches"
+        #   contents:
+        #     - section: "Autoregressive Crosslagged Panel Models"
+        #       contents:
+        #         - 8_Examples_AutoregressiveCrosslaggedPanelModels.qmd
+        #     - section: "Latent Change Scores Models"
+        #       contents:
+        #         - 9_Examples_LatentChangeScoresModels.qmd
+        #     - section: "LatentGrowthCurveModels"
+        #       contents:
+        #         - 10_Examples_LatentGrowthCurveModels.qmd
+        #     - section: "Multivariate Latent Growth Curve Models"
+        #       contents:
+        #         - 11_Examples_MultivariateLatentGrowthCurveModels.qmd
+        #     - section: "Latent Transition Analysis"
+        #       contents:
+        #         - 12_Examples_LatentTransitionAnalysis.qmd
+        #     - section: "Growth Mixture Models"
+        #       contents:
+        #         - 13_Examples_GrowthMixtureModels.qmd
+        #     - section: "State-Trait Models"
+        #       contents:
+        #         - 14_Examples_StateTraitModels.qmd
+        # - section: "Advanced SEM"
+        #   contents:
+        #     - 15_Examples_RandomInterceptCrosslaggedPanelModels.qmd
+        #     - 16_Examples_LatentCurveModelsStructuredResiduals.qmd
+        # - section: "Longitudinal Neuroimaging"
+        #   contents:
+        #     - blank.qmd
+        # - section: "Twin Modeling & Genetics Designs"
+        #   contents:
+        #     - blank.qmd
+
 format:
   html:
     toc: true
