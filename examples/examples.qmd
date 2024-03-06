@@ -1,0 +1,173 @@
+---
+#title: "Examples: A Brief Overview"
+format:
+  html:
+    css: styles.css
+    theme: cosmo
+    #page-layout: full
+    #grid:
+      #sidebar-width: 250px
+      #body-width: 2000px
+      #margin-width: 0px
+    #gutter-width: 1.5rem
+
+---
+
+## <i class="bi bi-book"></i> Examples
+
+::: {.grid}
+::: {.g-col-8}
+::: {style="text-align: justify; font-size: 1.2em; line-stretch: 1.0; font-family: Georgia, serif;"}
+[**Each Example**]{style="color: goldenrod; font-size: 1.2em; font-family: Verdana, sans-serif;"} uses data from the ABCD Study Dataset and provides a practical solution to a specific longitudinal method or analytic problem.
+
+:::
+:::
+
+::: {.g-col-4}
+
+:::
+:::
+
+```{=html}
+<section class="light">
+	<div class="container py-2">
+		<article class="postcard light blue">
+			<!-- <a class="postcard__img_link" href="#">
+				<img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" />
+			</a> -->
+			<div class="postcard__text t-dark">
+				<h1 class="postcard__title blue"><a href="#">Traditional Linear Models</a></h1>
+				<div class="postcard__bar"></div>
+				<ul class="postcard__tagbox">
+					<li class="tag__item play blue">
+						<a href="./1a_Examples_DifferenceScores_PairedTtests.qmd"><i class="fas fa-play
+						mr-2"></i>Difference Scores (Paired T-test)</a>
+						</li>
+					<li class="tag__item play blue">
+						<a href="./1b_Examples_DifferenceScores_SimpleRegression.qmd"><i class="fas fa-play
+						mr-2"></i>Difference Scores (Simple Regression)</a>
+						</li>
+					<li class="tag__item play blue">
+						<a href="./2_Examples_ResidualizedChangeScores.qmd"><i class="fas fa-play
+						mr-2"></i>Residualized Change Scores</a>
+						</li>
+					<li class="tag__item play blue">
+						<a href="./3a_Examples_LinearMixedModels.qmd"><i class="fas fa-play mr-2"></i>Linear Mixed
+						Models (Random Intercept)</a>
+					</li>
+					<li class="tag__item play blue">
+						<a href="./3b_Examples_LinearMixedModels.qmd"><i class="fas fa-play mr-2"></i>Linear Mixed
+						Models (Random Slope)</a>
+					</li>
+				</ul>
+			</div>
+		</article>
+		<article class="postcard light red">
+			<!-- <a class="postcard__img_link" href="#">
+				<img class="postcard__img" src="https://picsum.photos/501/500" alt="Image Title" />	
+			</a> -->
+			<div class="postcard__text t-dark">
+				<h1 class="postcard__title red"><a href="#">Traditional Nonlinear Models</a></h1>
+				<div class="postcard__bar"></div>
+				<div class="postcard__preview-txt">
+				<ul class="postcard__tagbox">
+				  <li class="tag__item play blue">
+						<a href="./_4_Examples_SignedRankTest.qmd"><i class="fas fa-play mr-2"></i>Signed-Rank
+						Test</a>
+						</li>
+					<li class="tag__item play blue">
+						<a href="./_5_Examples_MarginalModels.qmd"><i class="fas fa-play mr-2"></i>Marginal Models</a>
+						</li>
+						<li class="tag__item play blue">
+						<a href="./_6_Examples_GeneralizedEstimatingEquations.qmd"><i class="fas fa-play
+						mr-2"></i>Generalized
+						Estimating Equations</a>
+						</li>
+						<li class="tag__item play blue">
+						<a href="./_7_Examples_GeneralizedLinearMixedEffectsModels.qmd"><i class="fas fa-play
+						mr-2"></i>Generalized Linear
+						Mixed Effects Models</a>
+						</li>
+				</ul>
+			</div>
+		</article>
+		<article class="postcard light red">
+			<!-- <a class="postcard__img_link" href="#">
+				<img class="postcard__img" src="https://picsum.photos/601/600" alt="Image Title" />	
+			</a> -->
+			<div class="postcard__text t-dark">
+				<h1 class="postcard__title red"><a href="#">Structural Equation Models</a></h1>
+				<div class="postcard__bar"></div>
+				<div class="postcard__preview-txt">
+				<ul class="postcard__tagbox">
+				  <li class="tag__item play blue">
+						<a href="./_9_Examples_LatentChangeScoresModels.qmd"><i class="fas fa-play
+						mr-2"></i>Latent Change Score Models</a>
+						</li>
+					<li class="tag__item play blue">
+						<a href="./_10_Examples_LatentGrowthCurveModels.qmd"><i class="fas fa-play
+						mr-2"></i>Latent Growth Curve Models</a>
+						</li>
+					<li class="tag__item play blue">
+						<a href="./_12_Examples_LatentTransitionAnalysis.qmd"><i class="fas fa-play
+						mr-2"></i>Latent Transition Analysis</a>
+						</li>
+				</ul>
+			</div>
+		</article>
+		<article class="postcard light red">
+			<!-- <a class="postcard__img_link" href="#">
+				<img class="postcard__img" src="https://picsum.photos/500/653" alt="Image Title" />	
+			</a> -->
+			<div class="postcard__text t-dark">
+				<h1 class="postcard__title red"><a href="#">Advanced SEM</a></h1>
+				<div class="postcard__bar"></div>
+				<div class="postcard__preview-txt">
+				<ul class="postcard__tagbox">
+				  <li class="tag__item play blue">
+						<a href="./_15_Examples_RandomInterceptCrosslaggedPanelModels.qmd"><i class="fas fa-play
+						mr-2"></i>Random-Intercept Crosslagged Panel Model</a>
+						</li>
+						<li class="tag__item play blue">
+						<a href="./_16_Examples_LatentCurveModelsStructuredResiduals.qmd"><i class="fas fa-play
+						mr-2"></i>Latent Curve Models with Structured Residuals</a>
+						</li>
+				</ul>
+			</div>
+		</article>
+		<article class="postcard light red">
+			<!-- <a class="postcard__img_link" href="#">
+				<img class="postcard__img" src="https://picsum.photos/801/800" alt="Image Title" />	
+			</a> -->
+			<div class="postcard__text t-dark">
+				<h1 class="postcard__title red"><a href="#">Additional Models</a></h1>
+				<div class="postcard__bar"></div>
+				<div class="postcard__preview-txt">
+				<ul class="postcard__tagbox">
+				  <li class="tag__item"><i class="fas fa-tag mr-2"></i></li>
+					<li class="tag__item"><i class="fas fa-clock mr-2"></i></li>
+				</ul>
+			</div>
+		</article>
+		
+	</div>
+</section>
+```
+
+```{=html}
+<div class="d-flex flex-column justify-content-center w-100 h-100">
+
+	<div class="d-flex flex-column justify-content-center align-items-center">
+		<h1 class="fw-light text-white m-0">Pure CSS Gradient Background Animation</h1>
+		<div class="btn-group my-5">
+			<a href="https://codepen-api-export-production.s3.us-west-2.amazonaws.com/zip/PEN/pyBNzX/1578778289271/pure-css-gradient-background-animation.zip" class="btn btn-outline-light" aria-current="page"><i class="fas fa-file-download me-2"></i> SOURCE CODE</a>
+			<a href="https://codepen.io/P1N2O/full/pyBNzX" class="btn btn-outline-light">FULL SCREEN <i class="fas fa-expand ms-2"></i></a>
+		</div>
+		<a href="https://manuel.pinto.dev" class="text-decoration-none">
+			<h5 class="fw-light text-white m-0">— Pen by Manuel Pinto —</h5>
+		</a>
+	</div>
+</div>
+</div>
+```
+

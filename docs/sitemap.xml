@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://swhawes.github.io/abcd-biostats-longitudinal/examples.html</loc>
-    <lastmod>2023-11-05T15:34:46.720Z</lastmod>
+    <loc>https://swhawes.github.io/abcd-biostats-longitudinal/examples/1a_Examples_DifferenceScores_PairedTtests.html</loc>
+    <lastmod>2024-03-04T15:42:00.512Z</lastmod>
   </url>
   <url>
     <loc>https://swhawes.github.io/abcd-biostats-longitudinal/index.html</loc>
     <lastmod>2024-03-04T15:07:38.158Z</lastmod>
+  </url>
+  <url>
+    <loc>https://swhawes.github.io/abcd-biostats-longitudinal/examples/examples.html</loc>
+    <lastmod>2024-03-04T15:24:59.974Z</lastmod>
   </url>
 </urlset>

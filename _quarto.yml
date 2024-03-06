@@ -3,10 +3,10 @@ project:
   output-dir: docs
 
   render:
-    - examples.qmd
+    - examples/examples.qmd
     - index.qmd
-    - manuscript.qmd
-    # - 1a_Examples_DifferenceScores_PairedTtests.qmd
+    - manuscript/manuscript.qmd
+    - examples/1a_Examples_DifferenceScores_PairedTtests.qmd
     # - 1b_Examples_DifferenceScores_SimpleRegression.qmd
     # - 2_Examples_ResidualizedChangeScores.qmd
     # - 3a_Examples_LinearMixedModels.qmd
@@ -41,9 +41,9 @@ website:
       - text: "Home"
         file: index.qmd
       - text: "Manuscript"
-        file: manuscript.qmd
+        file: manuscript/manuscript.qmd
       - text: "ABCD Examples"
-        file: examples.qmd
+        file: examples/examples.qmd
     tools:
       - icon: github
         menu:
@@ -68,15 +68,15 @@ website:
       background: light
       collapse-level: 1
       contents:
-       - manuscript.qmd
+       - manuscript/manuscript.qmd
     - title: "Examples"
       contents:
-        - examples.qmd
-        # - section: "Traditional Linear Models"
-        #   contents:
-        #     - section: "Difference Scores"
-        #       contents:
-        #         - 1a_Examples_DifferenceScores_PairedTtests.qmd
+        - examples/examples.qmd
+        - section: "Traditional Linear Models"
+          contents:
+            - section: "Difference Scores"
+              contents:
+                - 1a_Examples_DifferenceScores_PairedTtests.qmd
         #         - 1b_Examples_DifferenceScores_SimpleRegression.qmd
         #     - section: "Residualized Change Scores"
         #       contents:

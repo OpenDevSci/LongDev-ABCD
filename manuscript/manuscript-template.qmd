@@ -1,0 +1,177 @@
+---
+title: "midFEMA Manuscript"
+authors:
+  - name: Samuel W. Hawes
+    email: "shawes@fiu.edu"
+    affiliations:
+      - name: Florida International University
+        department: Psychology
+        city: Miami
+        state: Florida
+        country: United States
+  - name: Mohammadreza Bayat
+    email: "mbayat@fiu.edu"
+    affiliations:
+      - name: Florida International University
+        department: Psychology
+        city: Miami
+        state: Florida
+        country: United States
+  - name: Anthony Dick
+    email: "adick@fiu.edu"
+    affiliations:
+      - name: Florida International University
+        department: Psychology
+        city: Miami
+        state: Florida
+        country: United States
+  - name: Raul Gonzalez
+    email: "gonzara@fiu.edu"
+    affiliations:
+      - name: Florida International University
+        department: Psychology
+        city: Miami
+        state: Florida
+        country: United States
+  - name: Additional Co-authors
+    email: "tbd@fiu.edu"
+    affiliations:
+      - name: Florida International University
+        department: Psychology
+        city: Miami
+        state: Florida
+        country: United States
+
+abstract: |
+  The midFEMA research project is aimed at identifying and analyzing neurodevelopmental biomarkers for severe behavioral and emotional problems in youth. By leveraging Fast and Efficient Mixed‐Effects Analysis (FEMA) in conjunction with voxelwise task-based reward activation measurements, we aim to uncover insights into brain development and functioning across a large, prospectively followed sample of approximately 9,000 youth aged 9–16 years from the Adolescent Brain and Cognitive Development (ABCD) study.
+index-terms: 
+  - Longitudinal
+  - fMRI
+  - DBD
+  - FEMA
+  - MID
+format:
+  ieee-typst: default
+bibliography: references.bib
+---
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+library(lorem)
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+df <- mtcars
+str(df)
+```
+
+
+```{r}
+# Set the URL for the CSV file
+# file_url <- "https://drive.google.com/uc?export=download&id=1QFdAFz09DQEeFVOj8bRWh4g6hK4b4Qj1"
+
+file_url <- "https://fiudit-my.sharepoint.com/:x:/r/personal/shawes_fiu_edu/Documents/abcd-data/df_preclean.csv?d=wb8eb1be9fdce4edcbbbca8f8eb804633&csf=1&web=1&e=LiuHzu"
+
+# Set the destination filename
+dest_file <- "df_preclean.csv"
+
+# Download the file
+download.file(file_url, destfile = dest_file, mode = "wb")
+
+# Read the CSV file into R
+my_data <- read.csv(dest_file)
+
+# Display the first few rows of the data
+head(my_data)
+
+```
+
+
+## Introduction
+_Introduce the research topic, state the research problem, and outline the study's objectives. Provide background information to set the context. This is an exmaple in-text citation_ @kenny2001.
+`r lorem::ipsum(paragraphs = 3)`
+
+
+### Background
+_Provide a brief review of the pertinent literature, highlighting the gaps your study aims to fill._
+`r lorem::ipsum(paragraphs = 2)`
+
+
+### Objectives
+_State the specific research questions or hypotheses your study addresses._
+`r lorem::ipsum(paragraphs = 2)`
+
+
+## Methods
+_Describe the methodological approach, detailing how the study was conducted, how data was collected, and how analyses were performed._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+### Participants
+_Describe the demographic characteristics of the study participants, including how they were selected, recruited, and any inclusion or exclusion criteria._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+### Measures
+_List the instruments or tools used to collect data, describing each measure's purpose and any relevant psychometric properties._
+`r lorem::ipsum(paragraphs = 2)`
+
+
+### Analytic Plan
+_Detail the statistical tests or models employed to analyze the data, including any software used._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+## Results
+Present the findings of the study, supported by statistical analysis, tables, and figures as necessary.
+`r lorem::ipsum(paragraphs = 3)`
+
+
+### [Subsection Title]
+_Present specific findings related to a particular aspect of the study, supported by data._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+### [Subsection Title]
+_Discuss another set of findings, providing details on the analysis and interpretation._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+## Discussion
+_Interpret the results, discussing their implications in the context of existing literature. Address the study's limitations and suggest directions for future research._
+`r lorem::ipsum(paragraphs = 3)`
+
+
+### Limitations
+_Acknowledge any limitations of your study and their potential impact on the findings._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+### Future Directions
+_Suggest areas for future research that could build on your findings or address limitations._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+## Conclusion
+_Summarize the main findings and their implications. Conclude with a statement that reflects the significance of the study and its contributions to the field._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+## Acknowledgments
+_Acknowledge anyone who contributed to the research but does not meet authorship criteria, along with any funding sources._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+## Appendices
+_Include any additional material that is pertinent to the study but would be too distracting or bulky to include in the main body of the manuscript._
+`r lorem::ipsum(paragraphs = 1)`
+
+
+
