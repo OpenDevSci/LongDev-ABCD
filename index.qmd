@@ -3,7 +3,7 @@
 
 format:
   html:
-    css: styles.css
+    #css: styles.css
     #theme: cosmo
     page-layout: custom
     grid:
