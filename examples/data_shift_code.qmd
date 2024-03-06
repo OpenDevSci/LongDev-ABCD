@@ -1,0 +1,96 @@
+```{r read-data}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+#| cache: FALSE
+
+# Set the data paths
+data_path_1 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"
+data_path_2 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+data_demographics <- readRDS(data_path_1)
+data_nonimaging <- readRDS(data_path_2)
+
+# Subset the nonimaging data to include desired variables
+selected_vars <- c("src_subject_id", "eventname", "nihtbx_totalcomp_fc", "anthroweightcalc", "anthroweightcalc")
+subset_data <- data_nonimaging[, selected_vars]
+
+library(dplyr)
+# # Merge the datasets on 'src_subject_id' and 'eventname'
+merged_data <- data_demographics %>%
+  full_join(subset_data, by = c("src_subject_id", "eventname"))
+
+# Inspect the merged data structure
+str(merged_data)
+
+# Define event names to be retained in the analysis and convert variables to appropriate data types
+eventnames_to_include <- c("baseline_year_1_arm_1",
+                           "1_year_follow_up_y_arm_1",
+                           "2_year_follow_up_y_arm_1",
+                           "3_year_follow_up_y_arm_1",
+                           "4_year_follow_up_y_arm_1")
+
+df <- merged_data %>%
+  filter(eventname %in% eventnames_to_include) %>%
+  mutate(
+    src_subject_id = as.factor(src_subject_id),
+    eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),
+    age = as.numeric(age),
+    sex = as.factor(sex),
+    race.4level = as.factor(race.4level),
+    hisp = as.factor(hisp),
+    high.educ.bl = as.factor(high.educ.bl),
+    household.income.bl = as.factor(household.income.bl),
+    acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),
+    rel_family_id.bl = as.factor(rel_family_id.bl),
+    site_id_l = as.factor(site_id_l),
+    nihtbx_totalcomp_fc = as.numeric(nihtbx_totalcomp_fc),
+    anthroweightcalc = as.numeric(anthroweightcalc),
+    anthroweightcalc = as.numeric(anthroweightcalc)
+  ) %>%
+  # Exclude cases from unused assessment waves
+  filter(!is.na(eventname))
+```
+
+-----
+
+```{r}
+
+Randomly drawn subsample
+# Assuming your dataframe is named df
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Calculate the number of rows to sample (30% of the dataset)
+sample_size <- floor(0.3 * nrow(df))
+
+# Randomly sample row indices
+sampled_indices <- sample(x = 1:nrow(df), size = sample_size)
+
+# Subset the dataframe using the sampled indices
+df_sampled <- df[sampled_indices, ]
+
+# df_sampled now contains a random 30% cross-section of the full dataset
+
+```
+
+----
+
+
+```{r}
+# Generating random/unique participant IDs
+set.seed(123) # For reproducibility
+# Create a vector of random unique IDs
+new_ids <- sample(10000:99999, size = nrow(df_sampled), replace = FALSE)
+
+# Assign the new IDs to the participant_id column or to a new column
+df_sampled$new_participant_id <- new_ids
+
+# Optionally, if you want to replace the original ID column:
+df_sampled$participant_id <- df_sampled$new_participant_id
+
+
+```
