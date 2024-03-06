@@ -149,6 +149,37 @@ df <- merged_data %>%
 ```
 :::
 
+
+----
+
+
+```{r}
+# Install and load the googledrive package
+if (!requireNamespace("googledrive", quietly = TRUE)) install.packages("googledrive")
+library(googledrive)
+
+# Authenticate with Google Drive
+
+
+# Specify the file ID and the destination path
+file_id <- "1_gnaEx0wJ28tT0CD_B6mPFwngdfSb6Dr" # Replace with your actual file ID
+dest_file <- "my_data.rds" # Specify your destination path
+
+# Download the file
+drive_download(as_id(file_id), path = dest_file, overwrite = TRUE)
+
+# Load the .rds file for analysis
+my_data <- readRDS(dest_file)
+
+# Begin your analysis (example: view the first few rows)
+head(my_data)
+
+
+```
+
+----
+
+
 ### Descriptives
 
 ::: blue
