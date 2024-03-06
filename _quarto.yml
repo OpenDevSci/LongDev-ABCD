@@ -29,7 +29,7 @@ website:
   title: "Longitudinal Analysis"
   favicon: "./img/lights.png"
   twitter-card: true
-  site-url: https://swhawes.github.io/abcd-biostats-longitudinal/
+  site-url: https://openresearchcollabs.github.io/LAP-ABCD/
   page-navigation: true
   open-graph: true
   navbar:
@@ -48,9 +48,9 @@ website:
       - icon: github
         menu:
           - text: Source Code
-            url: https://github.com/swhawes/abcd-biostats-longitudinal
+            url: https://github.com/openresearchcollabs/LAP-ABCD
           - text: Report a Bug
-            url: https://github.com/swhawes/abcd-biostats-longitudinal/issues
+            url: https://github.com/openresearchcollabs/LAP-ABCD/issues
 
   sidebar:
     - title: "Manuscript"
@@ -60,9 +60,9 @@ website:
         - icon: github
           menu:
             - text: Source Code
-              url: https://github.com/swhawes/abcd-biostats-longitudinal
+              url: https://github.com/openresearchcollabs/LAP-ABCD
             - text: Report a Bug
-              url: https://github.com/swhawes/test/abcd-biostats-longitudinal
+              url: https://github.com/openresearchcollabs/LAP-ABCD/issues
       style: "docked"
       search: true
       background: light
