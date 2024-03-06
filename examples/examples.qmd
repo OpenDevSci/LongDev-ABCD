@@ -1,9 +1,9 @@
 ---
 #title: "Examples: A Brief Overview"
-format:
-  html:
-    css: styles.css
-    theme: cosmo
+# format:
+#   html:
+    # css: styles.css
+    # theme: cosmo
     #page-layout: full
     #grid:
       #sidebar-width: 250px

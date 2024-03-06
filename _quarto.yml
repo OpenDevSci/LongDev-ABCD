@@ -1,6 +1,6 @@
 project:
   type: website
-  output-dir: docs
+  output-dir: site
 
   render:
     - examples/examples.qmd
@@ -172,4 +172,4 @@ execute:
   dev: "cairo_pdf"
   freeze: auto # re-render only when source changes
 
-bibliography: references.bib
+bibliography: manuscript/references.bib
