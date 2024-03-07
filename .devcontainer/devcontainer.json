@@ -7,5 +7,5 @@
   "settings": {    
     "terminal.integrated.shell.linux": "/bin/bash"
   },
-  "postCreateCommand": "R -e 'install.packages(c(\"tidyverse\", \"lorem\"), repos = \"https://cloud.r-project.org/\")'"
+  "postCreateCommand": "R -e 'install.packages(c(\"tidyverse\", \"lme4\"), repos = \"https://cloud.r-project.org/\")'"
 }
