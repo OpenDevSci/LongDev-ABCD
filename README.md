@@ -22,7 +22,7 @@
 </p>
 
 <p align="center">
-tags: 'Longitudinal Analysis', 'ABCD Study', `Biostatistics`, `Open Science`, `R Programming`
+tags: Longitudinal Analysis, ABCD Study, Biostatistics, Open Science, R Programming
 </p>
 
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
@@ -49,6 +49,10 @@ The Longitudinal Analysis Portal (LAP) serves as an open-source hub designed to 
 
 ## Features
 
+- See Github Projects page??
+- Find Markdown, git/github, ide/vscode, quarto videos/tutorials
+
+
 - **Comprehensive Method Overviews**: Detailed explanations and comparisons of various longitudinal analysis methods.
 - **R Code Snippets**: Ready-to-use code examples to help researchers apply methods to their own data.
 - **Collaborative Environment**: Tools and guidelines for contributing to both the academic manuscript and codebase.
@@ -67,13 +71,6 @@ To get a local copy up and running follow these simple steps.
    ```
 
 [Additional steps specific to the project]
-
-### Prerequisites
-R (Version xx or later)
-[Other prerequisites]
-
-### Usage
-For examples on how to use the provided R code snippets for your analysis, please refer to the Usage section.
 
 ## Contributing
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated. Check out our [Contribution Guide](docs/Contributing.md) for more information on how to get started.
