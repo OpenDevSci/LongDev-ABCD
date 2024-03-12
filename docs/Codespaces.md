@@ -37,6 +37,7 @@ This badge is also prominently displayed at the top of our project's root README
 ---
 insert gif/video
 
+![](https://github.com/OpenDevSci/LongDev-ABCD/blob/dev/img/Codespace_Example.gif)
 
 
 ---
