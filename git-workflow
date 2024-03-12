@@ -1,147 +1,44 @@
 
-I have updated the name of my `Github Organization` from `OpenResearchCollabs` (https://github.com/orgs/OpenResearchCollabs/) to OpenDevSci (https://github.com/orgs/OpenDevSci/). The Organization includes 7 total repositories and each was created prior to changing the organization name. As such, I believe I need to change/update the remote repository URL's. If this is correct, please provide the relevant information/code need to complete this task. 
 
 
-LAP-ABCD
-SUNLab
-midFEMA
-Turing-Template
-midFEMA-template
-BEGIN
-ABWG-Longitudinal
 
 
----
 
-If you truly have “months” before your new colleagues arrive, the most kind thing you can do for them is to have a really smooth development environment provisioning experience. Doesn’t really matter how you do it, could be with Nix, Docker, CodeSpaces, or just running a shell script to set up their machine. There should be one document with correct instructions to turn a new laptop into a fully authorized and updated endpoint, ready to run your software and check in code.
+Development Environment Setup
+Objective: Ensure new team members have a smooth start by setting up their development environment efficiently.
 
+Tools Options: Consider Nix, Docker, CodeSpaces, or shell scripts for machine setup.
+Documentation: Provide a detailed document outlining steps to transform a new laptop into a fully authorized and updated endpoint, ready to run software and check in code.
+Onboarding Schedule and Expectations
+Objective: Give new hires a clear roadmap for their initial weeks, focusing on essential tasks and learning objectives.
 
----
+Day 1-3: Setup email, Slack, and laptop.
+Day 3-5: Introduction to accessing and using XYZ system.
+Day 6-7: Deploy to staging environment.
+Day 8-10: Write and check in scripts for simple tasks.
+Resource: A single sheet including key contacts, internal sites to review, temporary credentials, and two-week goals.
+Git Workflow and Commands
+Objective: Simplify Git learning curve with a focus on basic commands and workflows.
 
-One thing I find useful is provide a single sheet of paper with the names of key people they should talk to, internal websites they should review, temporary access credentials, and a list of things they’re expected to accomplish in the first two weeks.
+Basics: Architecture, Git vs. GitHub, file stages.
+Simple Workflow: Emphasize commits and branches. Introduce Pull Requests (PRs) with team demonstrations.
+Avoid Complexity: Limit initial exposure to advanced features like tagging, stashes, or rebasing.
+Visual Studio Integration: Provide guidance on executing Git commands within Visual Studio, enhancing toolset familiarity.
+Documentation and Training
+Objective: Foster self-sufficiency and adherence to best practices through comprehensive documentation.
 
-Day 1-3: Get email, slack, laptop setup. Day 3-5: Learn how to access and use XYZ system Day 6-7: Deploy such-n-such to staging Day 8-10: Write and check in scripts to do something simple
+README Guidelines: Steps for creating pull/merge requests, branch naming strategies, and code formatting requirements.
+Goals and Training: Set 1, 2, and 3-month goals. Offer access to training materials and a project mimicking the production environment.
+Exposure: Assign tasks to expose team members to new aspects of the stack, utilizing their strengths and facilitating growth.
+Team Integration and Morale
+Objective: Integrate new members into the team, fostering collaboration and ensuring they feel valued and effective.
 
-I’ve found that having a single source of necessary information for the first couple of weeks helps provide some structure and direction and let’s them know what’s expected of them.
+Collaborative Tasks: Assign work that encourages exploration and deep dives into the stack, especially for teams integrating multiple new members simultaneously.
+Peer Learning: Pair new members with experienced colleagues for guidance on tasks and workflows.
+Impactful Projects: Assign meaningful projects with clear deadlines to demonstrate trust and set realistic expectations without pressure.
+Git Advanced Workflow Assumptions
+Workflow Overview: Centralized coordination through GitHub/GitLab, protected main branch, feature branch development, and PR-based changes.
 
-diagrams
-
----
-
-Right now I have Git Basics (architecture, Git != Github, the different stages files can be in) and I have one for "Generic Workflow", so people who don't need the more advanced concepts just have the commands they need to upload and download stuff.
-
-Bonus points for OP if they can show how to do stuff from within Visual Studio. Maybe add a column to the table above that tells people how to do stuff with the VS tools.
-
----
-
-Absolutely. The average developer only needs to know a handful of commands for basic day to day use. Diving straight into the internals just makes it more daunting and complicated than it needs to be.
-
-start with a simple workflow
-
-No need for tagging, stashes or rebasing.
-
-Start with commits and branches. That's all folk will need to get started.
-
-Then when one person is done with a task, get the whole team together and demonstrate a PR.
-
-The rest is extra, no need to overload them if it's so new.
-
-Yeah I agree with this. With simple commits and branches that should take care of 90% of what they need.
-
-Maybe I've just had bad experiences, but many times in my career I've heard a coworker say, "I tried to rebase..." and it basically put them out of commission for a while as they tried to fix the result.
-
----
-
-In our README’s, we always put the steps on how to create a pull/merge request. One for features, one for enhancements, another for fixes. Essentially the steps are the same, they just differ in branch naming strategies.
-
-We also add there the need to run the code formatter before pushing the changes to the remote repo.
-
----
-
-As a manager I set them 1, 2 and 3 month goals
-
-I give them access to training
-
-Created a training project that goes over stuff like standing up a cluster, dns and cert management, deploying different things on K8s (primarily a K8s shop) which mimic our environments
-
-Give them about 4-6 weeks to complete
-
-Then start giving small tasks and work up to bigger ones about 3 months in
-
---
-
-Assign them work that exposes them to things they aren't familiar with to help them grow.
-
-Give them tasks that leverage their existing strengths to bolster their morale.
-
-Have more experienced team members pair with them to walk them through how to do stuff.
----
-
-Assign them work that exposes them to things they aren't familiar with to help them grow.
-
-Give them tasks that leverage their existing strengths to bolster their morale.
-
-Have more experienced team members pair with them to walk them through how to do stuff.
-
-And yeah all that documentation sounds great.
-
-This but unironically. Give new team members a reason to to a deep dive into a particular area of your stack and collaborate, especially if you’re getting multiple new folks in a short period of time. Helping people feel valued and useful is really important, especially early on when everyone is getting to know each other.
-
-The important thing is to give people agency and set them up to have impact. That’s how you reduce burnout and have a really effective team.
-
-Give them a deadline in order to set expectations for project scope (make as much progress as you can on a big problem in a month) and not to put on pressure (we need this Monday or A CLIENT WILL BE UPSET).
-
----
-
-Establish Clear Branching Strategy:
-Frequent Pulling and Pushing:
-Utilize Feature Branches:
-
-
-
----
-
-my git workflow assumptions
-First, I know that people use a lot of different Git workflows. I’m going to be talking about the workflow I’m used to when working on a team, which is:
-
-the team uses a central Github/Gitlab repo to coordinate
-there’s one central main branch. It’s protected from force pushes.
-people write code in feature branches and make pull requests to main
-The web service is deployed from main every time a pull request is merged.
-the only way to make a change to main is by making a pull request on Github/Gitlab and merging it
-
-first do a git rebase -i HEAD^^^^^^^^^^^ to squash all of the tiny commits into 1 big commit and then a git rebase main to rebase onto a different branch. Then you only have to fix the conflicts once.
-
-Also if I find myself resolving merge conflicts more than once in a rebase, I’ll usually run git rebase --abort to stop it and then squash my commits into one and try again
-
-rebasing a lot of commits is hard
-Generally when I’m doing a rebase onto a different branch, I’m rebasing 1-2 commits. Maybe sometimes 5!
-
-don’t rebase on shared branches
-
-To avoid this, I personally prefer to only do 1 thing per rebase, and if I want to do 2 different things I’ll do 2 rebases.
-
-To recap, I think these are my personal rebase rules I follow:
-
-stop a rebase if it’s going badly instead of letting it finish (with git rebase --abort)
-know how to use git reflog to undo a bad rebase
-don’t rebase a million tiny commits (instead do it in 2 steps: git rebase -i HEAD^^^^ and then git rebase main)
-don’t do more than one thing in a git rebase -i. Keep it simple.
-never force push to a shared branch
-never rebase commits that have already been pushed to main
-
-(a) if you decide to squash before merging, then all of those individual commits from your feature branch will be combined into a single commit. The main commit history, therefore, will only show a single commit for this integration.
-(b) if you decide AGAINST squashing, all of your individual commits will be preserved as such.
-
-Some teams see a possible advantage in going with (a) and using squash: instead of many individual commits which might be unnecessary and potentially overwhelming, only a single commit appears in the main commit history. This can be helpful in keeping things orderly!
-
-You can manually squash your commits at any time using Git's "Interactive Rebase" feature.
-
-Let's say you have completed your work on a new feature branch (in the below example "feature/login") and now want to merge it back into the "main" branch. But before doing so, you'd like to clean up and squash the new commits into a single one:
-
-We can do so by starting an Interactive Rebase session:
-
-$ git rebase -i HEAD~3
-
-Squashing is also an option when merging branches:
-
+Rebasing: Simplify by focusing on a small number of commits. Utilize git rebase --abort in case of issues and avoid rebasing on shared branches.
+Commit Squashing: Consider squashing for a cleaner main branch history, using interactive rebase or squashing during branch merges.
+Branching Strategy: Establish clear guidelines for frequent pulling/pushing and the use of feature branches.
