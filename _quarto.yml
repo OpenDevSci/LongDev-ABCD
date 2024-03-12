@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: site
+  resources: 
+    - "webr-serviceworker.js"
+    - "webr-worker.js"
 
   render:
     - examples/examples.qmd
