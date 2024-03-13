@@ -34,8 +34,7 @@ Remember, Codespaces provide a fully configured development environment to help 
 
 This badge is also prominently displayed at the top of our project's root README for quick access.
 
----
-insert gif/video
+--
 
 ![](https://github.com/OpenDevSci/LongDev-ABCD/blob/dev/img/Codespace_Example.gif)
 

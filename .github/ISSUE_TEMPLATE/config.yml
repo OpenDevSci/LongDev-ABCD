@@ -4,11 +4,11 @@ blank_issues_enabled: false  # Disables the ability for contributors to open a b
 
 contact_links:
   - name: Project Wiki
-    url: https://github.com/openresearchcollabs/LAP-ABCD/wiki
+    url: https://github.com/OpenDevSci/LongDev-ABCD/wiki
     about: Please check our wiki for a detailed documentation before submitting an issue.
 
   - name: General Inquiry
-    url: https://github.com/openresearchcollabs/LAP-ABCD/discussions
+    url: https://github.com/OpenDevSci/LongDev-ABCD/discussions
     about: Have a question or need clarification? Start a discussion instead.
 
 issue_forms:

@@ -1,3 +1,11 @@
+
+- See Github Projects page??
+- Find Markdown, git/github, ide/vscode, quarto videos/tutorials
+- use gpt to help create and organize tasklisks and such for the Projects Board
+- Need to add info and link to the project within the readme and/or other files
+
+
+
 <a name="readme-top"></a>
 
 [![](https://github.com/codespaces/badge.svg)](https://codespaces.new/openresearchcollabs/LAP-ABCD?quickstart=1)
@@ -13,7 +21,7 @@
 <p align="center">
   <strong>Empowering Longitudinal Analysis through Open Collaboration.</strong>
   <br />
-  A hub for learning, sharing, and implementing longitudinal analysis methods within the Adolescent Brain and Cognitive Development (ABCD) study.
+  A hub for learning, sharing, and implementing longitudinal analysis methods using data from the Adolescent Brain and Cognitive Development (ABCD) Study.
   <br />
   <a href="https://github.com/OpenDevSci/LongDev-ABCD"><strong>Explore the Documentation »</strong></a>
   <br />
@@ -45,13 +53,9 @@ tags: Longitudinal Analysis, ABCD Study, Biostatistics, Open Science, R Programm
 
 ## About the Project
 
-The Longitudinal Analysis Portal (LAP) serves as an open-source hub designed to foster collaboration, learning, and application of longitudinal analysis methods. This project, underpinned by data from the ABCD study, aims to bridge the gap between complex biostatistical methods and their practical implementation. Through LAP, we seek to advance the understanding of adolescent brain and cognitive development by enabling researchers and students alike to access, contribute to, and learn from a rich repository of knowledge and code.
+This repository is intended to serve as an open-source hub designed to foster collaboration, learning, and application of longitudinal analysis methods. This project, underpinned by data from the ABCD study, aims to bridge the gap between statistical methods and their practical implementation. A primary aim is to enable researchers and students alike to access, contribute to, and learn from a rich repository of knowledge and code.
 
 ## Features
-
-- See Github Projects page??
-- Find Markdown, git/github, ide/vscode, quarto videos/tutorials
-
 
 - **Comprehensive Method Overviews**: Detailed explanations and comparisons of various longitudinal analysis methods.
 - **R Code Snippets**: Ready-to-use code examples to help researchers apply methods to their own data.
