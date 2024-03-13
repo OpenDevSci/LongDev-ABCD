@@ -1,11 +1,41 @@
 {
-  "name": "Example_1a",
   "image": "ghcr.io/rocker-org/verse:latest",
   "features": {
     "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {}
   },
-  "settings": {    
-    "terminal.integrated.shell.linux": "/bin/bash"
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Ikuyadeu.r",
+        "quarto.quarto",
+        "REditorSupport.r-extension-pack",
+        "esbenp.prettier-vscode",
+        "yzhang.markdown-all-in-one",
+        "ms-azuretools.vscode-docker",
+        "ms-toolsai.jupyter",
+        "ms-python.python",
+        "eamodio.gitlens",
+        "ms-vscode-remote.remote-containers",
+        "janisdd.vscode-edit-csv",
+        "GitHub.codespaces",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-pull-request-github",
+        "MS-vsliveshare.vsliveshare",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.python-extension-pack",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode-remote.remote-ssh-edit",
+        "ms-vscode-remote.remote-explorer",
+        "tomoki1207.pdf",
+        "ms-vscode-remote.remote-wsl"
+      ],
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      }
+    }
   },
-  "postCreateCommand": "R -e 'install.packages(c(\"tidyverse\", \"lme4\"), repos = \"https://cloud.r-project.org/\")'"
+  "postCreateCommand": "R -e 'install.packages(c(\"tidyverse\", \"easystats\", \"psych\", \"semTools\", \"report\", \"broom\", \"rstatix\", \"lme4\", \"lavaan\", \"geepack\", \"glmmTMB\", \"tidyLPA\", \"lcsm\", \"DT\", \"gtsummary\", \"gridExtra\", \"SDSDiff\", \"GPArotation\", \"SBSDiff\", \"dmacs\"), repos = \"https://cloud.r-project.org/\")'"
 }
+
