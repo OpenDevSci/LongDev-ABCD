@@ -1,127 +1,59 @@
 {
-    "css.lint.unknownAtRules": "ignore",
-    "window.zoomLevel": 3,
-    "[html]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[vue]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "editor.formatOnSave": true,
-    "eslint.validate": ["vue"],
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit"
-    },
-    "security.workspace.trust.untrustedFiles": "open",
-    "liveServer.settings.donotShowInfoMsg": true,
-    "diffEditor.ignoreTrimWhitespace": false,
-    "editor.wordWrap": "on",
-    "cSpell.userWords": [
-      "aliquid",
-      "biopsychosocial",
-      "codebox",
-      "daisyui",
-      "dataframe",
-      "dbname",
-      "jsons",
-      "lgcm",
-      "LSEM",
-      "Neuroimaging",
-      "Pinia",
-      "rushstack",
-      "shawes",
-      "tabset",
-      "tailwindcss",
-      "template",
-      "testb",
-      "textbox",
-      "unde",
-      "vitejs",
-      "vitest"
-    ],
-    "editor.accessibilitySupport": "off",
-    "tabnine.experimentalAutoImports": true,
-    "files.autoSave": "afterDelay",
-    "git.autofetch": true,
-    "workbench.iconTheme": "material-icon-theme",
-    "emmet.includeLanguages": {
-      "javascript": "javascriptreact"
-    },
-    "cSpell.ignoreWords": [
-      "AAPS",
-      "Avenir",
-      "Vite",
-      "abcdlap",
-      "barchart",
-      "dbname",
-      "nuxt",
-      "nuxtjs",
-      "semibold",
-      "zzzzzzzzzzasfascasdc"
-    ],
-    "workbench.startupEditor": "none",
-    "terminal.integrated.enableMultiLinePasteWarning": false,
-    "terminal.integrated.commandsToSkipShell": ["language-julia.interrupt"],
-    "julia.symbolCacheDownload": true,
-    "julia.enableTelemetry": true,
-    "quarto.mathjax.theme": "dark",
-    "liveServer.settings.donotVerifyTags": true,
-    "explorer.confirmDragAndDrop": false,
-    "python.defaultInterpreterPath": "/Users/shawes/opt/anaconda3/bin/python3.9",
-    "python.terminal.activateEnvironment": false,
-    "editor.unicodeHighlight.invisibleCharacters": false,
-    "terminal.integrated.inheritEnv": true,
-    "julia.executablePath": "/Applications/Julia-1.7.app/Contents/Resources/julia/bin/julia",
-    "git.confirmSync": false,
-    "r.rpath.mac": "/usr/local/bin/R",
-    "editor.minimap.size": "fill",
-    "Lua.workspace.supportScheme": ["file", "default"],
-    "[python]": {
-      "editor.formatOnType": true
-    },
-    "cSpell.enableFiletypes": ["r", "rmd"],
-    "[yaml]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[jsonc]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "quarto.render.previewType": "external",
-    "jupyter.interactiveWindow.creationMode": "perFile",
-    "editor.inlineSuggest.enabled": true,
-    "remote.SSH.defaultExtensions": ["gitpod.gitpod-remote-ssh"],
-    "r.libPaths": [
-      "/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/bin/R"
-    ],
-    "github.copilot.enable": {
-      "quarto": true
-    },
-    "files.associations": {
-      "*.css": "tailwindcss",
-      "*.R": "r"
-    },
-    "editor.quickSuggestions": {
-      "strings": true
-    },
-    "r.rpath.linux": "/usr/local/bin/R",
-    "r.plot.useHttpgd": true,
-    "terminal.integrated.automationProfile.linux": {},
-    "r.rterm.linux": "/usr/local/bin/R",
-    "r.rterm.mac": "/usr/local/bin/R",
-    "r.alwaysUseActiveTerminal": false,
-    "terminal.integrated.automationProfile.windows": {},
-    "tailwindCSS.experimental.configFile": null,
-    "nuxtr.defaultPackageManager": "NPM",
-    "nuxtr.piniaFiles.defaultTemplate": "setup",
-    "terminal.integrated.defaultProfile.linux": "bash",
-    "[r]": {
-      "editor.wordBasedSuggestions": "off"
-    },
-    "terminal.integrated.automationProfile.osx": {},
-    "terminal.integrated.defaultProfile.osx": "bash",
-    "git.enableSmartCommit": true,
-    "workbench.settings.applyToAllProfiles": [
-      
-    ]
+  "css.lint.unknownAtRules": "ignore",
+  "editor.formatOnSave": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.wordWrap": "on",
+  "editor.accessibilitySupport": "off",
+  "files.autoSave": "afterDelay",
+  "git.autofetch": true,
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.startupEditor": "none",
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "quarto.mathjax.theme": "dark",
+  "explorer.confirmDragAndDrop": false,
+  "editor.unicodeHighlight.invisibleCharacters": false,
+  "terminal.integrated.inheritEnv": true,
+  "git.confirmSync": false,
+  "r.rpath.mac": "/usr/local/bin/R",
+  "editor.minimap.size": "fill",
+  "cSpell.enableFiletypes": ["r", "rmd"],
+  "quarto.render.previewType": "external",
+  "jupyter.interactiveWindow.creationMode": "perFile",
+  "editor.inlineSuggest.enabled": true,
+  "r.libPaths": [
+    "/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/bin/R"
+  ],
+  "github.copilot.enable": {
+    "quarto": true
+  },
+  "files.associations": {
+    "*.R": "r"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "r.rpath.linux": "/usr/local/bin/R",
+  "r.plot.useHttpgd": true,
+  "r.rterm.linux": "/usr/local/bin/R",
+  "r.rterm.mac": "/usr/local/bin/R",
+  "r.alwaysUseActiveTerminal": false,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "[r]": {
+    "editor.wordBasedSuggestions": "off"
+  },
+  "terminal.integrated.defaultProfile.osx": "bash",
+  "git.enableSmartCommit": true,
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.formatOnType": true
   }
-  
+}
