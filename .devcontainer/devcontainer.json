@@ -36,7 +36,7 @@
       }
     }
   },
-  "postCreateCommand": "R -e 'install.packages(c(\"tidyverse\"), repos = \"https://cloud.r-project.org/\")' && R -e 'install.packages(\"languageserver\", repos = \"https://cloud.r-project.org/\")'"
+  "postCreateCommand": "R -e 'install.packages(c(\"tidyverse\", \"easystats\", \"psych\", \"semTools\", \"report\", \"broom\", \"rstatix\", \"lme4\", \"lavaan\", \"gtsummary\", \"gridExtra\"), repos = \"https://cloud.r-project.org/\")' && R -e 'install.packages(\"languageserver\", repos = \"https://cloud.r-project.org/\")'"
 }
 
 // "postCreateCommand": "R -e 'install.packages(c(\"tidyverse\", \"easystats\", \"psych\", \"semTools\", \"report\", \"broom\", \"rstatix\", \"lme4\", \"lavaan\", \"geepack\", \"glmmTMB\", \"tidyLPA\", \"lcsm\", \"DT\", \"gtsummary\", \"gridExtra\", \"SDSDiff\", \"GPArotation\", \"SBSDiff\", \"dmacs\"), repos = \"https://cloud.r-project.org/\")' && R -e 'install.packages(\"languageserver\", repos = \"https://cloud.r-project.org/\")'"
