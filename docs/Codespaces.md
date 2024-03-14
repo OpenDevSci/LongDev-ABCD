@@ -34,15 +34,8 @@ Remember, Codespaces provide a fully configured development environment to help 
 
 This badge is also prominently displayed at the top of our project's root README for quick access.
 
---
-
-![Codespace Example](../img/Codespace-Example.gif)
-
-
----
-
-
-
+### Example Showing How to Open Github Codespace
+![Codespace Example](Codespace-Example.gif)
 
 ### Using the Codespace 🖥
 
