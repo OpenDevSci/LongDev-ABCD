@@ -36,6 +36,6 @@
       }
     }
   },
-  "postCreateCommand": "R -e 'install.packages(c(\"tidyverse\", \"easystats\", \"psych\", \"semTools\", \"report\", \"broom\", \"rstatix\", \"lme4\", \"lavaan\", \"geepack\", \"glmmTMB\", \"tidyLPA\", \"lcsm\", \"DT\", \"gtsummary\", \"gridExtra\", \"SDSDiff\", \"GPArotation\", \"SBSDiff\", \"dmacs\"), repos = \"https://cloud.r-project.org/\")'"
+  "postCreateCommand": "R -e 'install.packages(c(\"tidyverse\", \"easystats\", \"psych\", \"semTools\", \"report\", \"broom\", \"rstatix\", \"lme4\", \"lavaan\", \"geepack\", \"glmmTMB\", \"tidyLPA\", \"lcsm\", \"DT\", \"gtsummary\", \"gridExtra\", \"SDSDiff\", \"GPArotation\", \"SBSDiff\", \"dmacs\", \"languageserver\"), repos = \"https://cloud.r-project.org/\")'"
 }
 
