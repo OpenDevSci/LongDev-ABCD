@@ -36,7 +36,7 @@ This badge is also prominently displayed at the top of our project's root README
 
 --
 
-[Codespace Example](img/Codespace-Example.gif)
+![Codespace Example](img/Codespace-Example.gif)
 
 
 ---
