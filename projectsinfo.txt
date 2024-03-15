@@ -1,3 +1,16 @@
+update documentation
+17-18 analysis examples
+????
+
+
+---
+## Example 11: Latent Growth Curve Model
+- [ ] example outline
+- [ ] example analysis
+- [ ] example write-up
+- [ ] additional tasks
+---
+
 ## Literature Review
 - [ ] Identify key research questions
 - [ ] Search for existing literature in databases (e.g., PubMed, Google Scholar)
@@ -67,3 +80,4 @@
 - [ ] Monitor and respond to any post-publication feedback
 - [ ] Explore avenues for further research based on findings
 - [ ] Consider collaborative opportunities to expand research impact
+
