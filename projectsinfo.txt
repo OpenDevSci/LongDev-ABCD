@@ -1,7 +1,16 @@
 update documentation
 17-18 analysis examples
-????
 
+
+Assign to reviewer
+Reviewer 1 approval
+
+
+Develop the Quarto Example
+
+Subtask A: Write clean, well-commented code.
+Subtask B: Use meaningful variable names and maintain coding standards.
+Subtask C: Include inline comments explaining the rationale behind major steps.
 
 ---
 ## Example 11: Latent Growth Curve Model

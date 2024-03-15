@@ -39,7 +39,6 @@ if (length(packages_to_install) > 0) {
 lapply(packages_required, library, character.only = TRUE)
 
 ```
-
 :::
 
 ### Load Packages
@@ -61,7 +60,6 @@ library(broom) # Tidy and augment statistical models output
 library(gridExtra) # Arrange multiple grid-based plots on a page
 
 ```
-
 :::
 
 ### Config Options
@@ -83,7 +81,7 @@ knitr::opts_chunk$set(
     out.width = "75%", fig.asp = .75
 )
 ```
-
+:::
 :::
 
 ## Descriptives Overview
@@ -91,36 +89,11 @@ knitr::opts_chunk$set(
 ::: panel-tabset
 ### Read and View Data {.tabset .tabset-fade .tabset-pills}
 
-```{r}
-# Install and load the googledrive package
-if (!requireNamespace("googledrive", quietly = TRUE)) install.packages("googledrive")
-library(googledrive)
+::: blue
 
-# Authenticate with Google Drive
-drive_auth()
+**This code reads in and shows the data to be used in the current example**
 
-# Specify the file ID and the destination path
-file_id <- "1_gnaEx0wJ28tT0CD_B6mPFwngdfSb6Dr" # Replace with your actual file ID
-dest_file <- "my_data.rds" # Specify your destination path
-
-# Download the file
-drive_download(as_id(file_id), path = dest_file, overwrite = TRUE)
-
-# Load the .rds file for analysis
-my_data <- readRDS(dest_file)
-
-# Begin your analysis (example: view the first few rows)
-head(my_data)
-
-```
-
-:::
-
-<!-- ::: blue
-**This code reads in and shows the data to be used in the current
-example** -->
-
-<!-- ```{r read-data}
+```{r read-data}
 #| echo: TRUE
 #| messages: FALSE
 #| warning: FALSE
@@ -142,95 +115,48 @@ subset_data <- data_nonimaging[, selected_vars]
 library(dplyr)
 # # Merge the datasets on 'src_subject_id' and 'eventname'
 merged_data <- data_demographics %>%
-  full_join(subset_data, by = c("src_subject_id", "eventname"))
+    full_join(subset_data, by = c("src_subject_id", "eventname"))
 
 # Inspect the merged data structure
 str(merged_data)
 
 # Define event names to be retained in the analysis and convert variables to appropriate data types
-eventnames_to_include <- c("baseline_year_1_arm_1",
-                           "1_year_follow_up_y_arm_1",
-                           "2_year_follow_up_y_arm_1",
-                           "3_year_follow_up_y_arm_1",
-                           "4_year_follow_up_y_arm_1")
+eventnames_to_include <- c(
+    "baseline_year_1_arm_1",
+    "1_year_follow_up_y_arm_1",
+    "2_year_follow_up_y_arm_1",
+    "3_year_follow_up_y_arm_1",
+    "4_year_follow_up_y_arm_1"
+)
 
 df <- merged_data %>%
-  filter(eventname %in% eventnames_to_include) %>%
-  mutate(
-    src_subject_id = as.factor(src_subject_id),
-    eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),
-    age = as.numeric(age),
-    sex = as.factor(sex),
-    race.4level = as.factor(race.4level),
-    hisp = as.factor(hisp),
-    high.educ.bl = as.factor(high.educ.bl),
-    household.income.bl = as.factor(household.income.bl),
-    acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),
-    rel_family_id.bl = as.factor(rel_family_id.bl),
-    site_id_l = as.factor(site_id_l),
-    nihtbx_totalcomp_fc = as.numeric(nihtbx_totalcomp_fc),
-    anthroweightcalc = as.numeric(anthroweightcalc),
-    anthroweightcalc = as.numeric(anthroweightcalc)
-  ) %>%
-  # Exclude cases from unused assessment waves
-  filter(!is.na(eventname))
+    filter(eventname %in% eventnames_to_include) %>%
+    mutate(
+        src_subject_id = as.factor(src_subject_id),
+        eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),
+        age = as.numeric(age),
+        sex = as.factor(sex),
+        race.4level = as.factor(race.4level),
+        hisp = as.factor(hisp),
+        high.educ.bl = as.factor(high.educ.bl),
+        household.income.bl = as.factor(household.income.bl),
+        acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),
+        rel_family_id.bl = as.factor(rel_family_id.bl),
+        site_id_l = as.factor(site_id_l),
+        nihtbx_totalcomp_fc = as.numeric(nihtbx_totalcomp_fc),
+        anthroweightcalc = as.numeric(anthroweightcalc),
+        anthroweightcalc = as.numeric(anthroweightcalc)
+    ) %>%
+    # Exclude cases from unused assessment waves
+    filter(!is.na(eventname))
 
 ```
-::: -->
-
-
-----
-
-
-<!-- ```{r}
-# Install and load the googledrive package
-if (!requireNamespace("googledrive", quietly = TRUE)) install.packages("googledrive")
-library(googledrive)
-
-# Authenticate with Google Drive
-
-
-# Specify the file ID and the destination path
-file_id <- "1_gnaEx0wJ28tT0CD_B6mPFwngdfSb6Dr" # Replace with your actual file ID
-dest_file <- "my_data.rds" # Specify your destination path
-
-# Download the file
-drive_download(as_id(file_id), path = dest_file, overwrite = TRUE)
-
-# Load the .rds file for analysis
-my_data <- readRDS(dest_file)
-
-# Begin your analysis (example: view the first few rows)
-head(my_data)
-
-``` -->
-
-```{r}
-# Set the URL for the CSV file
-file_url <- "https://drive.google.com/file/d/1_gnaEx0wJ28tT0CD_B6mPFwngdfSb6Dr/view?usp=drive_link"
-
-# Set the destination filename
-dest_file <- "my_data.rds"
-
-# Download the file
-download.file(file_url, destfile = dest_file, mode = "wb")
-
-# Read the CSV file into R
-my_data <- readRDS(dest_file)
-
-# Display the first few rows of the data
-head(my_data)
-```
-
-----
-
+:::
 
 ### Descriptives
 
 ::: blue
 **This code creates a descriptives table**
-
-```
 
 ```{r descriptives}
 #| echo: TRUE

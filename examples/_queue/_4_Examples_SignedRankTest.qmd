@@ -98,8 +98,8 @@ knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F,
 ### Read and View Data {.tabset .tabset-fade .tabset-pills}
 
 ::: blue
-**This code reads in and shows the data to be used in the current
-example**
+
+**This code reads in and shows the data to be used in the current example**
 
 ```{r read-data}
 #| echo: TRUE
@@ -334,56 +334,6 @@ report(wilcox.test(df_wide_complete$income_numeric_0, df_wide_complete$income_nu
 
 ```
 
-**Descriptive Statistics for the Signed Rank Test result**
-```{r model-output}
-#| echo: TRUE
-#| messages: FALSE
-#| warning: FALSE
-#| code-summary: testing
-
-library(gridExtra)
-
-# Creating the first density plot with ggplot2
-p1 <- ggplot(data.frame(x = na.omit(df_wide$income_numeric_0)), aes(x = x)) +
-  geom_density(fill="red", color="blue") +
-  labs(title = "Kernel Density of Income at Baseline")
-
-# Creating the second density plot with ggplot2
-p2 <- ggplot(data.frame(x = na.omit(df_wide$income_numeric_1)), aes(x = x)) +
-  geom_density(fill="blue", color="red") +
-  labs(title = "Kernel Density of Income at T1")
-
-p3<- ggplot(df_wide, aes(x = income_numeric_0, y = income_numeric_1)) + geom_point(color="#04c24a")
-
-# Create both plot and store in variable
-p4<-ggplot(df_wide, aes(x=income_numeric_0, y=income_numeric_1))+
-geom_segment( aes(x=income_numeric_0, xend=income_numeric_1, y=0, yend=income_numeric_2), color="grey") + geom_point( color="green", size=4)
- 
-p5<-ggplot(df_wide, aes(x = income_numeric_0)) + 
-geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8)
- 
-p6<-ggplot(df_wide, aes(x=income_numeric_0, y=income_numeric_1)) + 
-geom_bar(fill="#69b3a2", stat = "identity")
- 
-# Arrange the ggplot2 objects on a grid
-grid.arrange(p1, p2, p3, p4, p5, p6, ncol = 3)
-
-ggplot(df_wide, aes(x = sex, y = income_numeric_0, fill = sex)) +
-  geom_boxplot() +
-  scale_fill_manual(values = c("orange", "darkgrey")) +
-  theme_bw() +
-  theme(legend.position = "none")
-```
-
-This signed rank test evaluates xxxx. The model output provides:
-
-i. xxxxx;
-ii. xxxxx;
-iii. xxxxx;
-iv. xxxxx;
-v. xxxxx.
-
-With a xxxx of `xxxxx` and a p-value of `xxxxx`, we can xxxx. Furthermore, we can xxx that xxxxx. This indicates xxxxxx in weight from Baseline to Year 1.
 
 
 
