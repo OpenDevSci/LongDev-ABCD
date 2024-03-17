@@ -1,8 +1,7 @@
 ---
 title: "Difference Scores: Simple Regression"
 author: "Biostatistics Working Group"
-
-reader-mode: true
+theme: cosmo
 ---
 
 # Simple Regression {.unnumbered}
@@ -60,6 +59,7 @@ lapply(packages_required, library, character.only = TRUE)
 
 library(tidyverse)    # Collection of R packages for data science
 library(easystats)    # Collection of R packages statistical modeling, visualization, and reporting
+library(rstatix)      # Pipe-friendly framework for performing common stats
 library(gtsummary)    # Publication-ready tables
 library(report)       # Easy reporting of regression analyses
 library(broom)        # Tidy and augment statistical models output

@@ -185,18 +185,15 @@ theme_gtsummary_compact()
 
 descriptives_table
 ```
+:::
+:::
 
-:::
-:::
-  
 ## Results 
-<div class = "blue">
 
 ::: panel-tabset
 ### Build Model {.tabset .tabset-fade .tabset-pills}
 
 ::: blue
-  
 The code fits a linear mixed model to examine the 'Height' variable across time points ('eventname'). It incorporates both random intercepts and slopes for the time points ('eventname') within each participant ('src_subject_id') to capture individual-level variability in both starting values and rates of change over time. The results of the model are then printed to provide a detailed summary of the fitted model parameters.
 
 **STEP 1: Compute LMM with Random Intercepts and Slopes**
@@ -229,11 +226,13 @@ The code fits a Linear Mixed Model (LMM:ris) to predict children's height based 
 
 In the model, the linear term for eventname has an estimated effect of r round(model_summary$coefficients["eventname.L", "Estimate"], 2), indicating a significant increase in height across time points. Additionally, there's variability in initial height across participants, reflected by a random intercept standard deviation of r round(random_effects["src_subject_id", "Std.Dev."], 2).
 
+:::
+
 ### Model Plots
 
+::: blue
 The following set of plots are used to facilitate model diagnostics. The first is a histogram showcasing the distribution of random intercepts for individual subjects, indicating variations in height not explained by the fixed effects. The second depicts residuals versus fitted values, helping assess the model's fit and potential heteroscedasticity. The third contrasts observed and predicted height values across different time points, offering a side-by-side evaluation of the model's predictions against actual observations.
 
-::: blue
 ```{r diagnosticplots}
 
 # Assuming your model is named `random_intercepts_slope`
@@ -255,6 +254,8 @@ print(hist_plot)
 
 
 ```
+
+:::
 
 ```{r trajectoryplot}
 
@@ -292,6 +293,7 @@ labs(title = "Individual and Group-Mean Height Trajectories",
 ```
 
 The provided code visualizes individual and group-mean height trajectories over different event names. Individual height trajectories for each subject are depicted as faded gray lines, allowing for a clear view of the variability among subjects. In contrast, the overall group-mean trajectory, which represents the average trend across all individuals for each event name, is highlighted in blue. The average height at r mean(df_descriptable$Height) has increased by r mean(df_descriptable$Height_followup - df_descriptable$Height) units from baseline.
+:::
 
 ## Wrapping Up
 <div class = "blue">

@@ -1,6 +1,7 @@
 ---
 title: "Difference Scores: Paired Samples T-test"
 author: "Biostatistics Working Group"
+theme: cosmo
 ---
 
 ## Overview
@@ -188,12 +189,8 @@ descriptives_table
 ```
 
 :::
-:::
 
-## Results
-
-::: panel-tabset
-### Build Model: Step I {.tabset .tabset-fade .tabset-pills}
+### Results
 
 ::: blue
 The code snippet below tells R to compute a difference score by subtracting each participant's weight at T1 from their weight at T0. Relevant summary statistics are also provided.
@@ -244,6 +241,6 @@ df <- left_join(df, weight_diff_data %>% select(src_subject_id, diff), by = "src
 
 ```
 
-
-
+:::
+:::
 

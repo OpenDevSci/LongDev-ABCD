@@ -250,18 +250,15 @@ theme_gtsummary_compact()
 
 descriptives_table
 ```
-
 :::
 :::
 
 ## Results 
-<div class = "blue">
 
 ::: panel-tabset
 ### Build Model {.tabset .tabset-fade .tabset-pills}
 
 ::: blue
-  
 The code fits a xxxx to examine the 'xxxxx' variable across time points ('eventname'). It incorporates xxxxxx. The results of the model are then printed to provide a detailed summary of the fitted model parameters.
 
 **STEP 1: Convert dataframe from long-to-wide format**
@@ -320,8 +317,6 @@ The summary statistics provide insights into the Weight variable across differen
 **STEP 2: Compute Signed Rank Test**
 ```{r}
 
-
-
 #########
 df_wide$income_numeric_0 <- as.numeric(as.character(df_wide$income_numeric_0))
 df_wide$income_numeric_1 <- as.numeric(as.character(df_wide$income_numeric_1))
@@ -334,8 +329,25 @@ report(wilcox.test(df_wide_complete$income_numeric_0, df_wide_complete$income_nu
 
 ```
 
+:::
 
+### Model Plots
 
+::: blue
+Testtesttest
 
+:::
+:::
+
+## Wrapping Up
+<div class = "blue">
+
+::: panel-tabset
+### Write-up {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+
+:::
+:::
 
 

@@ -1,6 +1,10 @@
-update documentation
-17-18 analysis examples
+Tasks for each example 
+- [ ] runs on codespace with no errors
+- [ ] formatting (e.g., tabs, panelsets are displayed correctly)
+- [] add a "example structure" template with generic information included in each section, then update task list to "check off" that each of these sections is defined as "completed"
 
+
+----
 
 Assign to reviewer
 Reviewer 1 approval

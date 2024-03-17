@@ -180,8 +180,8 @@ theme_gtsummary_compact()
 
 descriptives_table
 ```
-
 :::
+
 :::
 
 ## Results

@@ -86,7 +86,12 @@ knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F,
                       out.width='75%', fig.asp=.75)
 ```
 :::
+:::
 
+## Descriptives Overview
+
+::: panel-tabset
+### Read and View Data {.tabset .tabset-fade .tabset-pills}
 
 ::: blue
 **This code reads in and shows the data to be used in the current
@@ -148,16 +153,13 @@ df <- merged_data %>%
   filter(!is.na(eventname))
 
 ```
-#:::
+:::
 
 ### Descriptives
 
 ::: blue
 **This code creates a descriptives table**
-::: panel-tabset
-### Read and View Data {.tabset .tabset-fade .tabset-pills}
 
-:::
 ```{r descriptives}
 #| echo: TRUE
 #| messages: FALSE
@@ -182,17 +184,15 @@ theme_gtsummary_compact()
 
 descriptives_table
 ```
-
+:::
 :::
 
-## Results 
-<div class = "blue">
+## Results
 
 ::: panel-tabset
 ### Build Model {.tabset .tabset-fade .tabset-pills}
 
 ::: blue
-
 The code fits a linear mixed model to predict the 'Height' variable based on time points ('eventname') and handedness ('Handedness'), while accounting for individual-level variability by including random intercepts for each participant ('src_subject_id'). The results of the model are then printed to provide a summary of the fitted model parameters.
 
 **STEP 1: Compute LMM Model with Random Intercepts**
@@ -208,6 +208,7 @@ model <- lmer(anthroweightcalc ~ 1 + eventname + sex + (1|src_subject_id), data 
 
 ```
 
+
 ```{r model-output}
 #| echo: TRUE
 #| messages: FALSE
@@ -217,8 +218,11 @@ model <- lmer(anthroweightcalc ~ 1 + eventname + sex + (1|src_subject_id), data 
 ## Output and reports extending from the LMM-ri analyses
 #summary(model)
 #confint(model, level = 0.95, method = "Wald")
+
 model_performance(model)
+
 model_parameters(model)
+
 model_parameters(model,standardize = "refit")
 
 ```
@@ -226,11 +230,13 @@ model_parameters(model,standardize = "refit")
 The code provided executes a linear mixed model (LMM) to predict children's 
 height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4), and also takes into account their sex. This model accounts for individual variability in height by including a random intercept for each subject (src_subject_id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion. 
 
+:::
+
 ### Model Plots
 
+::: blue
 The following set of plots are used to facilitate model diagnostics. The first is a histogram showcasing the distribution of random intercepts for individual subjects, indicating variations in height not explained by the fixed effects. The second depicts residuals versus fitted values, helping assess the model's fit and potential heteroscedasticity. The third contrasts observed and predicted height values across different time points, offering a side-by-side evaluation of the model's predictions against actual observations.
 
-::: blue
 ```{r diagnosticplots}
 
 # Extract the random effects
@@ -254,51 +260,44 @@ resid_plot <- ggplot(NULL, aes(x = fitted_values, y = residuals)) +
 ```
 
 ```{r}
+
+library(ggplot2)
+theme_set(theme_modern(base_size = 6))
+
 plot(parameters(model)) +
   ggplot2::labs(title = "A Dot-and-Whisker Plot")
+#plot(model)
 
-plot(model)
-theme_set(theme_modern())
 result <- estimate_expectation(model, data = "grid")
-
 plot(result)
-
-plot(result, type = "qq")
-plot(result, type = "pp")
+#plot(result, type = "qq")
+#plot(result, type = "pp")
 
 normality <- check_normality(model, effects = "random")
-plot(normality)
+#plot(normality)
 
 heteroscedasticity <- check_heteroscedasticity(model)
-plot(heteroscedasticity)
+#plot(heteroscedasticity)
 
 homogeneity <- check_homogeneity(model)
-plot(homogeneity)
-plot(homogeneity, type = "density")
-
-check_model(model)
-
-check_model(model, panel = FALSE)
+#plot(homogeneity, type = "density")
 
 distribution <- check_distribution(model)
-distribution
-plot(distribution)
+#plot(distribution)
 
-contrasts <- estimate_contrasts(model, contrast = "sex")
-means <- estimate_means(model)
-plot(means)
-plot(contrasts, means)
+#contrasts <- estimate_contrasts(model, contrast = "sex")
+#means <- estimate_means(model)
+#plot(means)
+#plot(contrasts, means)
 
 params <- model_parameters(model, effects = "fixed")
-plot(params)
+#plot(params, show_labels = TRUE, size_text = 4)
 
-plot(params, show_labels = TRUE, size_text = 4)
-
-
-
-
+#check_model(model)
 
 ```
+
+:::
 
 ```{r trajectoryplot}
 
@@ -338,6 +337,7 @@ ggplot(df_subset, aes(x = eventname, y = anthroheightcalc, group = src_subject_i
 
 ```
 
+
 ```{r}
 #| echo: false
 
@@ -374,6 +374,8 @@ sex_effect <-sex_effect$estimate
 ```{r}
 report(model)
 ```
+:::
+
 
 ## Wrapping Up
 <div class = "blue">
