@@ -137,15 +137,23 @@
 		</article>
 		<article class="postcard light red">
 			<!-- <a class="postcard__img_link" href="#">
-				<img class="postcard__img" src="https://picsum.photos/801/800" alt="Image Title" />	
+				<img class="postcard__img" src="https://picsum.photos/500/653" alt="Image Title" />	
 			</a> -->
 			<div class="postcard__text t-dark">
 				<h1 class="postcard__title red"><a href="#">Additional Models</a></h1>
 				<div class="postcard__bar"></div>
 				<div class="postcard__preview-txt">
 				<ul class="postcard__tagbox">
-				  <li class="tag__item"><i class="fas fa-tag mr-2"></i></li>
-					<li class="tag__item"><i class="fas fa-clock mr-2"></i></li>
+				  <li class="tag__item play blue">
+						<a href="_blank"><i class="fas fa-play
+						mr-2"></i>Twin Designs</a>
+						</li>
+						<li class="tag__item play blue">
+						<a href="_blank"><i class="fas fa-play
+						mr-2"></i>Zero-Inflation Models</a>
+						<a href="_blank"><i class="fas fa-play
+						mr-2"></i>Longitudinal Invariance</a>
+						</li>
 				</ul>
 			</div>
 		</article>
