@@ -205,44 +205,44 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Longitudinal Data Analysis with the ABCD Study",
+    "title": "",
     "section": "",
-    "text": "This ongoing project is guided by the Biostatistics Working Group of the Adolescent Brain Cognitive Development (ABCD) Study. The aim is to provide accessible resources for those interested in longitudinal data analysis and related methodologies. We provide practial examples and tutorials to demonstrate different longitudinal methodologies/techniques using publically available data from the ABCD Study.\n\n\n\n\n\n\nImportant\n\n\n\nNOTE: This project is in beta and as such is still very much a work in progress. At present, Examples should NOT be considered “ready-to-use”. However, avaiable code snippets in each of the examples may still prove useful to guide your own analysis. We very much welcome feedback and contributions from the community to help us expand and improve our resources. Please see our GitHub repository and our Contribution Guide for more information on how to contribute.\n\n\n\n\n\n\nPublicly Available Code: We (will) provide ready-to-use code examples to aid in your research and studies.\nOpen Source Collaboration: Join our community to contribute, learn, and share knowledge on longitudinal data analysis.\nEducational Resource: Whether you’re looking to understand GitHub, R, RMarkdown/Quarto, or longitudinal analysis methods, we’re here to help.\n\n\n\n\n\nProvide New Examples: Share your knowledge by contributing new analysis examples.\nHelp With Documentation: Assist in enhancing our project documentation for better user understanding.\nRepository Maintenance: Support the upkeep of our GitHub repository to ensure it remains an accessible resource for all.\n\nInterested in contributing? Check out our Contribution Guide for more details.\n\n\n\n\nCode Examples: Explore this website and our GitHub Repository for a range of analysis examples.\nDocumentation: Dive into our Project Board for detailed insight into ongoing project tasks and timelines.\nCommunity: Join our Discussion Forum to connect with other community members.\n\n\n\n\nWe’re passionate about making longitudinal data analysis accessible and understandable. While we’re not experts in every area, we believe in the power of community and open source collaboration to expand knowledge and skills in these essential research methodologies.\nLet’s make data analysis more approachable together."
+    "text": "Code"
   },
   {
     "objectID": "index.html#our-mission",
     "href": "index.html#our-mission",
-    "title": "Longitudinal Data Analysis with the ABCD Study",
-    "section": "",
-    "text": "This ongoing project is guided by the Biostatistics Working Group of the Adolescent Brain Cognitive Development (ABCD) Study. The aim is to provide accessible resources for those interested in longitudinal data analysis and related methodologies. We provide practial examples and tutorials to demonstrate different longitudinal methodologies/techniques using publically available data from the ABCD Study.\n\n\n\n\n\n\nImportant\n\n\n\nNOTE: This project is in beta and as such is still very much a work in progress. At present, Examples should NOT be considered “ready-to-use”. However, avaiable code snippets in each of the examples may still prove useful to guide your own analysis. We very much welcome feedback and contributions from the community to help us expand and improve our resources. Please see our GitHub repository and our Contribution Guide for more information on how to contribute."
+    "title": "",
+    "section": "Our Mission",
+    "text": "Our Mission\nWe aim to provide accessible resources for those interested in longitudinal data analysis, using publicly available data from the ABCD Study to showcase various methodologies and techniques."
   },
   {
     "objectID": "index.html#why-this-project",
     "href": "index.html#why-this-project",
-    "title": "Longitudinal Data Analysis with the ABCD Study",
-    "section": "",
-    "text": "Publicly Available Code: We (will) provide ready-to-use code examples to aid in your research and studies.\nOpen Source Collaboration: Join our community to contribute, learn, and share knowledge on longitudinal data analysis.\nEducational Resource: Whether you’re looking to understand GitHub, R, RMarkdown/Quarto, or longitudinal analysis methods, we’re here to help."
+    "title": "",
+    "section": "Why This Project?",
+    "text": "Why This Project?\n\nPublicly Available Code: Future updates will include ready-to-use code examples for your research and educational needs. See some initial examples here or in the examples folder of our GitHub repository\nOpen Source Collaboration: Engage with our community to contribute, learn, and share insights on longitudinal data analysis.\nEducational Resource: Gain comprehensive knowledge in using GitHub, R, RMarkdown/Quarto, and various longitudinal analysis methods with our guidance."
   },
   {
     "objectID": "index.html#how-to-contribute",
     "href": "index.html#how-to-contribute",
-    "title": "Longitudinal Data Analysis with the ABCD Study",
-    "section": "",
-    "text": "Provide New Examples: Share your knowledge by contributing new analysis examples.\nHelp With Documentation: Assist in enhancing our project documentation for better user understanding.\nRepository Maintenance: Support the upkeep of our GitHub repository to ensure it remains an accessible resource for all.\n\nInterested in contributing? Check out our Contribution Guide for more details."
+    "title": "",
+    "section": "How to Contribute",
+    "text": "How to Contribute\n\nProvide New Examples: Enhance our repository with your unique analysis examples.\nHelp With Documentation: Contribute to making our documentation more comprehensive and user-friendly.\nRepository Maintenance: Assist in the ongoing maintenance and accessibility of our GitHub repository.\n\nFor more information on how you can make an impact, check out our Contribution Guide."
   },
   {
     "objectID": "index.html#project-resources",
     "href": "index.html#project-resources",
-    "title": "Longitudinal Data Analysis with the ABCD Study",
-    "section": "",
-    "text": "Code Examples: Explore this website and our GitHub Repository for a range of analysis examples.\nDocumentation: Dive into our Project Board for detailed insight into ongoing project tasks and timelines.\nCommunity: Join our Discussion Forum to connect with other community members."
+    "title": "",
+    "section": "Project Resources",
+    "text": "Project Resources\n\nCode Examples: Discover a variety of analysis examples to guide your research.\nDocumentation: Get detailed insights into our project’s progress, tasks, and timelines.\nCommunity Discussion Forum: Connect with fellow researchers and enthusiasts in our dedicated forum."
   },
   {
     "objectID": "index.html#about-us",
     "href": "index.html#about-us",
-    "title": "Longitudinal Data Analysis with the ABCD Study",
-    "section": "",
-    "text": "We’re passionate about making longitudinal data analysis accessible and understandable. While we’re not experts in every area, we believe in the power of community and open source collaboration to expand knowledge and skills in these essential research methodologies.\nLet’s make data analysis more approachable together."
+    "title": "",
+    "section": "About Us",
+    "text": "About Us\nWe are a team driven by the mission to make longitudinal data analysis more accessible and understandable. Our collective effort focuses on fostering an open source community where knowledge and skills in research methodologies can flourish.\nTogether, let’s advance the field of data analysis."
   },
   {
     "objectID": "examples/1a_Examples_DifferenceScores_PairedTtests.html",

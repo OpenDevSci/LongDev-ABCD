@@ -1,51 +1,45 @@
 ---
-title: "Longitudinal Data Analysis with the ABCD Study"
+#title: "Longitudinal Data Analysis with the ABCD Study"
 format:
   html:
-    #css: styles.css
-    theme: cosmo
-    #page-layout: custom
-    #grid:
-      #sidebar-width: 200px
-      #body-width: 2000px
-      #margin-width: 0px
-      #gutter-width: 0rem
+    css: styles.css
+
 ---
 
 # Welcome to the Longitudinal Data Analysis Project
 
-## Our Mission
-
-This ongoing project is guided by the Biostatistics Working Group of the [Adolescent Brain Cognitive Development (ABCD) Study](https://abcdstudy.org/). The aim is to provide accessible resources for those interested in longitudinal data analysis and related methodologies. We provide practial [examples and tutorials](https://opendevsci.github.io/LongDev-ABCD/examples/examples.html) to demonstrate different longitudinal methodologies/techniques using publically available data from the ABCD Study.
+This ongoing project, guided by the Biostatistics Working Group of the [Adolescent Brain Cognitive Development (ABCD) Study](https://abcdstudy.org/), aims to democratize access to longitudinal data analysis through practical examples and tutorials.
 
 ::: {.callout-important}
-NOTE: This project is in beta and as such is still very much a work in progress. At present, [Examples](https://opendevsci.github.io/LongDev-ABCD/examples/examples.html) should NOT be considered "ready-to-use". However, avaiable code snippets in each of the examples may still prove useful to guide your own analysis. We very much welcome feedback and contributions from the community to help us expand and improve our resources. Please see our [GitHub repository](https://github.com/OpenDevSci/LongDev-ABCD) and our [Contribution Guide](https://github.com/OpenDevSci/LongDev-ABCD/blob/main/docs/Contributing.md) for more information on how to contribute.
+**Note**: This project is currently in beta. [Examples](https://opendevsci.github.io/LongDev-ABCD/examples/examples.html) are under development and may not be ready for direct application. Your feedback and contributions are invaluable to us—join us in enhancing these resources. For more details on contributing, visit our [GitHub repository](https://github.com/OpenDevSci/LongDev-ABCD) and our [Contribution Guide](https://github.com/OpenDevSci/LongDev-ABCD/blob/main/docs/Contributing.md).
 :::
+
+## Our Mission
+
+We aim to provide accessible resources for those interested in longitudinal data analysis, using publicly available data from the ABCD Study to showcase various methodologies and techniques.
 
 ## Why This Project?
 
-- **Publicly Available Code**: We (will) provide ready-to-use code examples to aid in your research and studies.
-- **Open Source Collaboration**: Join our community to contribute, learn, and share knowledge on longitudinal data analysis.
-- **Educational Resource**: Whether you're looking to understand GitHub, R, RMarkdown/Quarto, or longitudinal analysis methods, we're here to help.
+- **Publicly Available Code**: Future updates will include ready-to-use code examples for your research and educational needs. See some initial examples [here](https://opendevsci.github.io/LongDev-ABCD/examples/examples.html) or in the `examples` folder of our [GitHub repository](https://github.com/OpenDevSci/LongDev-ABCD)
+- **Open Source Collaboration**: Engage with our community to contribute, learn, and share insights on longitudinal data analysis.
+- **Educational Resource**: Gain comprehensive knowledge in using GitHub, R, RMarkdown/Quarto, and various longitudinal analysis methods with our guidance.
 
 ## How to Contribute
 
-1. **Provide New Examples**: Share your knowledge by contributing new analysis examples.
-2. **Help With Documentation**: Assist in enhancing our project documentation for better user understanding.
-3. **Repository Maintenance**: Support the upkeep of our GitHub repository to ensure it remains an accessible resource for all.
+- **Provide New Examples**: Enhance our repository with your unique analysis examples.
+- **Help With Documentation**: Contribute to making our documentation more comprehensive and user-friendly.
+- **Repository Maintenance**: Assist in the ongoing maintenance and accessibility of our GitHub repository.
 
-Interested in contributing? Check out our [Contribution Guide](https://github.com/OpenDevSci/LongDev-ABCD/blob/main/docs/Contributing.md) for more details.
+For more information on how you can make an impact, check out our [Contribution Guide](https://github.com/OpenDevSci/LongDev-ABCD/blob/main/docs/Contributing.md).
 
 ## Project Resources
 
-- **Code Examples**: Explore this website and our [GitHub Repository](https://github.com/OpenDevSci/LongDev-ABCD) for a range of analysis examples.
-- **Documentation**: Dive into our [Project Board](https://github.com/orgs/OpenDevSci/projects/13) for detailed insight into ongoing project tasks and timelines.
-- **Community**: Join our [Discussion Forum](https://github.com/orgs/OpenDevSci/discussions) to connect with other community members.
+- **[Code Examples](https://github.com/OpenDevSci/LongDev-ABCD)**: Discover a variety of analysis examples to guide your research.
+- **[Documentation](https://github.com/orgs/OpenDevSci/projects/13)**: Get detailed insights into our project's progress, tasks, and timelines.
+- **[Community Discussion Forum](https://github.com/orgs/OpenDevSci/discussions)**: Connect with fellow researchers and enthusiasts in our dedicated forum.
 
 ## About Us
 
-We're passionate about making longitudinal data analysis accessible and understandable. While we're not experts in every area, we believe in the power of community and open source collaboration to expand knowledge and skills in these essential research methodologies.
+We are a team driven by the mission to make longitudinal data analysis more accessible and understandable. Our collective effort focuses on fostering an open source community where knowledge and skills in research methodologies can flourish.
 
-**Let's make data analysis more approachable together.**
-
-
+**Together, let's advance the field of data analysis.**
