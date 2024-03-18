@@ -1,6 +1,6 @@
 project:
   type: website
-  output-dir: site
+  output-dir: docs
   resources: 
     - "webr-serviceworker.js"
     - "webr-worker.js"
@@ -10,11 +10,11 @@ project:
     - index.qmd
     - manuscript/manuscript.qmd
     - examples/1a_Examples_DifferenceScores_PairedTtests.qmd
-    # - 1b_Examples_DifferenceScores_SimpleRegression.qmd
-    # - 2_Examples_ResidualizedChangeScores.qmd
-    # - 3a_Examples_LinearMixedModels.qmd
-    # - 3b_Examples_LinearMixedModels.qmd
-    # - 4_Examples_SignedRankTest.qmd
+    - examples/1b_Examples_DifferenceScores_SimpleRegression.qmd
+    - examples/2_Examples_ResidualizedChangeScores.qmd
+    - examples/3a_Examples_LinearMixedModels.qmd
+    - examples/3b_Examples_LinearMixedModels.qmd
+    - examples/4_Examples_SignedRankTest.qmd
     # - 5_Examples_MarginalModels.qmd
     # - 6_Examples_GeneralizedEstimatingEquations.qmd
     # - 7_Examples_GeneralizedLinearMixedEffectsModels.qmd
@@ -32,7 +32,7 @@ website:
   title: "Longitudinal Analysis"
   favicon: "./img/lights.png"
   twitter-card: true
-  site-url: https://openresearchcollabs.github.io/LAP-ABCD/
+  site-url: https://opendevsci.github.io/LongDev-ABCD/
   page-navigation: true
   open-graph: true
   navbar:
@@ -51,9 +51,9 @@ website:
       - icon: github
         menu:
           - text: Source Code
-            url: https://github.com/openresearchcollabs/LAP-ABCD
+            url: https://github.com/opendevsci/LongDev-ABCD
           - text: Report a Bug
-            url: https://github.com/openresearchcollabs/LAP-ABCD/issues
+            url: https://github.com/opendevsci/LongDev-ABCD/issues
 
   sidebar:
     - title: "Manuscript"
@@ -63,9 +63,9 @@ website:
         - icon: github
           menu:
             - text: Source Code
-              url: https://github.com/openresearchcollabs/LAP-ABCD
+              url: https://github.com/opendevsci/LongDev-ABCD
             - text: Report a Bug
-              url: https://github.com/openresearchcollabs/LAP-ABCD/issues
+              url: https://github.com/opendevsci/LongDev-ABCD/issues
       style: "docked"
       search: true
       background: light
@@ -80,19 +80,19 @@ website:
             - section: "Difference Scores"
               contents:
                 - 1a_Examples_DifferenceScores_PairedTtests.qmd
-        #         - 1b_Examples_DifferenceScores_SimpleRegression.qmd
-        #     - section: "Residualized Change Scores"
-        #       contents:
-        #         - 2_Examples_ResidualizedChangeScores.qmd
-        #     - section: "Linear Mixed Models"
-        #       contents:
-        #         - 3a_Examples_LinearMixedModels.qmd
-        #         - 3b_Examples_LinearMixedModels.qmd
-        # - section: "Traditional Non-linear Models"
-        #   contents:
-        #     - section: "Signed-Rank Test"
-        #       contents:
-        #         - 4_Examples_SignedRankTest.qmd
+                - 1b_Examples_DifferenceScores_SimpleRegression.qmd
+            - section: "Residualized Change Scores"
+              contents:
+                - 2_Examples_ResidualizedChangeScores.qmd
+            - section: "Linear Mixed Models"
+              contents:
+                - 3a_Examples_LinearMixedModels.qmd
+                - 3b_Examples_LinearMixedModels.qmd
+        - section: "Traditional Non-linear Models"
+          contents:
+            - section: "Signed-Rank Test"
+              contents:
+                - 4_Examples_SignedRankTest.qmd
         #     - section: "Marginal Models"
         #       contents:
         #         - 5_Examples_MarginalModels.qmd

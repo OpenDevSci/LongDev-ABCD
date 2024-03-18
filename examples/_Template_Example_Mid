@@ -1,0 +1,75 @@
+---
+title: "Add Example Title Here"
+author: "Name Here"
+---
+
+## Overview
+
+## Preliminary Setup
+
+### Install Packages
+
+**This code installs the r packages necessary for this example, if they are not already installed**
+
+```{r pckg-install}
+
+```
+
+### Load Packages
+
+**This code loads the r libraries necessary for this example**
+```{r lib-load}
+
+```
+
+### Config Options
+
+**This code configures knitr code chunk options**
+```{r config}
+
+```
+
+## Descriptives Overview
+
+### Read and View Data
+
+**This code reads in and shows the data to be used in the current example**
+
+```{r read-data}
+
+```
+
+### Descriptives
+
+**This code creates a descriptives table**
+
+```{r descriptives}
+
+```
+
+## Results
+
+[Brief explanation of the code]
+
+```{r}
+
+```
+
+### Model Summary
+
+```{r}
+
+```
+
+[brief write-up/explanation of the results]
+
+### Model Plots
+
+```{r}
+
+```
+
+## Wrapping Up
+
+### Write-up
+

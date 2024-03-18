@@ -1,0 +1,170 @@
+---
+title: "Add Example Title Here"
+author: "Name Here"
+---
+
+## Overview
+
+<p>
+
+[ Insert a brief description of the analysis and its purpose here. ]
+
+</p>
+
+## Preliminary Setup
+
+::: panel-tabset
+### Install Packages {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+> **This code installs the r packages necessary for this example, if they are not already installed**
+
+```{r pckg-install}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+# Create a list of required packages
+packages_required <- c("addpackage", "addpackage", "addpackage")
+
+# Check which packages are not installed and install them
+packages_to_install <- setdiff(packages_required, rownames(installed.packages()))
+if (length(packages_to_install) > 0) {
+    install.packages(packages_to_install)
+}
+
+# Load the required packages
+lapply(packages_required, library, character.only = TRUE)
+
+```
+:::
+
+### Load Packages
+
+::: blue
+**This code loads the r libraries necessary for this example**
+
+```{r lib-load}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+library(addpackage) # snippet about the package
+library(addpackage) # snippet about the package
+library(addpackage) # snippet about the package
+
+```
+:::
+
+### Config Options
+
+::: blue
+**This code configures knitr code chunk options**
+
+```{r config}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+knitr::opts_chunk$set(
+    echo = T, message = F, warning = F, error = F,
+    comment = NA, cache = T, code_folding = T,
+    R.options = list(width = 220, digits = 3),
+    fig.align = "center",
+    out.width = "75%", fig.asp = .75
+)
+```
+:::
+:::
+
+## Descriptives Overview
+
+::: panel-tabset
+### Read and View Data {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+
+**This code reads in and shows the data to be used in the current example**
+
+```{r read-data}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+# Read and wrangle data
+
+```
+:::
+
+### Descriptives
+
+::: blue
+**This code creates a descriptives table**
+
+```{r descriptives}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+
+
+```
+
+:::
+
+## Results
+
+::: blue
+[Brief explanation of the code]
+```{r build-model-ttest-1}
+#| message: FALSE
+#| warning: FALSE
+#| echo: TRUE
+
+
+```
+
+:::
+:::
+
+:::
+
+### Model Summary {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+
+A plot to show xxxxx.
+```{r model-checking}
+
+```
+
+[brief write-up/explanation of the results]
+
+:::
+
+### Model Plots  {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+```{r scatterplot}
+
+
+```
+
+:::
+:::
+
+## Wrapping Up
+
+::: panel-tabset
+### Write-up {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+
+[insert brief write-up here]
+  
+
+:::
+:::
