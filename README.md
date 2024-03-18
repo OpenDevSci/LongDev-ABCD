@@ -1,8 +1,5 @@
 
-- See Github Projects page??
-- Find Markdown, git/github, ide/vscode, quarto videos/tutorials
-- use gpt to help create and organize tasklisks and such for the Projects Board
-- Need to add info and link to the project within the readme and/or other files
+
 
 
 
