@@ -249,14 +249,14 @@
     "href": "examples/1a_Examples_DifferenceScores_PairedTtests.html",
     "title": "Difference Scores: Paired Samples T-test",
     "section": "",
-    "text": "This example assesses growth in a subsample of ABCD participants from Baseline (T0) to the 1-Year follow-up (T1), using weight as a representative metric. The analysis is conducted in two primary steps: 1) a difference score is calculated between baseline and Year_1 weight measurements for each participant; 2) a one-sample t-test is used to test whether the difference score is statistically different than a null hypothesis of zero change. Finally, a visual inspection is further conducted via a scatterplot to graphically represent the relationship between participant’s weight at Baseline and Year_1. The ensuing analysis and interpretations are detailed in the subsequent sections."
+    "text": "test-remove This example assesses growth in a subsample of ABCD participants from Baseline (T0) to the 1-Year follow-up (T1), using weight as a representative metric. The analysis is conducted in two primary steps: 1) a difference score is calculated between baseline and Year_1 weight measurements for each participant; 2) a one-sample t-test is used to test whether the difference score is statistically different than a null hypothesis of zero change. Finally, a visual inspection is further conducted via a scatterplot to graphically represent the relationship between participant’s weight at Baseline and Year_1. The ensuing analysis and interpretations are detailed in the subsequent sections."
   },
   {
     "objectID": "examples/1a_Examples_DifferenceScores_PairedTtests.html#overview",
     "href": "examples/1a_Examples_DifferenceScores_PairedTtests.html#overview",
     "title": "Difference Scores: Paired Samples T-test",
     "section": "",
-    "text": "This example assesses growth in a subsample of ABCD participants from Baseline (T0) to the 1-Year follow-up (T1), using weight as a representative metric. The analysis is conducted in two primary steps: 1) a difference score is calculated between baseline and Year_1 weight measurements for each participant; 2) a one-sample t-test is used to test whether the difference score is statistically different than a null hypothesis of zero change. Finally, a visual inspection is further conducted via a scatterplot to graphically represent the relationship between participant’s weight at Baseline and Year_1. The ensuing analysis and interpretations are detailed in the subsequent sections."
+    "text": "test-remove This example assesses growth in a subsample of ABCD participants from Baseline (T0) to the 1-Year follow-up (T1), using weight as a representative metric. The analysis is conducted in two primary steps: 1) a difference score is calculated between baseline and Year_1 weight measurements for each participant; 2) a one-sample t-test is used to test whether the difference score is statistically different than a null hypothesis of zero change. Finally, a visual inspection is further conducted via a scatterplot to graphically represent the relationship between participant’s weight at Baseline and Year_1. The ensuing analysis and interpretations are detailed in the subsequent sections."
   },
   {
     "objectID": "examples/1a_Examples_DifferenceScores_PairedTtests.html#preliminary-setup",
