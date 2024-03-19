@@ -63,16 +63,17 @@ library(gridExtra) # Arrange multiple grid-based plots on a page
 ```
 :::
 
-### Config Options
 
-::: blue
-**This code configures knitr code chunk options**
 
 ```{r config}
-#| echo: TRUE
+#| echo: FALSE
 #| messages: FALSE
 #| warning: FALSE
 #| output: FALSE
+
+### Config Options
+#::: blue
+#**This code configures knitr code chunk options** 
 
 knitr::opts_chunk$set(
     echo = T, message = F, warning = F, error = F,
@@ -82,7 +83,6 @@ knitr::opts_chunk$set(
     out.width = "75%", fig.asp = .75
 )
 ```
-:::
 :::
 
 ## Descriptives Overview

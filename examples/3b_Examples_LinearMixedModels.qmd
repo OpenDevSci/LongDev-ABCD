@@ -69,16 +69,15 @@ library(gtsummary)    #
 ```
 :::
 
-### Config Options
-
-::: blue
-**This code configures knitr code chunk options**
-
 ```{r config}
-#| echo: TRUE
+#| echo: FALSE
 #| messages: FALSE
 #| warning: FALSE
 #| output: FALSE
+
+### Config Options
+#::: blue
+#**This code configures knitr code chunk options** 
 
 knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, 
                       comment=NA, cache=T, code_folding=T,
@@ -86,7 +85,6 @@ knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F,
                       fig.align='center', 
                       out.width='75%', fig.asp=.75)
 ```
-:::
 :::
 
 ## Descriptives Overview

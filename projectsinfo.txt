@@ -1,5 +1,13 @@
 
 
+The in-text citations in my markdown file are currently included in the following format:
+
+    "Here is some fake text and a citation @luciana2018; @thompson2019".
+
+However, the `()` is unecessary as the citation formatter takes care of this. Therefore, I want to remove all instances of `()` in my document, but only if the first character after the `(` is an `@`, and it doesn't matter what the additional text between the `()` is.
+
+   "Here is some fake text and a citation @luciana2018".
+
 - See Github Projects page??
 - Find Markdown, git/github, ide/vscode, quarto videos/tutorials
 - use gpt to help create and organize tasklisks and such for the Projects Board

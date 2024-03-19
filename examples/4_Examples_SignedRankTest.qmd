@@ -5,7 +5,6 @@ author: "Biostatistics Working Group"
 
 # Signed-Rank Test {.unnumbered}
 
-####
 It is actually quite common that numeric depend variables need to be transformed or converted into ranks, i.e. ordinal variables, because the distribution of residuals does not allow the application of parametric tests such as t-tests or linear regression. In such cases, as we are dealing with rank (ordinal) data, the application of a chi-square test is unwarranted and we need to use another test. There are different alternatives depending on whether the data are paired (coming from the same individuals) or if all observations are independent.
 
 The non-parametric alternative for independent t-tests, i.e. for data where we are dealing with two separate groups and a numeric dependent variable that violates parametric assumptions (or an ordinal dependent variable), is the Mann-Whitney U-test. In contrast, if the groups under investigation represent identical participants that are tested under two conditions, the appropriate alternative is a Wilcoxon Signed Rank test (which is thus the alternative for paired t-test).
@@ -72,16 +71,15 @@ library(gtsummary)    #
 ```
 :::
 
-### Config Options
-
-::: blue
-**This code configures knitr code chunk options**
-
 ```{r config}
-#| echo: TRUE
+#| echo: FALSE
 #| messages: FALSE
 #| warning: FALSE
 #| output: FALSE
+
+### Config Options
+#::: blue
+#**This code configures knitr code chunk options** 
 
 knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, 
                       comment=NA, cache=T, code_folding=T,
@@ -89,7 +87,6 @@ knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F,
                       fig.align='center', 
                       out.width='75%', fig.asp=.75)
 ```
-:::
 :::
 
 ## Descriptives Overview
