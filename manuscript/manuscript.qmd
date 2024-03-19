@@ -205,22 +205,7 @@ Both types of stability and change are important. Mean-level change in certain t
 
 Despite the useful information afforded by examining mean-level and rank-order stability and change, these approaches are limited in that they provide little information about the overall patterns of within-individual change and, in turn, can result in fundamental misinterpretations about substantial or meaningful changes in an outcome of interest (@curran2011). For example, questions related to the impact of early-onset substance use on brain development focus on changes within a given individual (i.e., intraindividual differences). The ABCD Study will provide researchers with over ten time points for certain constructs (e.g., substance use) across a ten-year period, allowing for a detailed study of some within-person processes.
 
-![Figure 3 Statistical modeling of brain imaging data](img/Picture1.png)
-
-<!-- ![Types of Stability and Change](img/StabilityChange.png){#fig-StablityChange fig-alt="Stability & Change Diagram." width="300" height="300" fig-align="left"} -->
-
-<img src="img/StabilityChange.png" alt="Types of Stability and Change" width="50%" height="auto"/>
-
-
-![Types of Stability and Change](img/StabilityChange.png){width=50%}
-
-![Types of Stability and Change](img/StabilityChange.png){fig-width=50%}
-
-![Types of Stability and Change](img/StabilityChange.png)
-
-<!-- ![Types of Stability and Change](img/StabilityChange.png){#fig-StablityChange fig-alt="Stability & Change Diagram."}
-
-[!Types of Stability and Change](img/StabilityChange.png){#fig-StablityChange fig-alt="Stability & Change Diagram." width="300" height="300" fig-align="left"} -->
+![Types of Stability and Change](img/StabilityChange.png){width=100% #fig-StablityChange fig-alt="Stability & Change Diagram." fig-align="left"}
 
 ### Use of appropriate longitudinal models
 There is growing recognition that statistical models commonly applied to longitudinal data often fail to align with the developmental theory they are being used to assess (e.g., @curran2011; @hoffman2015; @littlefield2021). First, developmental studies typically involve the use of prospective data to inform theories that are concerned with clear within-person processes (e.g., how phenotypes change or remain stable within individuals over time, (e.g., @curran2011)). Despite this, methods generally unsuited for disaggregating between- and within-person effects (e.g., cross-lagged panel models [CLPM]) remain common within various extant literatures. Fortunately, there exists a range of models that have been proposed to tease apart between- and within-person sources of variance across time (see @littlefield2021; @orth2021). Most of these contemporary alternatives incorporate time-specific latent variables to capture between-person sources of variance and model within-person deviations around an individual’s mean (or trait) level across time (e.g., random-intercept cross-lagged panel model [RI-CLPM], @hamaker2015); latent curve models with structured residuals [LCM-SR], @curran2014). It is important to note however that these models require multiple assessments waves (e.g., four or more to fully specify the LCM-SR), additional expertise to overcome issues with model convergence, and appreciation of modeling assumptions when attempting to adjudicate among potential models in each research context (see @littlefield2021, for further discussion).
@@ -279,7 +264,8 @@ Given this issue, there have been various proposals for adjusting effect size me
 
 An ideal longitudinal analysis integrates (a) a well-articulated theoretical model, (b) an appropriate longitudinal data structure, and (c) a statistical model that is an operationalization of the theoretical model (@collins2006). To accommodate various research questions and contexts, different types of longitudinal data and data structures have emerged (see Figure 1). An understanding of these data structures is helpful, as they can warrant different types of LDA. Given that identifying a starting point for making comparisons is somewhat arbitrary, Curran and @bauer2019 provide a nice on-ramp in first distinguishing between the use of “time-to-event” and “repeated measures” data. Although both model time, the former is concerned with whether and when an event occurs, whereas the later is focused on growth and change (@bauer2019 Time-to-event structures measure time from a well-defined origin point up to the occurrence of an event of interest. This data structure is most often analyzed using survival analysis methods (e.g., hazard rate models, event history analysis, failure-time models) and the time-to-event data can be based on a single assessment or include multiple recurrent or competing events. While much has been written about “time-to-event” data (@hosmer2008; @rizopoulos2012), including a recent analysis examining exclusionary discipline in schools using data from the ABCD Study (@brislin2023), our emphasis will be given to the modeling of “repeated measures” data.
 
-[![Longitudinal Data Analysis Structural Diagram](img/LDAStructure2.png)](https://centerstat.org/resources/)
+![Longitudinal Data Analysis Structural Diagram](img/LDAStructure2.png){width=100% #fig-StablityChange fig-alt="Stability & Change Diagram." fig-align="left"}
+[Link]((https://centerstat.org/resources/))
 
 When discussing longitudinal analysis, we are most often talking about data collected on the same unit (e.g., individuals) across multiple measurement occasions. However, repeated-measures analysis is not a monolith, and it will serve us well to distinguish between a few of the most common types. One such approach to repeated measures analysis is the use of time-series models. These models generally consist of a long sequence of repeated measurements (≧ 50-100 measurements) on a single or small number of variables of interest. Time-series analysis is often used to predict temporal trends and cyclic patterns and is geared toward making inferences about prospective outcomes within a population (with relatively less focus on inferring individual-level mechanisms and risk factors).
 
@@ -298,13 +284,7 @@ While other longitudinal designs have their own unique strengths and application
 With the large and continually expanding body of research on statistical methods for longitudinal analyses, determining which longitudinal model to implement can be challenging. This section aims to help researchers navigate these many options to identify the statistical approach most appropriate to their unique research question when deciding on how to measure change over time. Notably, there are a myriad of viable ways one can go about grouping various types of longitudinal models for presentation.
 Common examples include grouping by linear vs nonlinear models (@collins2006), the number of measurement occasions (@king2018), and statistical equivalency (e.g., change scores vs. residualized change; see @castro-schilo2018). The organization we use below overlaps in several ways with these examples, and in particular with @bauer2019. However, it is important to note that in each case, the chosen way of grouping is primarily intended to allow the reader to compare and contrast various analytical approaches. In the following sections, we briefly summarize the advantages/disadvantages of a series of longitudinal models organized into the following groupings: Traditional Models, Modern GLM Extensions, Structural Equation Models (SEM), and Advanced SEM (see Figure 2). We note that this is not an exhaustive review of each of these methods, and for more in-depth detail we do provide the reader with relevant resources. As aptly summarized by @bauer2019, “…there are many exceptions, alternatives, nuances, ‘what ifs’, and ’but couldn’t you’s that aren’t addressed here.”
 
-![Longitudinal Models/Data Structures](img/Mindmap1.png)
-
-
-<!-- [![Longitudinal Models/Data Structures](img/Mindmap1copy.png)]{#fig-LONGmod fig-alt="Longitudinal Models Diagram." width="100" height="100" fig-align="left"}  -->
-
-[![Longitudinal Data Analysis Structural Diagram](img/LDAStructure2.png)](https://centerstat.org/resources/)
-<br>
+![Longitudinal Models/Data Structures](img/Mindmap1.png){width=100% #fig-DataStructures fig-alt="Longitudinal Models & Data Structures" fig-align="left"}
 
 #### Traditional Models
 Traditional methods for longitudinal analysis primarily focus on modeling mean-level change, and how these changes may differ across groups or levels of some other variable. For example, is there a difference in average internalizing symptoms obtained across multiple assessments between boys and girls? Longitudinal models that focus on mean-level change are also referred to as marginal models and examples of specific methods include repeated measures ANOVA, ANCOVA and Generalized Estimating Equations (GEEs). Mean-level change models are commonly used when data are only available from 2 measurement occasions. For example, computing a difference score (e.g., mean internalizing scores at visit 2 - mean internalizing scores at visit 1) that can be used as an outcome in a subsequent GLM analysis (e.g., paired-samples t-test, repeated measures ANOVA) to test for differences in patterns of change over time and between groups. Additionally, the longitudinal signed-rank test, a nonparametric alternative to the paired t-test, can be a useful tool for analyzing non-normal paired data. Another common approach, often used in pre-/post-design studies but can be used with ABCD Study data, is to use residualized change score analysis to assess the degree of change in a variable, while controlling for its initial level (@castro-schilo2018).
@@ -356,7 +336,7 @@ LCM-SR, on the other hand, extends the RI-CLPM by including additional growth fa
 
 In conclusion, advanced SEM approaches for LDA provide valuable tools for addressing complex research questions and data structures. While they offer more nuanced insights into within-person change dynamics and the influence of individual differences, these models also come with certain limitations, such as the necessity of multiple assessments (e.g., four or more for LCM-SR), increased complexity, computational demands, and the need for careful model specification and interpretation. As with any statistical method, researchers should carefully consider their research objectives, data characteristics, and the assumptions of each model when selecting the most appropriate advanced SEM approach for longitudinal analysis. Given that these modeling approaches necessitate more waves of data, they are not yet commonly used with ABCD Study data. We anticipate that as more waves of ABCD data are publically released, these models can be used to address some of the pitfalls of the more traditional methods.
 
-![LDA Table](img/Tabletemp.png)
+![LDA Table](img/Tabletemp.png){width=100% #fig-LDATable fig-alt="LDA Table" fig-align="left"}
 
 #### Longitudinal Analysis of Neuroimaging Data
 
