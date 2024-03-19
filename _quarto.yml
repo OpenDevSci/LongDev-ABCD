@@ -1,6 +1,6 @@
 project:
   type: website
-  output-dir: docs
+  #output-dir: docs
   resources: 
     - "webr-serviceworker.js"
     - "webr-worker.js"
@@ -167,7 +167,7 @@ execute:
   warning: false
   error: false
   cache: true
-  cold-folding: true
+  cold-folding: show
   R.options: list(width=220)
   fig.align: "center"
   out.width: "75%"
