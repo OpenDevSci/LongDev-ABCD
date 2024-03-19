@@ -209,7 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="preliminary-setup" class="level2">
 <h2 class="anchored" data-anchor-id="preliminary-setup">Preliminary Setup</h2>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Install Packages</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Load Packages</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Config Options</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Install Packages</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Load Packages</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="blue">
@@ -250,23 +250,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="blue">
-<p><strong>This code configures knitr code chunk options</strong></p>
-<div class="cell" data-messages="false">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
-<span id="cb3-2"><a href="#cb3-2"></a>    <span class="at">echo =</span> T, <span class="at">message =</span> F, <span class="at">warning =</span> F, <span class="at">error =</span> F,</span>
-<span id="cb3-3"><a href="#cb3-3"></a>    <span class="at">comment =</span> <span class="cn">NA</span>, <span class="at">cache =</span> T, <span class="at">code_folding =</span> T,</span>
-<span id="cb3-4"><a href="#cb3-4"></a>    <span class="at">R.options =</span> <span class="fu">list</span>(<span class="at">width =</span> <span class="dv">220</span>, <span class="at">digits =</span> <span class="dv">3</span>),</span>
-<span id="cb3-5"><a href="#cb3-5"></a>    <span class="at">fig.align =</span> <span class="st">"center"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6"></a>    <span class="at">out.width =</span> <span class="st">"75%"</span>, <span class="at">fig.asp =</span> .<span class="dv">75</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</div>
-</div>
 </div>
 </div>
 </section>
@@ -281,55 +264,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-messages="false">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Set the data paths</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>data_path_1 <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>data_path_2 <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co"># Read the data</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a>data_demographics <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path_1)</span>
-<span id="cb4-7"><a href="#cb4-7"></a>data_nonimaging <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path_2)</span>
-<span id="cb4-8"><a href="#cb4-8"></a></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="co"># Subset the nonimaging data to include desired variables</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a>selected_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"src_subject_id"</span>, <span class="st">"eventname"</span>, <span class="st">"nihtbx_totalcomp_fc"</span>, <span class="st">"anthroweightcalc"</span>, <span class="st">"anthroweightcalc"</span>)</span>
-<span id="cb4-11"><a href="#cb4-11"></a>subset_data <span class="ot">&lt;-</span> data_nonimaging[, selected_vars]</span>
-<span id="cb4-12"><a href="#cb4-12"></a></span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="co"># # Merge the datasets on 'src_subject_id' and 'eventname'</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a>merged_data <span class="ot">&lt;-</span> data_demographics <span class="sc">%&gt;%</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a>    <span class="fu">full_join</span>(subset_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"src_subject_id"</span>, <span class="st">"eventname"</span>))</span>
-<span id="cb4-17"><a href="#cb4-17"></a></span>
-<span id="cb4-18"><a href="#cb4-18"></a><span class="co"># Inspect the merged data structure</span></span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="fu">str</span>(merged_data)</span>
-<span id="cb4-20"><a href="#cb4-20"></a></span>
-<span id="cb4-21"><a href="#cb4-21"></a><span class="co"># Define event names to be retained in the analysis and convert variables to appropriate data types</span></span>
-<span id="cb4-22"><a href="#cb4-22"></a>eventnames_to_include <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb4-23"><a href="#cb4-23"></a>    <span class="st">"baseline_year_1_arm_1"</span>,</span>
-<span id="cb4-24"><a href="#cb4-24"></a>    <span class="st">"1_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb4-25"><a href="#cb4-25"></a>    <span class="st">"2_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb4-26"><a href="#cb4-26"></a>    <span class="st">"3_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb4-27"><a href="#cb4-27"></a>    <span class="st">"4_year_follow_up_y_arm_1"</span></span>
-<span id="cb4-28"><a href="#cb4-28"></a>)</span>
-<span id="cb4-29"><a href="#cb4-29"></a></span>
-<span id="cb4-30"><a href="#cb4-30"></a>df <span class="ot">&lt;-</span> merged_data <span class="sc">%&gt;%</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a>    <span class="fu">filter</span>(eventname <span class="sc">%in%</span> eventnames_to_include) <span class="sc">%&gt;%</span></span>
-<span id="cb4-32"><a href="#cb4-32"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb4-33"><a href="#cb4-33"></a>        <span class="at">src_subject_id =</span> <span class="fu">as.factor</span>(src_subject_id),</span>
-<span id="cb4-34"><a href="#cb4-34"></a>        <span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">levels =</span> eventnames_to_include, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb4-35"><a href="#cb4-35"></a>        <span class="at">age =</span> <span class="fu">as.numeric</span>(age),</span>
-<span id="cb4-36"><a href="#cb4-36"></a>        <span class="at">sex =</span> <span class="fu">as.factor</span>(sex),</span>
-<span id="cb4-37"><a href="#cb4-37"></a>        <span class="at">race.4level =</span> <span class="fu">as.factor</span>(race<span class="fl">.4</span>level),</span>
-<span id="cb4-38"><a href="#cb4-38"></a>        <span class="at">hisp =</span> <span class="fu">as.factor</span>(hisp),</span>
-<span id="cb4-39"><a href="#cb4-39"></a>        <span class="at">high.educ.bl =</span> <span class="fu">as.factor</span>(high.educ.bl),</span>
-<span id="cb4-40"><a href="#cb4-40"></a>        <span class="at">household.income.bl =</span> <span class="fu">as.factor</span>(household.income.bl),</span>
-<span id="cb4-41"><a href="#cb4-41"></a>        <span class="at">acs_raked_propensity_score =</span> <span class="fu">as.numeric</span>(acs_raked_propensity_score),</span>
-<span id="cb4-42"><a href="#cb4-42"></a>        <span class="at">rel_family_id.bl =</span> <span class="fu">as.factor</span>(rel_family_id.bl),</span>
-<span id="cb4-43"><a href="#cb4-43"></a>        <span class="at">site_id_l =</span> <span class="fu">as.factor</span>(site_id_l),</span>
-<span id="cb4-44"><a href="#cb4-44"></a>        <span class="at">nihtbx_totalcomp_fc =</span> <span class="fu">as.numeric</span>(nihtbx_totalcomp_fc),</span>
-<span id="cb4-45"><a href="#cb4-45"></a>        <span class="at">anthroweightcalc =</span> <span class="fu">as.numeric</span>(anthroweightcalc),</span>
-<span id="cb4-46"><a href="#cb4-46"></a>        <span class="at">anthroweightcalc =</span> <span class="fu">as.numeric</span>(anthroweightcalc)</span>
-<span id="cb4-47"><a href="#cb4-47"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-48"><a href="#cb4-48"></a>    <span class="co"># Exclude cases from unused assessment waves</span></span>
-<span id="cb4-49"><a href="#cb4-49"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventname))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Set the data paths</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>data_path_1 <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>data_path_2 <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># Read the data</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>data_demographics <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path_1)</span>
+<span id="cb3-7"><a href="#cb3-7"></a>data_nonimaging <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path_2)</span>
+<span id="cb3-8"><a href="#cb3-8"></a></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># Subset the nonimaging data to include desired variables</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a>selected_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"src_subject_id"</span>, <span class="st">"eventname"</span>, <span class="st">"nihtbx_totalcomp_fc"</span>, <span class="st">"anthroweightcalc"</span>, <span class="st">"anthroweightcalc"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11"></a>subset_data <span class="ot">&lt;-</span> data_nonimaging[, selected_vars]</span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="co"># # Merge the datasets on 'src_subject_id' and 'eventname'</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>merged_data <span class="ot">&lt;-</span> data_demographics <span class="sc">%&gt;%</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a>    <span class="fu">full_join</span>(subset_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"src_subject_id"</span>, <span class="st">"eventname"</span>))</span>
+<span id="cb3-17"><a href="#cb3-17"></a></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co"># Inspect the merged data structure</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="fu">str</span>(merged_data)</span>
+<span id="cb3-20"><a href="#cb3-20"></a></span>
+<span id="cb3-21"><a href="#cb3-21"></a><span class="co"># Define event names to be retained in the analysis and convert variables to appropriate data types</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a>eventnames_to_include <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb3-23"><a href="#cb3-23"></a>    <span class="st">"baseline_year_1_arm_1"</span>,</span>
+<span id="cb3-24"><a href="#cb3-24"></a>    <span class="st">"1_year_follow_up_y_arm_1"</span>,</span>
+<span id="cb3-25"><a href="#cb3-25"></a>    <span class="st">"2_year_follow_up_y_arm_1"</span>,</span>
+<span id="cb3-26"><a href="#cb3-26"></a>    <span class="st">"3_year_follow_up_y_arm_1"</span>,</span>
+<span id="cb3-27"><a href="#cb3-27"></a>    <span class="st">"4_year_follow_up_y_arm_1"</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a>)</span>
+<span id="cb3-29"><a href="#cb3-29"></a></span>
+<span id="cb3-30"><a href="#cb3-30"></a>df <span class="ot">&lt;-</span> merged_data <span class="sc">%&gt;%</span></span>
+<span id="cb3-31"><a href="#cb3-31"></a>    <span class="fu">filter</span>(eventname <span class="sc">%in%</span> eventnames_to_include) <span class="sc">%&gt;%</span></span>
+<span id="cb3-32"><a href="#cb3-32"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb3-33"><a href="#cb3-33"></a>        <span class="at">src_subject_id =</span> <span class="fu">as.factor</span>(src_subject_id),</span>
+<span id="cb3-34"><a href="#cb3-34"></a>        <span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">levels =</span> eventnames_to_include, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-35"><a href="#cb3-35"></a>        <span class="at">age =</span> <span class="fu">as.numeric</span>(age),</span>
+<span id="cb3-36"><a href="#cb3-36"></a>        <span class="at">sex =</span> <span class="fu">as.factor</span>(sex),</span>
+<span id="cb3-37"><a href="#cb3-37"></a>        <span class="at">race.4level =</span> <span class="fu">as.factor</span>(race<span class="fl">.4</span>level),</span>
+<span id="cb3-38"><a href="#cb3-38"></a>        <span class="at">hisp =</span> <span class="fu">as.factor</span>(hisp),</span>
+<span id="cb3-39"><a href="#cb3-39"></a>        <span class="at">high.educ.bl =</span> <span class="fu">as.factor</span>(high.educ.bl),</span>
+<span id="cb3-40"><a href="#cb3-40"></a>        <span class="at">household.income.bl =</span> <span class="fu">as.factor</span>(household.income.bl),</span>
+<span id="cb3-41"><a href="#cb3-41"></a>        <span class="at">acs_raked_propensity_score =</span> <span class="fu">as.numeric</span>(acs_raked_propensity_score),</span>
+<span id="cb3-42"><a href="#cb3-42"></a>        <span class="at">rel_family_id.bl =</span> <span class="fu">as.factor</span>(rel_family_id.bl),</span>
+<span id="cb3-43"><a href="#cb3-43"></a>        <span class="at">site_id_l =</span> <span class="fu">as.factor</span>(site_id_l),</span>
+<span id="cb3-44"><a href="#cb3-44"></a>        <span class="at">nihtbx_totalcomp_fc =</span> <span class="fu">as.numeric</span>(nihtbx_totalcomp_fc),</span>
+<span id="cb3-45"><a href="#cb3-45"></a>        <span class="at">anthroweightcalc =</span> <span class="fu">as.numeric</span>(anthroweightcalc),</span>
+<span id="cb3-46"><a href="#cb3-46"></a>        <span class="at">anthroweightcalc =</span> <span class="fu">as.numeric</span>(anthroweightcalc)</span>
+<span id="cb3-47"><a href="#cb3-47"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-48"><a href="#cb3-48"></a>    <span class="co"># Exclude cases from unused assessment waves</span></span>
+<span id="cb3-49"><a href="#cb3-49"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventname))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
@@ -340,46 +323,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-messages="false">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>descriptives_table <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>    <span class="fu">select</span>(eventname, sex, race<span class="fl">.4</span>level, hisp, anthroweightcalc) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>    <span class="fu">mutate</span>(<span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Baseline"</span>, <span class="st">"Year 1"</span>, <span class="st">"Year 2"</span>, <span class="st">"Year 3"</span>, <span class="st">"Year 4"</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>    <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">factor</span>(sex, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">"Male"</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>    <span class="fu">tbl_summary</span>(</span>
-<span id="cb5-6"><a href="#cb5-6"></a>        <span class="at">by =</span> eventname,</span>
-<span id="cb5-7"><a href="#cb5-7"></a>        <span class="at">missing =</span> <span class="st">"no"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8"></a>        <span class="at">label =</span> <span class="fu">list</span>(</span>
-<span id="cb5-9"><a href="#cb5-9"></a>            sex <span class="sc">~</span> <span class="st">"Sex"</span>, race<span class="fl">.4</span>level <span class="sc">~</span> <span class="st">"Race"</span>, hisp <span class="sc">~</span> <span class="st">"Hispanic"</span>,</span>
-<span id="cb5-10"><a href="#cb5-10"></a>            anthroweightcalc <span class="sc">~</span> <span class="st">"Weight"</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a>        ),</span>
-<span id="cb5-12"><a href="#cb5-12"></a>        <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd}) )"</span>, <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span>),</span>
-<span id="cb5-13"><a href="#cb5-13"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a>    <span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a>    <span class="fu">bold_labels</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb5-16"><a href="#cb5-16"></a>    <span class="fu">italicize_levels</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a>    <span class="fu">modify_spanning_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**Assessment Wave**"</span>)</span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="fu">theme_gtsummary_compact</span>()</span>
-<span id="cb5-19"><a href="#cb5-19"></a></span>
-<span id="cb5-20"><a href="#cb5-20"></a>descriptives_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>descriptives_table <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>    <span class="fu">select</span>(eventname, sex, race<span class="fl">.4</span>level, hisp, anthroweightcalc) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>    <span class="fu">mutate</span>(<span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Baseline"</span>, <span class="st">"Year 1"</span>, <span class="st">"Year 2"</span>, <span class="st">"Year 3"</span>, <span class="st">"Year 4"</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>    <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">factor</span>(sex, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">"Male"</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>    <span class="fu">tbl_summary</span>(</span>
+<span id="cb4-6"><a href="#cb4-6"></a>        <span class="at">by =</span> eventname,</span>
+<span id="cb4-7"><a href="#cb4-7"></a>        <span class="at">missing =</span> <span class="st">"no"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8"></a>        <span class="at">label =</span> <span class="fu">list</span>(</span>
+<span id="cb4-9"><a href="#cb4-9"></a>            sex <span class="sc">~</span> <span class="st">"Sex"</span>, race<span class="fl">.4</span>level <span class="sc">~</span> <span class="st">"Race"</span>, hisp <span class="sc">~</span> <span class="st">"Hispanic"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10"></a>            anthroweightcalc <span class="sc">~</span> <span class="st">"Weight"</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>        ),</span>
+<span id="cb4-12"><a href="#cb4-12"></a>        <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd}) )"</span>, <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span>),</span>
+<span id="cb4-13"><a href="#cb4-13"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a>    <span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>    <span class="fu">bold_labels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a>    <span class="fu">italicize_levels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a>    <span class="fu">modify_spanning_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**Assessment Wave**"</span>)</span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="fu">theme_gtsummary_compact</span>()</span>
+<span id="cb4-19"><a href="#cb4-19"></a></span>
+<span id="cb4-20"><a href="#cb4-20"></a>descriptives_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
-<div id="phfcjlmyny" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#phfcjlmyny table {
+<div id="hfcjlmynys" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hfcjlmynys table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#phfcjlmyny thead, #phfcjlmyny tbody, #phfcjlmyny tfoot, #phfcjlmyny tr, #phfcjlmyny td, #phfcjlmyny th {
+#hfcjlmynys thead, #hfcjlmynys tbody, #hfcjlmynys tfoot, #hfcjlmynys tr, #hfcjlmynys td, #hfcjlmynys th {
   border-style: none;
 }
 
-#phfcjlmyny p {
+#hfcjlmynys p {
   margin: 0;
   padding: 0;
 }
 
-#phfcjlmyny .gt_table {
+#hfcjlmynys .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -405,12 +388,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_caption {
+#hfcjlmynys .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#phfcjlmyny .gt_title {
+#hfcjlmynys .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -422,7 +405,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#phfcjlmyny .gt_subtitle {
+#hfcjlmynys .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -434,7 +417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#phfcjlmyny .gt_heading {
+#hfcjlmynys .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -446,13 +429,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_bottom_border {
+#hfcjlmynys .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_col_headings {
+#hfcjlmynys .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -467,7 +450,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_col_heading {
+#hfcjlmynys .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -487,7 +470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#phfcjlmyny .gt_column_spanner_outer {
+#hfcjlmynys .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -499,15 +482,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#phfcjlmyny .gt_column_spanner_outer:first-child {
+#hfcjlmynys .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#phfcjlmyny .gt_column_spanner_outer:last-child {
+#hfcjlmynys .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#phfcjlmyny .gt_column_spanner {
+#hfcjlmynys .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -519,11 +502,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#phfcjlmyny .gt_spanner_row {
+#hfcjlmynys .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#phfcjlmyny .gt_group_heading {
+#hfcjlmynys .gt_group_heading {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -549,7 +532,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#phfcjlmyny .gt_empty_group_heading {
+#hfcjlmynys .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -564,15 +547,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#phfcjlmyny .gt_from_md > :first-child {
+#hfcjlmynys .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#phfcjlmyny .gt_from_md > :last-child {
+#hfcjlmynys .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#phfcjlmyny .gt_row {
+#hfcjlmynys .gt_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -591,7 +574,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#phfcjlmyny .gt_stub {
+#hfcjlmynys .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -604,7 +587,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#phfcjlmyny .gt_stub_row_group {
+#hfcjlmynys .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -618,15 +601,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#phfcjlmyny .gt_row_group_first td {
+#hfcjlmynys .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#phfcjlmyny .gt_row_group_first th {
+#hfcjlmynys .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#phfcjlmyny .gt_summary_row {
+#hfcjlmynys .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -636,16 +619,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#phfcjlmyny .gt_first_summary_row {
+#hfcjlmynys .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_first_summary_row.thick {
+#hfcjlmynys .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#phfcjlmyny .gt_last_summary_row {
+#hfcjlmynys .gt_last_summary_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -655,7 +638,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_grand_summary_row {
+#hfcjlmynys .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -665,7 +648,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#phfcjlmyny .gt_first_grand_summary_row {
+#hfcjlmynys .gt_first_grand_summary_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -675,7 +658,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_last_grand_summary_row_top {
+#hfcjlmynys .gt_last_grand_summary_row_top {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -685,11 +668,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_striped {
+#hfcjlmynys .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#phfcjlmyny .gt_table_body {
+#hfcjlmynys .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -698,7 +681,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_footnotes {
+#hfcjlmynys .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -712,7 +695,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_footnote {
+#hfcjlmynys .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 1px;
@@ -721,7 +704,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#phfcjlmyny .gt_sourcenotes {
+#hfcjlmynys .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -735,7 +718,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#phfcjlmyny .gt_sourcenote {
+#hfcjlmynys .gt_sourcenote {
   font-size: 90%;
   padding-top: 1px;
   padding-bottom: 1px;
@@ -743,63 +726,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#phfcjlmyny .gt_left {
+#hfcjlmynys .gt_left {
   text-align: left;
 }
 
-#phfcjlmyny .gt_center {
+#hfcjlmynys .gt_center {
   text-align: center;
 }
 
-#phfcjlmyny .gt_right {
+#hfcjlmynys .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#phfcjlmyny .gt_font_normal {
+#hfcjlmynys .gt_font_normal {
   font-weight: normal;
 }
 
-#phfcjlmyny .gt_font_bold {
+#hfcjlmynys .gt_font_bold {
   font-weight: bold;
 }
 
-#phfcjlmyny .gt_font_italic {
+#hfcjlmynys .gt_font_italic {
   font-style: italic;
 }
 
-#phfcjlmyny .gt_super {
+#hfcjlmynys .gt_super {
   font-size: 65%;
 }
 
-#phfcjlmyny .gt_footnote_marks {
+#hfcjlmynys .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#phfcjlmyny .gt_asterisk {
+#hfcjlmynys .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#phfcjlmyny .gt_indent_1 {
+#hfcjlmynys .gt_indent_1 {
   text-indent: 5px;
 }
 
-#phfcjlmyny .gt_indent_2 {
+#hfcjlmynys .gt_indent_2 {
   text-indent: 10px;
 }
 
-#phfcjlmyny .gt_indent_3 {
+#hfcjlmynys .gt_indent_3 {
   text-indent: 15px;
 }
 
-#phfcjlmyny .gt_indent_4 {
+#hfcjlmynys .gt_indent_4 {
   text-indent: 20px;
 }
 
-#phfcjlmyny .gt_indent_5 {
+#hfcjlmynys .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -933,41 +916,41 @@ N = 4754<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ita
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r fold-hide number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Function to compute difference scores</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>compute_difference <span class="ot">&lt;-</span> <span class="cf">function</span>(df, variable_name) {</span>
-<span id="cb6-3"><a href="#cb6-3"></a>    <span class="co"># Define the event names of interest</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a>    baseline_event <span class="ot">&lt;-</span> <span class="st">"baseline_year_1_arm_1"</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a>    followup_event <span class="ot">&lt;-</span> <span class="st">"1_year_follow_up_y_arm_1"</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a></span>
-<span id="cb6-7"><a href="#cb6-7"></a>    <span class="co"># Compute the difference between Baseline and Year 1 data for the given variable</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a>    diff_data <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a>        <span class="fu">filter</span>(eventname <span class="sc">%in%</span> <span class="fu">c</span>(baseline_event, followup_event)) <span class="sc">%&gt;%</span> <span class="co"># Filter for specific event names</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a>        <span class="fu">select</span>(src_subject_id, eventname, <span class="fu">all_of</span>(variable_name)) <span class="sc">%&gt;%</span> <span class="co"># Select required columns</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a>        <span class="fu">spread</span>(eventname, variable_name) <span class="sc">%&gt;%</span> <span class="co"># Convert data from long to wide format</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a>        <span class="fu">mutate</span>(<span class="at">diff =</span> <span class="fu">get</span>(followup_event) <span class="sc">-</span> <span class="fu">get</span>(baseline_event)) <span class="sc">%&gt;%</span> <span class="co"># Compute difference between the two time points</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a>        <span class="fu">mutate</span>(<span class="at">group_resid =</span> (diff) <span class="sc">-</span> <span class="fu">mean</span>(diff)) <span class="sc">%&gt;%</span> <span class="co"># compute residuals (group_resid).</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a>        <span class="fu">drop_na</span>(diff) <span class="co"># Exclude rows with NA in the computed difference</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a></span>
-<span id="cb6-16"><a href="#cb6-16"></a>    <span class="co"># Summarize the computed difference scores</span></span>
-<span id="cb6-17"><a href="#cb6-17"></a>    diff_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(diff_data<span class="sc">$</span>diff)</span>
-<span id="cb6-18"><a href="#cb6-18"></a></span>
-<span id="cb6-19"><a href="#cb6-19"></a>    <span class="co"># Return the difference data and its summary</span></span>
-<span id="cb6-20"><a href="#cb6-20"></a>    <span class="fu">list</span>(<span class="at">data =</span> diff_data, <span class="at">summary =</span> diff_summary)</span>
-<span id="cb6-21"><a href="#cb6-21"></a>}</span>
-<span id="cb6-22"><a href="#cb6-22"></a></span>
-<span id="cb6-23"><a href="#cb6-23"></a><span class="co"># List of variables for which difference scores are to be computed</span></span>
-<span id="cb6-24"><a href="#cb6-24"></a>variables_of_interest <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"anthroweightcalc"</span>)</span>
-<span id="cb6-25"><a href="#cb6-25"></a></span>
-<span id="cb6-26"><a href="#cb6-26"></a><span class="co"># Compute and store difference scores and summaries for each variable in a list</span></span>
-<span id="cb6-27"><a href="#cb6-27"></a>difference_and_summary_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(variables_of_interest, <span class="cf">function</span>(var) {</span>
-<span id="cb6-28"><a href="#cb6-28"></a>    <span class="fu">compute_difference</span>(df, var)</span>
-<span id="cb6-29"><a href="#cb6-29"></a>})</span>
-<span id="cb6-30"><a href="#cb6-30"></a></span>
-<span id="cb6-31"><a href="#cb6-31"></a><span class="co"># Extract the difference data for the 'anthroweightcalc' variable</span></span>
-<span id="cb6-32"><a href="#cb6-32"></a>weight_diff_data <span class="ot">&lt;-</span> difference_and_summary_list[[<span class="dv">1</span>]]<span class="sc">$</span>data</span>
-<span id="cb6-33"><a href="#cb6-33"></a></span>
-<span id="cb6-34"><a href="#cb6-34"></a><span class="co"># Merge the 'diff' column back to the main df using 'src_subject_id' as the key</span></span>
-<span id="cb6-35"><a href="#cb6-35"></a>df <span class="ot">&lt;-</span> <span class="fu">left_join</span>(df, weight_diff_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(src_subject_id, diff), <span class="at">by =</span> <span class="st">"src_subject_id"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r fold-hide number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Function to compute difference scores</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>compute_difference <span class="ot">&lt;-</span> <span class="cf">function</span>(df, variable_name) {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="co"># Define the event names of interest</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>    baseline_event <span class="ot">&lt;-</span> <span class="st">"baseline_year_1_arm_1"</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>    followup_event <span class="ot">&lt;-</span> <span class="st">"1_year_follow_up_y_arm_1"</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a>    <span class="co"># Compute the difference between Baseline and Year 1 data for the given variable</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>    diff_data <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>        <span class="fu">filter</span>(eventname <span class="sc">%in%</span> <span class="fu">c</span>(baseline_event, followup_event)) <span class="sc">%&gt;%</span> <span class="co"># Filter for specific event names</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>        <span class="fu">select</span>(src_subject_id, eventname, <span class="fu">all_of</span>(variable_name)) <span class="sc">%&gt;%</span> <span class="co"># Select required columns</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a>        <span class="fu">spread</span>(eventname, variable_name) <span class="sc">%&gt;%</span> <span class="co"># Convert data from long to wide format</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a>        <span class="fu">mutate</span>(<span class="at">diff =</span> <span class="fu">get</span>(followup_event) <span class="sc">-</span> <span class="fu">get</span>(baseline_event)) <span class="sc">%&gt;%</span> <span class="co"># Compute difference between the two time points</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a>        <span class="fu">mutate</span>(<span class="at">group_resid =</span> (diff) <span class="sc">-</span> <span class="fu">mean</span>(diff)) <span class="sc">%&gt;%</span> <span class="co"># compute residuals (group_resid).</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>        <span class="fu">drop_na</span>(diff) <span class="co"># Exclude rows with NA in the computed difference</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a></span>
+<span id="cb5-16"><a href="#cb5-16"></a>    <span class="co"># Summarize the computed difference scores</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a>    diff_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(diff_data<span class="sc">$</span>diff)</span>
+<span id="cb5-18"><a href="#cb5-18"></a></span>
+<span id="cb5-19"><a href="#cb5-19"></a>    <span class="co"># Return the difference data and its summary</span></span>
+<span id="cb5-20"><a href="#cb5-20"></a>    <span class="fu">list</span>(<span class="at">data =</span> diff_data, <span class="at">summary =</span> diff_summary)</span>
+<span id="cb5-21"><a href="#cb5-21"></a>}</span>
+<span id="cb5-22"><a href="#cb5-22"></a></span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="co"># List of variables for which difference scores are to be computed</span></span>
+<span id="cb5-24"><a href="#cb5-24"></a>variables_of_interest <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"anthroweightcalc"</span>)</span>
+<span id="cb5-25"><a href="#cb5-25"></a></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="co"># Compute and store difference scores and summaries for each variable in a list</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a>difference_and_summary_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(variables_of_interest, <span class="cf">function</span>(var) {</span>
+<span id="cb5-28"><a href="#cb5-28"></a>    <span class="fu">compute_difference</span>(df, var)</span>
+<span id="cb5-29"><a href="#cb5-29"></a>})</span>
+<span id="cb5-30"><a href="#cb5-30"></a></span>
+<span id="cb5-31"><a href="#cb5-31"></a><span class="co"># Extract the difference data for the 'anthroweightcalc' variable</span></span>
+<span id="cb5-32"><a href="#cb5-32"></a>weight_diff_data <span class="ot">&lt;-</span> difference_and_summary_list[[<span class="dv">1</span>]]<span class="sc">$</span>data</span>
+<span id="cb5-33"><a href="#cb5-33"></a></span>
+<span id="cb5-34"><a href="#cb5-34"></a><span class="co"># Merge the 'diff' column back to the main df using 'src_subject_id' as the key</span></span>
+<span id="cb5-35"><a href="#cb5-35"></a>df <span class="ot">&lt;-</span> <span class="fu">left_join</span>(df, weight_diff_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(src_subject_id, diff), <span class="at">by =</span> <span class="st">"src_subject_id"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
@@ -1439,249 +1422,249 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">---</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="an">title:</span><span class="co"> "Difference Scores: Paired Samples T-test"</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="an">theme:</span><span class="co"> cosmo</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="co">---</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a></span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="fu">## Overview</span></span>
-<span id="cb7-8"><a href="#cb7-8"></a></span>
-<span id="cb7-9"><a href="#cb7-9"></a>&lt;p&gt;</span>
-<span id="cb7-10"><a href="#cb7-10"></a></span>
-<span id="cb7-11"><a href="#cb7-11"></a>This example assesses growth in a subsample of ABCD participants from Baseline (T0) to the 1-Year follow-up (T1), using weight as a representative metric. The analysis is conducted in two primary steps: 1) a difference score is calculated between baseline and Year_1 weight measurements for each participant; 2) a one-sample t-test is used to test whether the difference score is statistically different than a null hypothesis of zero change. Finally, a visual inspection is further conducted via a scatterplot to graphically represent the relationship between participant's weight at Baseline and Year_1. The ensuing analysis and interpretations are detailed in the subsequent sections.</span>
-<span id="cb7-12"><a href="#cb7-12"></a></span>
-<span id="cb7-13"><a href="#cb7-13"></a>&lt;/p&gt;</span>
-<span id="cb7-14"><a href="#cb7-14"></a></span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="fu">## Preliminary Setup</span></span>
-<span id="cb7-16"><a href="#cb7-16"></a></span>
-<span id="cb7-17"><a href="#cb7-17"></a>::: panel-tabset</span>
-<span id="cb7-18"><a href="#cb7-18"></a><span class="fu">### Install Packages {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb7-19"><a href="#cb7-19"></a></span>
-<span id="cb7-20"><a href="#cb7-20"></a>::: blue</span>
-<span id="cb7-21"><a href="#cb7-21"></a><span class="at">&gt; **This code installs the r packages necessary for this example, if</span></span>
-<span id="cb7-22"><a href="#cb7-22"></a><span class="at">&gt; they are not already installed**</span></span>
-<span id="cb7-23"><a href="#cb7-23"></a></span>
-<span id="cb7-24"><a href="#cb7-24"></a><span class="in">```{r pckg-install}</span></span>
-<span id="cb7-25"><a href="#cb7-25"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb7-26"><a href="#cb7-26"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb7-27"><a href="#cb7-27"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb7-28"><a href="#cb7-28"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb7-29"><a href="#cb7-29"></a></span>
-<span id="cb7-30"><a href="#cb7-30"></a><span class="in"># Create a list of required packages</span></span>
-<span id="cb7-31"><a href="#cb7-31"></a><span class="in">packages_required &lt;- c("tidyverse", "easystats", "lme4", "gtsummary", "report", "broom", "gridExtra")</span></span>
-<span id="cb7-32"><a href="#cb7-32"></a></span>
-<span id="cb7-33"><a href="#cb7-33"></a><span class="in"># Check which packages are not installed and install them</span></span>
-<span id="cb7-34"><a href="#cb7-34"></a><span class="in">packages_to_install &lt;- setdiff(packages_required, rownames(installed.packages()))</span></span>
-<span id="cb7-35"><a href="#cb7-35"></a><span class="in">if (length(packages_to_install) &gt; 0) {</span></span>
-<span id="cb7-36"><a href="#cb7-36"></a><span class="in">    install.packages(packages_to_install)</span></span>
-<span id="cb7-37"><a href="#cb7-37"></a><span class="in">}</span></span>
-<span id="cb7-38"><a href="#cb7-38"></a></span>
-<span id="cb7-39"><a href="#cb7-39"></a><span class="in"># Load the required packages</span></span>
-<span id="cb7-40"><a href="#cb7-40"></a><span class="in">lapply(packages_required, library, character.only = TRUE)</span></span>
-<span id="cb7-41"><a href="#cb7-41"></a></span>
-<span id="cb7-42"><a href="#cb7-42"></a><span class="in">```</span></span>
-<span id="cb7-43"><a href="#cb7-43"></a>:::</span>
-<span id="cb7-44"><a href="#cb7-44"></a></span>
-<span id="cb7-45"><a href="#cb7-45"></a><span class="fu">### Load Packages</span></span>
-<span id="cb7-46"><a href="#cb7-46"></a></span>
-<span id="cb7-47"><a href="#cb7-47"></a>::: blue</span>
-<span id="cb7-48"><a href="#cb7-48"></a>**This code loads the r libraries necessary for this example**</span>
-<span id="cb7-49"><a href="#cb7-49"></a></span>
-<span id="cb7-50"><a href="#cb7-50"></a><span class="in">```{r lib-load}</span></span>
-<span id="cb7-51"><a href="#cb7-51"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb7-52"><a href="#cb7-52"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb7-53"><a href="#cb7-53"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb7-54"><a href="#cb7-54"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb7-55"><a href="#cb7-55"></a></span>
-<span id="cb7-56"><a href="#cb7-56"></a><span class="in">library(tidyverse) # Collection of R packages for data science</span></span>
-<span id="cb7-57"><a href="#cb7-57"></a><span class="in">library(easystats) # Collection of R packages statistical modeling, visualization, and reporting</span></span>
-<span id="cb7-58"><a href="#cb7-58"></a><span class="in">library(gtsummary) # Publication-ready tables</span></span>
-<span id="cb7-59"><a href="#cb7-59"></a><span class="in">library(report) # Easy reporting of regression analyses</span></span>
-<span id="cb7-60"><a href="#cb7-60"></a><span class="in">library(broom) # Tidy and augment statistical models output</span></span>
-<span id="cb7-61"><a href="#cb7-61"></a><span class="in">library(gridExtra) # Arrange multiple grid-based plots on a page</span></span>
-<span id="cb7-62"><a href="#cb7-62"></a></span>
-<span id="cb7-63"><a href="#cb7-63"></a><span class="in">```</span></span>
-<span id="cb7-64"><a href="#cb7-64"></a>:::</span>
-<span id="cb7-65"><a href="#cb7-65"></a></span>
-<span id="cb7-66"><a href="#cb7-66"></a><span class="fu">### Config Options</span></span>
-<span id="cb7-67"><a href="#cb7-67"></a></span>
-<span id="cb7-68"><a href="#cb7-68"></a>::: blue</span>
-<span id="cb7-69"><a href="#cb7-69"></a>**This code configures knitr code chunk options**</span>
-<span id="cb7-70"><a href="#cb7-70"></a></span>
-<span id="cb7-71"><a href="#cb7-71"></a><span class="in">```{r config}</span></span>
-<span id="cb7-72"><a href="#cb7-72"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb7-73"><a href="#cb7-73"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb7-74"><a href="#cb7-74"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb7-75"><a href="#cb7-75"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb7-76"><a href="#cb7-76"></a></span>
-<span id="cb7-77"><a href="#cb7-77"></a><span class="in">knitr::opts_chunk$set(</span></span>
-<span id="cb7-78"><a href="#cb7-78"></a><span class="in">    echo = T, message = F, warning = F, error = F,</span></span>
-<span id="cb7-79"><a href="#cb7-79"></a><span class="in">    comment = NA, cache = T, code_folding = T,</span></span>
-<span id="cb7-80"><a href="#cb7-80"></a><span class="in">    R.options = list(width = 220, digits = 3),</span></span>
-<span id="cb7-81"><a href="#cb7-81"></a><span class="in">    fig.align = "center",</span></span>
-<span id="cb7-82"><a href="#cb7-82"></a><span class="in">    out.width = "75%", fig.asp = .75</span></span>
-<span id="cb7-83"><a href="#cb7-83"></a><span class="in">)</span></span>
-<span id="cb7-84"><a href="#cb7-84"></a><span class="in">```</span></span>
-<span id="cb7-85"><a href="#cb7-85"></a>:::</span>
-<span id="cb7-86"><a href="#cb7-86"></a>:::</span>
-<span id="cb7-87"><a href="#cb7-87"></a></span>
-<span id="cb7-88"><a href="#cb7-88"></a><span class="fu">## Descriptives Overview</span></span>
-<span id="cb7-89"><a href="#cb7-89"></a></span>
-<span id="cb7-90"><a href="#cb7-90"></a>::: panel-tabset</span>
-<span id="cb7-91"><a href="#cb7-91"></a><span class="fu">### Read and View Data {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb7-92"><a href="#cb7-92"></a></span>
-<span id="cb7-93"><a href="#cb7-93"></a>::: blue</span>
-<span id="cb7-94"><a href="#cb7-94"></a></span>
-<span id="cb7-95"><a href="#cb7-95"></a>**This code reads in and shows the data to be used in the current example**</span>
-<span id="cb7-96"><a href="#cb7-96"></a></span>
-<span id="cb7-97"><a href="#cb7-97"></a><span class="in">```{r read-data}</span></span>
-<span id="cb7-98"><a href="#cb7-98"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb7-99"><a href="#cb7-99"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb7-100"><a href="#cb7-100"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb7-101"><a href="#cb7-101"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb7-102"><a href="#cb7-102"></a><span class="in">#| cache: FALSE</span></span>
-<span id="cb7-103"><a href="#cb7-103"></a></span>
-<span id="cb7-104"><a href="#cb7-104"></a><span class="in"># Set the data paths</span></span>
-<span id="cb7-105"><a href="#cb7-105"></a><span class="in">data_path_1 &lt;- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"</span></span>
-<span id="cb7-106"><a href="#cb7-106"></a><span class="in">data_path_2 &lt;- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
-<span id="cb7-107"><a href="#cb7-107"></a></span>
-<span id="cb7-108"><a href="#cb7-108"></a><span class="in"># Read the data</span></span>
-<span id="cb7-109"><a href="#cb7-109"></a><span class="in">data_demographics &lt;- readRDS(data_path_1)</span></span>
-<span id="cb7-110"><a href="#cb7-110"></a><span class="in">data_nonimaging &lt;- readRDS(data_path_2)</span></span>
-<span id="cb7-111"><a href="#cb7-111"></a></span>
-<span id="cb7-112"><a href="#cb7-112"></a><span class="in"># Subset the nonimaging data to include desired variables</span></span>
-<span id="cb7-113"><a href="#cb7-113"></a><span class="in">selected_vars &lt;- c("src_subject_id", "eventname", "nihtbx_totalcomp_fc", "anthroweightcalc", "anthroweightcalc")</span></span>
-<span id="cb7-114"><a href="#cb7-114"></a><span class="in">subset_data &lt;- data_nonimaging[, selected_vars]</span></span>
-<span id="cb7-115"><a href="#cb7-115"></a></span>
-<span id="cb7-116"><a href="#cb7-116"></a><span class="in">library(dplyr)</span></span>
-<span id="cb7-117"><a href="#cb7-117"></a><span class="in"># # Merge the datasets on 'src_subject_id' and 'eventname'</span></span>
-<span id="cb7-118"><a href="#cb7-118"></a><span class="in">merged_data &lt;- data_demographics %&gt;%</span></span>
-<span id="cb7-119"><a href="#cb7-119"></a><span class="in">    full_join(subset_data, by = c("src_subject_id", "eventname"))</span></span>
-<span id="cb7-120"><a href="#cb7-120"></a></span>
-<span id="cb7-121"><a href="#cb7-121"></a><span class="in"># Inspect the merged data structure</span></span>
-<span id="cb7-122"><a href="#cb7-122"></a><span class="in">str(merged_data)</span></span>
-<span id="cb7-123"><a href="#cb7-123"></a></span>
-<span id="cb7-124"><a href="#cb7-124"></a><span class="in"># Define event names to be retained in the analysis and convert variables to appropriate data types</span></span>
-<span id="cb7-125"><a href="#cb7-125"></a><span class="in">eventnames_to_include &lt;- c(</span></span>
-<span id="cb7-126"><a href="#cb7-126"></a><span class="in">    "baseline_year_1_arm_1",</span></span>
-<span id="cb7-127"><a href="#cb7-127"></a><span class="in">    "1_year_follow_up_y_arm_1",</span></span>
-<span id="cb7-128"><a href="#cb7-128"></a><span class="in">    "2_year_follow_up_y_arm_1",</span></span>
-<span id="cb7-129"><a href="#cb7-129"></a><span class="in">    "3_year_follow_up_y_arm_1",</span></span>
-<span id="cb7-130"><a href="#cb7-130"></a><span class="in">    "4_year_follow_up_y_arm_1"</span></span>
-<span id="cb7-131"><a href="#cb7-131"></a><span class="in">)</span></span>
-<span id="cb7-132"><a href="#cb7-132"></a></span>
-<span id="cb7-133"><a href="#cb7-133"></a><span class="in">df &lt;- merged_data %&gt;%</span></span>
-<span id="cb7-134"><a href="#cb7-134"></a><span class="in">    filter(eventname %in% eventnames_to_include) %&gt;%</span></span>
-<span id="cb7-135"><a href="#cb7-135"></a><span class="in">    mutate(</span></span>
-<span id="cb7-136"><a href="#cb7-136"></a><span class="in">        src_subject_id = as.factor(src_subject_id),</span></span>
-<span id="cb7-137"><a href="#cb7-137"></a><span class="in">        eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),</span></span>
-<span id="cb7-138"><a href="#cb7-138"></a><span class="in">        age = as.numeric(age),</span></span>
-<span id="cb7-139"><a href="#cb7-139"></a><span class="in">        sex = as.factor(sex),</span></span>
-<span id="cb7-140"><a href="#cb7-140"></a><span class="in">        race.4level = as.factor(race.4level),</span></span>
-<span id="cb7-141"><a href="#cb7-141"></a><span class="in">        hisp = as.factor(hisp),</span></span>
-<span id="cb7-142"><a href="#cb7-142"></a><span class="in">        high.educ.bl = as.factor(high.educ.bl),</span></span>
-<span id="cb7-143"><a href="#cb7-143"></a><span class="in">        household.income.bl = as.factor(household.income.bl),</span></span>
-<span id="cb7-144"><a href="#cb7-144"></a><span class="in">        acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),</span></span>
-<span id="cb7-145"><a href="#cb7-145"></a><span class="in">        rel_family_id.bl = as.factor(rel_family_id.bl),</span></span>
-<span id="cb7-146"><a href="#cb7-146"></a><span class="in">        site_id_l = as.factor(site_id_l),</span></span>
-<span id="cb7-147"><a href="#cb7-147"></a><span class="in">        nihtbx_totalcomp_fc = as.numeric(nihtbx_totalcomp_fc),</span></span>
-<span id="cb7-148"><a href="#cb7-148"></a><span class="in">        anthroweightcalc = as.numeric(anthroweightcalc),</span></span>
-<span id="cb7-149"><a href="#cb7-149"></a><span class="in">        anthroweightcalc = as.numeric(anthroweightcalc)</span></span>
-<span id="cb7-150"><a href="#cb7-150"></a><span class="in">    ) %&gt;%</span></span>
-<span id="cb7-151"><a href="#cb7-151"></a><span class="in">    # Exclude cases from unused assessment waves</span></span>
-<span id="cb7-152"><a href="#cb7-152"></a><span class="in">    filter(!is.na(eventname))</span></span>
-<span id="cb7-153"><a href="#cb7-153"></a></span>
-<span id="cb7-154"><a href="#cb7-154"></a><span class="in">```</span></span>
-<span id="cb7-155"><a href="#cb7-155"></a>:::</span>
-<span id="cb7-156"><a href="#cb7-156"></a></span>
-<span id="cb7-157"><a href="#cb7-157"></a><span class="fu">### Descriptives</span></span>
-<span id="cb7-158"><a href="#cb7-158"></a></span>
-<span id="cb7-159"><a href="#cb7-159"></a>::: blue</span>
-<span id="cb7-160"><a href="#cb7-160"></a>**This code creates a descriptives table**</span>
-<span id="cb7-161"><a href="#cb7-161"></a></span>
-<span id="cb7-162"><a href="#cb7-162"></a><span class="in">```{r descriptives}</span></span>
-<span id="cb7-163"><a href="#cb7-163"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb7-164"><a href="#cb7-164"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb7-165"><a href="#cb7-165"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb7-166"><a href="#cb7-166"></a></span>
-<span id="cb7-167"><a href="#cb7-167"></a><span class="in">descriptives_table &lt;- df %&gt;%</span></span>
-<span id="cb7-168"><a href="#cb7-168"></a><span class="in">    select(eventname, sex, race.4level, hisp, anthroweightcalc) %&gt;%</span></span>
-<span id="cb7-169"><a href="#cb7-169"></a><span class="in">    mutate(eventname = factor(eventname, labels = c("Baseline", "Year 1", "Year 2", "Year 3", "Year 4"))) %&gt;%</span></span>
-<span id="cb7-170"><a href="#cb7-170"></a><span class="in">    mutate(sex = factor(sex, labels = c("Female", "Male"))) %&gt;%</span></span>
-<span id="cb7-171"><a href="#cb7-171"></a><span class="in">    tbl_summary(</span></span>
-<span id="cb7-172"><a href="#cb7-172"></a><span class="in">        by = eventname,</span></span>
-<span id="cb7-173"><a href="#cb7-173"></a><span class="in">        missing = "no",</span></span>
-<span id="cb7-174"><a href="#cb7-174"></a><span class="in">        label = list(</span></span>
-<span id="cb7-175"><a href="#cb7-175"></a><span class="in">            sex ~ "Sex", race.4level ~ "Race", hisp ~ "Hispanic",</span></span>
-<span id="cb7-176"><a href="#cb7-176"></a><span class="in">            anthroweightcalc ~ "Weight"</span></span>
-<span id="cb7-177"><a href="#cb7-177"></a><span class="in">        ),</span></span>
-<span id="cb7-178"><a href="#cb7-178"></a><span class="in">        statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),</span></span>
-<span id="cb7-179"><a href="#cb7-179"></a><span class="in">    ) %&gt;%</span></span>
-<span id="cb7-180"><a href="#cb7-180"></a><span class="in">    modify_header(all_stat_cols() ~ "**{level}**&lt;br&gt;N = {n}") %&gt;%</span></span>
-<span id="cb7-181"><a href="#cb7-181"></a><span class="in">    bold_labels() %&gt;%</span></span>
-<span id="cb7-182"><a href="#cb7-182"></a><span class="in">    italicize_levels() %&gt;%</span></span>
-<span id="cb7-183"><a href="#cb7-183"></a><span class="in">    modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")</span></span>
-<span id="cb7-184"><a href="#cb7-184"></a><span class="in">theme_gtsummary_compact()</span></span>
-<span id="cb7-185"><a href="#cb7-185"></a></span>
-<span id="cb7-186"><a href="#cb7-186"></a><span class="in">descriptives_table</span></span>
-<span id="cb7-187"><a href="#cb7-187"></a><span class="in">```</span></span>
-<span id="cb7-188"><a href="#cb7-188"></a></span>
-<span id="cb7-189"><a href="#cb7-189"></a>:::</span>
-<span id="cb7-190"><a href="#cb7-190"></a></span>
-<span id="cb7-191"><a href="#cb7-191"></a><span class="fu">### Results</span></span>
-<span id="cb7-192"><a href="#cb7-192"></a></span>
-<span id="cb7-193"><a href="#cb7-193"></a>::: blue</span>
-<span id="cb7-194"><a href="#cb7-194"></a>The code snippet below tells R to compute a difference score by subtracting each participant's weight at T1 from their weight at T0. Relevant summary statistics are also provided.</span>
-<span id="cb7-195"><a href="#cb7-195"></a></span>
-<span id="cb7-196"><a href="#cb7-196"></a>**STEP 1: Compute Difference Score**</span>
-<span id="cb7-197"><a href="#cb7-197"></a></span>
-<span id="cb7-198"><a href="#cb7-198"></a><span class="in">```{r build-model-ttest-1}</span></span>
-<span id="cb7-199"><a href="#cb7-199"></a><span class="in">#| message: FALSE</span></span>
-<span id="cb7-200"><a href="#cb7-200"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb7-201"><a href="#cb7-201"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb7-202"><a href="#cb7-202"></a><span class="in">#| class.source: 'fold-hide'</span></span>
-<span id="cb7-203"><a href="#cb7-203"></a></span>
-<span id="cb7-204"><a href="#cb7-204"></a><span class="in"># Function to compute difference scores</span></span>
-<span id="cb7-205"><a href="#cb7-205"></a><span class="in">compute_difference &lt;- function(df, variable_name) {</span></span>
-<span id="cb7-206"><a href="#cb7-206"></a><span class="in">    # Define the event names of interest</span></span>
-<span id="cb7-207"><a href="#cb7-207"></a><span class="in">    baseline_event &lt;- "baseline_year_1_arm_1"</span></span>
-<span id="cb7-208"><a href="#cb7-208"></a><span class="in">    followup_event &lt;- "1_year_follow_up_y_arm_1"</span></span>
-<span id="cb7-209"><a href="#cb7-209"></a></span>
-<span id="cb7-210"><a href="#cb7-210"></a><span class="in">    # Compute the difference between Baseline and Year 1 data for the given variable</span></span>
-<span id="cb7-211"><a href="#cb7-211"></a><span class="in">    diff_data &lt;- df %&gt;%</span></span>
-<span id="cb7-212"><a href="#cb7-212"></a><span class="in">        filter(eventname %in% c(baseline_event, followup_event)) %&gt;% # Filter for specific event names</span></span>
-<span id="cb7-213"><a href="#cb7-213"></a><span class="in">        select(src_subject_id, eventname, all_of(variable_name)) %&gt;% # Select required columns</span></span>
-<span id="cb7-214"><a href="#cb7-214"></a><span class="in">        spread(eventname, variable_name) %&gt;% # Convert data from long to wide format</span></span>
-<span id="cb7-215"><a href="#cb7-215"></a><span class="in">        mutate(diff = get(followup_event) - get(baseline_event)) %&gt;% # Compute difference between the two time points</span></span>
-<span id="cb7-216"><a href="#cb7-216"></a><span class="in">        mutate(group_resid = (diff) - mean(diff)) %&gt;% # compute residuals (group_resid).</span></span>
-<span id="cb7-217"><a href="#cb7-217"></a><span class="in">        drop_na(diff) # Exclude rows with NA in the computed difference</span></span>
-<span id="cb7-218"><a href="#cb7-218"></a></span>
-<span id="cb7-219"><a href="#cb7-219"></a><span class="in">    # Summarize the computed difference scores</span></span>
-<span id="cb7-220"><a href="#cb7-220"></a><span class="in">    diff_summary &lt;- summary(diff_data$diff)</span></span>
-<span id="cb7-221"><a href="#cb7-221"></a></span>
-<span id="cb7-222"><a href="#cb7-222"></a><span class="in">    # Return the difference data and its summary</span></span>
-<span id="cb7-223"><a href="#cb7-223"></a><span class="in">    list(data = diff_data, summary = diff_summary)</span></span>
-<span id="cb7-224"><a href="#cb7-224"></a><span class="in">}</span></span>
-<span id="cb7-225"><a href="#cb7-225"></a></span>
-<span id="cb7-226"><a href="#cb7-226"></a><span class="in"># List of variables for which difference scores are to be computed</span></span>
-<span id="cb7-227"><a href="#cb7-227"></a><span class="in">variables_of_interest &lt;- c("anthroweightcalc")</span></span>
-<span id="cb7-228"><a href="#cb7-228"></a></span>
-<span id="cb7-229"><a href="#cb7-229"></a><span class="in"># Compute and store difference scores and summaries for each variable in a list</span></span>
-<span id="cb7-230"><a href="#cb7-230"></a><span class="in">difference_and_summary_list &lt;- lapply(variables_of_interest, function(var) {</span></span>
-<span id="cb7-231"><a href="#cb7-231"></a><span class="in">    compute_difference(df, var)</span></span>
-<span id="cb7-232"><a href="#cb7-232"></a><span class="in">})</span></span>
-<span id="cb7-233"><a href="#cb7-233"></a></span>
-<span id="cb7-234"><a href="#cb7-234"></a><span class="in"># Extract the difference data for the 'anthroweightcalc' variable</span></span>
-<span id="cb7-235"><a href="#cb7-235"></a><span class="in">weight_diff_data &lt;- difference_and_summary_list[[1]]$data</span></span>
-<span id="cb7-236"><a href="#cb7-236"></a></span>
-<span id="cb7-237"><a href="#cb7-237"></a><span class="in"># Merge the 'diff' column back to the main df using 'src_subject_id' as the key</span></span>
-<span id="cb7-238"><a href="#cb7-238"></a><span class="in">df &lt;- left_join(df, weight_diff_data %&gt;% select(src_subject_id, diff), by = "src_subject_id")</span></span>
-<span id="cb7-239"><a href="#cb7-239"></a></span>
-<span id="cb7-240"><a href="#cb7-240"></a><span class="in">```</span></span>
-<span id="cb7-241"><a href="#cb7-241"></a></span>
-<span id="cb7-242"><a href="#cb7-242"></a>:::</span>
-<span id="cb7-243"><a href="#cb7-243"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="an">title:</span><span class="co"> "Difference Scores: Paired Samples T-test"</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="an">theme:</span><span class="co"> cosmo</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">---</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="fu">## Overview</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a>&lt;p&gt;</span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-11"><a href="#cb6-11"></a>This example assesses growth in a subsample of ABCD participants from Baseline (T0) to the 1-Year follow-up (T1), using weight as a representative metric. The analysis is conducted in two primary steps: 1) a difference score is calculated between baseline and Year_1 weight measurements for each participant; 2) a one-sample t-test is used to test whether the difference score is statistically different than a null hypothesis of zero change. Finally, a visual inspection is further conducted via a scatterplot to graphically represent the relationship between participant's weight at Baseline and Year_1. The ensuing analysis and interpretations are detailed in the subsequent sections.</span>
+<span id="cb6-12"><a href="#cb6-12"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a>&lt;/p&gt;</span>
+<span id="cb6-14"><a href="#cb6-14"></a></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="fu">## Preliminary Setup</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a></span>
+<span id="cb6-17"><a href="#cb6-17"></a>::: panel-tabset</span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="fu">### Install Packages {.tabset .tabset-fade .tabset-pills}</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a></span>
+<span id="cb6-20"><a href="#cb6-20"></a>::: blue</span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="at">&gt; **This code installs the r packages necessary for this example, if</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="at">&gt; they are not already installed**</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="in">```{r pckg-install}</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="in">#| echo: TRUE</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="in">#| messages: FALSE</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="in">#| warning: FALSE</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="in">#| output: FALSE</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="in"># Create a list of required packages</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a><span class="in">packages_required &lt;- c("tidyverse", "easystats", "lme4", "gtsummary", "report", "broom", "gridExtra")</span></span>
+<span id="cb6-32"><a href="#cb6-32"></a></span>
+<span id="cb6-33"><a href="#cb6-33"></a><span class="in"># Check which packages are not installed and install them</span></span>
+<span id="cb6-34"><a href="#cb6-34"></a><span class="in">packages_to_install &lt;- setdiff(packages_required, rownames(installed.packages()))</span></span>
+<span id="cb6-35"><a href="#cb6-35"></a><span class="in">if (length(packages_to_install) &gt; 0) {</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a><span class="in">    install.packages(packages_to_install)</span></span>
+<span id="cb6-37"><a href="#cb6-37"></a><span class="in">}</span></span>
+<span id="cb6-38"><a href="#cb6-38"></a></span>
+<span id="cb6-39"><a href="#cb6-39"></a><span class="in"># Load the required packages</span></span>
+<span id="cb6-40"><a href="#cb6-40"></a><span class="in">lapply(packages_required, library, character.only = TRUE)</span></span>
+<span id="cb6-41"><a href="#cb6-41"></a></span>
+<span id="cb6-42"><a href="#cb6-42"></a><span class="in">```</span></span>
+<span id="cb6-43"><a href="#cb6-43"></a>:::</span>
+<span id="cb6-44"><a href="#cb6-44"></a></span>
+<span id="cb6-45"><a href="#cb6-45"></a><span class="fu">### Load Packages</span></span>
+<span id="cb6-46"><a href="#cb6-46"></a></span>
+<span id="cb6-47"><a href="#cb6-47"></a>::: blue</span>
+<span id="cb6-48"><a href="#cb6-48"></a>**This code loads the r libraries necessary for this example**</span>
+<span id="cb6-49"><a href="#cb6-49"></a></span>
+<span id="cb6-50"><a href="#cb6-50"></a><span class="in">```{r lib-load}</span></span>
+<span id="cb6-51"><a href="#cb6-51"></a><span class="in">#| echo: TRUE</span></span>
+<span id="cb6-52"><a href="#cb6-52"></a><span class="in">#| messages: FALSE</span></span>
+<span id="cb6-53"><a href="#cb6-53"></a><span class="in">#| warning: FALSE</span></span>
+<span id="cb6-54"><a href="#cb6-54"></a><span class="in">#| output: FALSE</span></span>
+<span id="cb6-55"><a href="#cb6-55"></a></span>
+<span id="cb6-56"><a href="#cb6-56"></a><span class="in">library(tidyverse) # Collection of R packages for data science</span></span>
+<span id="cb6-57"><a href="#cb6-57"></a><span class="in">library(easystats) # Collection of R packages statistical modeling, visualization, and reporting</span></span>
+<span id="cb6-58"><a href="#cb6-58"></a><span class="in">library(gtsummary) # Publication-ready tables</span></span>
+<span id="cb6-59"><a href="#cb6-59"></a><span class="in">library(report) # Easy reporting of regression analyses</span></span>
+<span id="cb6-60"><a href="#cb6-60"></a><span class="in">library(broom) # Tidy and augment statistical models output</span></span>
+<span id="cb6-61"><a href="#cb6-61"></a><span class="in">library(gridExtra) # Arrange multiple grid-based plots on a page</span></span>
+<span id="cb6-62"><a href="#cb6-62"></a></span>
+<span id="cb6-63"><a href="#cb6-63"></a><span class="in">```</span></span>
+<span id="cb6-64"><a href="#cb6-64"></a>:::</span>
+<span id="cb6-65"><a href="#cb6-65"></a></span>
+<span id="cb6-66"><a href="#cb6-66"></a></span>
+<span id="cb6-67"><a href="#cb6-67"></a></span>
+<span id="cb6-68"><a href="#cb6-68"></a><span class="in">```{r config}</span></span>
+<span id="cb6-69"><a href="#cb6-69"></a><span class="in">#| echo: FALSE</span></span>
+<span id="cb6-70"><a href="#cb6-70"></a><span class="in">#| messages: FALSE</span></span>
+<span id="cb6-71"><a href="#cb6-71"></a><span class="in">#| warning: FALSE</span></span>
+<span id="cb6-72"><a href="#cb6-72"></a><span class="in">#| output: FALSE</span></span>
+<span id="cb6-73"><a href="#cb6-73"></a></span>
+<span id="cb6-74"><a href="#cb6-74"></a><span class="in">### Config Options</span></span>
+<span id="cb6-75"><a href="#cb6-75"></a><span class="in">#::: blue</span></span>
+<span id="cb6-76"><a href="#cb6-76"></a><span class="in">#**This code configures knitr code chunk options** </span></span>
+<span id="cb6-77"><a href="#cb6-77"></a></span>
+<span id="cb6-78"><a href="#cb6-78"></a><span class="in">knitr::opts_chunk$set(</span></span>
+<span id="cb6-79"><a href="#cb6-79"></a><span class="in">    echo = T, message = F, warning = F, error = F,</span></span>
+<span id="cb6-80"><a href="#cb6-80"></a><span class="in">    comment = NA, cache = T, code_folding = T,</span></span>
+<span id="cb6-81"><a href="#cb6-81"></a><span class="in">    R.options = list(width = 220, digits = 3),</span></span>
+<span id="cb6-82"><a href="#cb6-82"></a><span class="in">    fig.align = "center",</span></span>
+<span id="cb6-83"><a href="#cb6-83"></a><span class="in">    out.width = "75%", fig.asp = .75</span></span>
+<span id="cb6-84"><a href="#cb6-84"></a><span class="in">)</span></span>
+<span id="cb6-85"><a href="#cb6-85"></a><span class="in">```</span></span>
+<span id="cb6-86"><a href="#cb6-86"></a>:::</span>
+<span id="cb6-87"><a href="#cb6-87"></a></span>
+<span id="cb6-88"><a href="#cb6-88"></a><span class="fu">## Descriptives Overview</span></span>
+<span id="cb6-89"><a href="#cb6-89"></a></span>
+<span id="cb6-90"><a href="#cb6-90"></a>::: panel-tabset</span>
+<span id="cb6-91"><a href="#cb6-91"></a><span class="fu">### Read and View Data {.tabset .tabset-fade .tabset-pills}</span></span>
+<span id="cb6-92"><a href="#cb6-92"></a></span>
+<span id="cb6-93"><a href="#cb6-93"></a>::: blue</span>
+<span id="cb6-94"><a href="#cb6-94"></a></span>
+<span id="cb6-95"><a href="#cb6-95"></a>**This code reads in and shows the data to be used in the current example**</span>
+<span id="cb6-96"><a href="#cb6-96"></a></span>
+<span id="cb6-97"><a href="#cb6-97"></a><span class="in">```{r read-data}</span></span>
+<span id="cb6-98"><a href="#cb6-98"></a><span class="in">#| echo: TRUE</span></span>
+<span id="cb6-99"><a href="#cb6-99"></a><span class="in">#| messages: FALSE</span></span>
+<span id="cb6-100"><a href="#cb6-100"></a><span class="in">#| warning: FALSE</span></span>
+<span id="cb6-101"><a href="#cb6-101"></a><span class="in">#| output: FALSE</span></span>
+<span id="cb6-102"><a href="#cb6-102"></a><span class="in">#| cache: FALSE</span></span>
+<span id="cb6-103"><a href="#cb6-103"></a></span>
+<span id="cb6-104"><a href="#cb6-104"></a><span class="in"># Set the data paths</span></span>
+<span id="cb6-105"><a href="#cb6-105"></a><span class="in">data_path_1 &lt;- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"</span></span>
+<span id="cb6-106"><a href="#cb6-106"></a><span class="in">data_path_2 &lt;- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
+<span id="cb6-107"><a href="#cb6-107"></a></span>
+<span id="cb6-108"><a href="#cb6-108"></a><span class="in"># Read the data</span></span>
+<span id="cb6-109"><a href="#cb6-109"></a><span class="in">data_demographics &lt;- readRDS(data_path_1)</span></span>
+<span id="cb6-110"><a href="#cb6-110"></a><span class="in">data_nonimaging &lt;- readRDS(data_path_2)</span></span>
+<span id="cb6-111"><a href="#cb6-111"></a></span>
+<span id="cb6-112"><a href="#cb6-112"></a><span class="in"># Subset the nonimaging data to include desired variables</span></span>
+<span id="cb6-113"><a href="#cb6-113"></a><span class="in">selected_vars &lt;- c("src_subject_id", "eventname", "nihtbx_totalcomp_fc", "anthroweightcalc", "anthroweightcalc")</span></span>
+<span id="cb6-114"><a href="#cb6-114"></a><span class="in">subset_data &lt;- data_nonimaging[, selected_vars]</span></span>
+<span id="cb6-115"><a href="#cb6-115"></a></span>
+<span id="cb6-116"><a href="#cb6-116"></a><span class="in">library(dplyr)</span></span>
+<span id="cb6-117"><a href="#cb6-117"></a><span class="in"># # Merge the datasets on 'src_subject_id' and 'eventname'</span></span>
+<span id="cb6-118"><a href="#cb6-118"></a><span class="in">merged_data &lt;- data_demographics %&gt;%</span></span>
+<span id="cb6-119"><a href="#cb6-119"></a><span class="in">    full_join(subset_data, by = c("src_subject_id", "eventname"))</span></span>
+<span id="cb6-120"><a href="#cb6-120"></a></span>
+<span id="cb6-121"><a href="#cb6-121"></a><span class="in"># Inspect the merged data structure</span></span>
+<span id="cb6-122"><a href="#cb6-122"></a><span class="in">str(merged_data)</span></span>
+<span id="cb6-123"><a href="#cb6-123"></a></span>
+<span id="cb6-124"><a href="#cb6-124"></a><span class="in"># Define event names to be retained in the analysis and convert variables to appropriate data types</span></span>
+<span id="cb6-125"><a href="#cb6-125"></a><span class="in">eventnames_to_include &lt;- c(</span></span>
+<span id="cb6-126"><a href="#cb6-126"></a><span class="in">    "baseline_year_1_arm_1",</span></span>
+<span id="cb6-127"><a href="#cb6-127"></a><span class="in">    "1_year_follow_up_y_arm_1",</span></span>
+<span id="cb6-128"><a href="#cb6-128"></a><span class="in">    "2_year_follow_up_y_arm_1",</span></span>
+<span id="cb6-129"><a href="#cb6-129"></a><span class="in">    "3_year_follow_up_y_arm_1",</span></span>
+<span id="cb6-130"><a href="#cb6-130"></a><span class="in">    "4_year_follow_up_y_arm_1"</span></span>
+<span id="cb6-131"><a href="#cb6-131"></a><span class="in">)</span></span>
+<span id="cb6-132"><a href="#cb6-132"></a></span>
+<span id="cb6-133"><a href="#cb6-133"></a><span class="in">df &lt;- merged_data %&gt;%</span></span>
+<span id="cb6-134"><a href="#cb6-134"></a><span class="in">    filter(eventname %in% eventnames_to_include) %&gt;%</span></span>
+<span id="cb6-135"><a href="#cb6-135"></a><span class="in">    mutate(</span></span>
+<span id="cb6-136"><a href="#cb6-136"></a><span class="in">        src_subject_id = as.factor(src_subject_id),</span></span>
+<span id="cb6-137"><a href="#cb6-137"></a><span class="in">        eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),</span></span>
+<span id="cb6-138"><a href="#cb6-138"></a><span class="in">        age = as.numeric(age),</span></span>
+<span id="cb6-139"><a href="#cb6-139"></a><span class="in">        sex = as.factor(sex),</span></span>
+<span id="cb6-140"><a href="#cb6-140"></a><span class="in">        race.4level = as.factor(race.4level),</span></span>
+<span id="cb6-141"><a href="#cb6-141"></a><span class="in">        hisp = as.factor(hisp),</span></span>
+<span id="cb6-142"><a href="#cb6-142"></a><span class="in">        high.educ.bl = as.factor(high.educ.bl),</span></span>
+<span id="cb6-143"><a href="#cb6-143"></a><span class="in">        household.income.bl = as.factor(household.income.bl),</span></span>
+<span id="cb6-144"><a href="#cb6-144"></a><span class="in">        acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),</span></span>
+<span id="cb6-145"><a href="#cb6-145"></a><span class="in">        rel_family_id.bl = as.factor(rel_family_id.bl),</span></span>
+<span id="cb6-146"><a href="#cb6-146"></a><span class="in">        site_id_l = as.factor(site_id_l),</span></span>
+<span id="cb6-147"><a href="#cb6-147"></a><span class="in">        nihtbx_totalcomp_fc = as.numeric(nihtbx_totalcomp_fc),</span></span>
+<span id="cb6-148"><a href="#cb6-148"></a><span class="in">        anthroweightcalc = as.numeric(anthroweightcalc),</span></span>
+<span id="cb6-149"><a href="#cb6-149"></a><span class="in">        anthroweightcalc = as.numeric(anthroweightcalc)</span></span>
+<span id="cb6-150"><a href="#cb6-150"></a><span class="in">    ) %&gt;%</span></span>
+<span id="cb6-151"><a href="#cb6-151"></a><span class="in">    # Exclude cases from unused assessment waves</span></span>
+<span id="cb6-152"><a href="#cb6-152"></a><span class="in">    filter(!is.na(eventname))</span></span>
+<span id="cb6-153"><a href="#cb6-153"></a></span>
+<span id="cb6-154"><a href="#cb6-154"></a><span class="in">```</span></span>
+<span id="cb6-155"><a href="#cb6-155"></a>:::</span>
+<span id="cb6-156"><a href="#cb6-156"></a></span>
+<span id="cb6-157"><a href="#cb6-157"></a><span class="fu">### Descriptives</span></span>
+<span id="cb6-158"><a href="#cb6-158"></a></span>
+<span id="cb6-159"><a href="#cb6-159"></a>::: blue</span>
+<span id="cb6-160"><a href="#cb6-160"></a>**This code creates a descriptives table**</span>
+<span id="cb6-161"><a href="#cb6-161"></a></span>
+<span id="cb6-162"><a href="#cb6-162"></a><span class="in">```{r descriptives}</span></span>
+<span id="cb6-163"><a href="#cb6-163"></a><span class="in">#| echo: TRUE</span></span>
+<span id="cb6-164"><a href="#cb6-164"></a><span class="in">#| messages: FALSE</span></span>
+<span id="cb6-165"><a href="#cb6-165"></a><span class="in">#| warning: FALSE</span></span>
+<span id="cb6-166"><a href="#cb6-166"></a></span>
+<span id="cb6-167"><a href="#cb6-167"></a><span class="in">descriptives_table &lt;- df %&gt;%</span></span>
+<span id="cb6-168"><a href="#cb6-168"></a><span class="in">    select(eventname, sex, race.4level, hisp, anthroweightcalc) %&gt;%</span></span>
+<span id="cb6-169"><a href="#cb6-169"></a><span class="in">    mutate(eventname = factor(eventname, labels = c("Baseline", "Year 1", "Year 2", "Year 3", "Year 4"))) %&gt;%</span></span>
+<span id="cb6-170"><a href="#cb6-170"></a><span class="in">    mutate(sex = factor(sex, labels = c("Female", "Male"))) %&gt;%</span></span>
+<span id="cb6-171"><a href="#cb6-171"></a><span class="in">    tbl_summary(</span></span>
+<span id="cb6-172"><a href="#cb6-172"></a><span class="in">        by = eventname,</span></span>
+<span id="cb6-173"><a href="#cb6-173"></a><span class="in">        missing = "no",</span></span>
+<span id="cb6-174"><a href="#cb6-174"></a><span class="in">        label = list(</span></span>
+<span id="cb6-175"><a href="#cb6-175"></a><span class="in">            sex ~ "Sex", race.4level ~ "Race", hisp ~ "Hispanic",</span></span>
+<span id="cb6-176"><a href="#cb6-176"></a><span class="in">            anthroweightcalc ~ "Weight"</span></span>
+<span id="cb6-177"><a href="#cb6-177"></a><span class="in">        ),</span></span>
+<span id="cb6-178"><a href="#cb6-178"></a><span class="in">        statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),</span></span>
+<span id="cb6-179"><a href="#cb6-179"></a><span class="in">    ) %&gt;%</span></span>
+<span id="cb6-180"><a href="#cb6-180"></a><span class="in">    modify_header(all_stat_cols() ~ "**{level}**&lt;br&gt;N = {n}") %&gt;%</span></span>
+<span id="cb6-181"><a href="#cb6-181"></a><span class="in">    bold_labels() %&gt;%</span></span>
+<span id="cb6-182"><a href="#cb6-182"></a><span class="in">    italicize_levels() %&gt;%</span></span>
+<span id="cb6-183"><a href="#cb6-183"></a><span class="in">    modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")</span></span>
+<span id="cb6-184"><a href="#cb6-184"></a><span class="in">theme_gtsummary_compact()</span></span>
+<span id="cb6-185"><a href="#cb6-185"></a></span>
+<span id="cb6-186"><a href="#cb6-186"></a><span class="in">descriptives_table</span></span>
+<span id="cb6-187"><a href="#cb6-187"></a><span class="in">```</span></span>
+<span id="cb6-188"><a href="#cb6-188"></a></span>
+<span id="cb6-189"><a href="#cb6-189"></a>:::</span>
+<span id="cb6-190"><a href="#cb6-190"></a></span>
+<span id="cb6-191"><a href="#cb6-191"></a><span class="fu">### Results</span></span>
+<span id="cb6-192"><a href="#cb6-192"></a></span>
+<span id="cb6-193"><a href="#cb6-193"></a>::: blue</span>
+<span id="cb6-194"><a href="#cb6-194"></a>The code snippet below tells R to compute a difference score by subtracting each participant's weight at T1 from their weight at T0. Relevant summary statistics are also provided.</span>
+<span id="cb6-195"><a href="#cb6-195"></a></span>
+<span id="cb6-196"><a href="#cb6-196"></a>**STEP 1: Compute Difference Score**</span>
+<span id="cb6-197"><a href="#cb6-197"></a></span>
+<span id="cb6-198"><a href="#cb6-198"></a><span class="in">```{r build-model-ttest-1}</span></span>
+<span id="cb6-199"><a href="#cb6-199"></a><span class="in">#| message: FALSE</span></span>
+<span id="cb6-200"><a href="#cb6-200"></a><span class="in">#| warning: FALSE</span></span>
+<span id="cb6-201"><a href="#cb6-201"></a><span class="in">#| echo: TRUE</span></span>
+<span id="cb6-202"><a href="#cb6-202"></a><span class="in">#| class.source: 'fold-hide'</span></span>
+<span id="cb6-203"><a href="#cb6-203"></a></span>
+<span id="cb6-204"><a href="#cb6-204"></a><span class="in"># Function to compute difference scores</span></span>
+<span id="cb6-205"><a href="#cb6-205"></a><span class="in">compute_difference &lt;- function(df, variable_name) {</span></span>
+<span id="cb6-206"><a href="#cb6-206"></a><span class="in">    # Define the event names of interest</span></span>
+<span id="cb6-207"><a href="#cb6-207"></a><span class="in">    baseline_event &lt;- "baseline_year_1_arm_1"</span></span>
+<span id="cb6-208"><a href="#cb6-208"></a><span class="in">    followup_event &lt;- "1_year_follow_up_y_arm_1"</span></span>
+<span id="cb6-209"><a href="#cb6-209"></a></span>
+<span id="cb6-210"><a href="#cb6-210"></a><span class="in">    # Compute the difference between Baseline and Year 1 data for the given variable</span></span>
+<span id="cb6-211"><a href="#cb6-211"></a><span class="in">    diff_data &lt;- df %&gt;%</span></span>
+<span id="cb6-212"><a href="#cb6-212"></a><span class="in">        filter(eventname %in% c(baseline_event, followup_event)) %&gt;% # Filter for specific event names</span></span>
+<span id="cb6-213"><a href="#cb6-213"></a><span class="in">        select(src_subject_id, eventname, all_of(variable_name)) %&gt;% # Select required columns</span></span>
+<span id="cb6-214"><a href="#cb6-214"></a><span class="in">        spread(eventname, variable_name) %&gt;% # Convert data from long to wide format</span></span>
+<span id="cb6-215"><a href="#cb6-215"></a><span class="in">        mutate(diff = get(followup_event) - get(baseline_event)) %&gt;% # Compute difference between the two time points</span></span>
+<span id="cb6-216"><a href="#cb6-216"></a><span class="in">        mutate(group_resid = (diff) - mean(diff)) %&gt;% # compute residuals (group_resid).</span></span>
+<span id="cb6-217"><a href="#cb6-217"></a><span class="in">        drop_na(diff) # Exclude rows with NA in the computed difference</span></span>
+<span id="cb6-218"><a href="#cb6-218"></a></span>
+<span id="cb6-219"><a href="#cb6-219"></a><span class="in">    # Summarize the computed difference scores</span></span>
+<span id="cb6-220"><a href="#cb6-220"></a><span class="in">    diff_summary &lt;- summary(diff_data$diff)</span></span>
+<span id="cb6-221"><a href="#cb6-221"></a></span>
+<span id="cb6-222"><a href="#cb6-222"></a><span class="in">    # Return the difference data and its summary</span></span>
+<span id="cb6-223"><a href="#cb6-223"></a><span class="in">    list(data = diff_data, summary = diff_summary)</span></span>
+<span id="cb6-224"><a href="#cb6-224"></a><span class="in">}</span></span>
+<span id="cb6-225"><a href="#cb6-225"></a></span>
+<span id="cb6-226"><a href="#cb6-226"></a><span class="in"># List of variables for which difference scores are to be computed</span></span>
+<span id="cb6-227"><a href="#cb6-227"></a><span class="in">variables_of_interest &lt;- c("anthroweightcalc")</span></span>
+<span id="cb6-228"><a href="#cb6-228"></a></span>
+<span id="cb6-229"><a href="#cb6-229"></a><span class="in"># Compute and store difference scores and summaries for each variable in a list</span></span>
+<span id="cb6-230"><a href="#cb6-230"></a><span class="in">difference_and_summary_list &lt;- lapply(variables_of_interest, function(var) {</span></span>
+<span id="cb6-231"><a href="#cb6-231"></a><span class="in">    compute_difference(df, var)</span></span>
+<span id="cb6-232"><a href="#cb6-232"></a><span class="in">})</span></span>
+<span id="cb6-233"><a href="#cb6-233"></a></span>
+<span id="cb6-234"><a href="#cb6-234"></a><span class="in"># Extract the difference data for the 'anthroweightcalc' variable</span></span>
+<span id="cb6-235"><a href="#cb6-235"></a><span class="in">weight_diff_data &lt;- difference_and_summary_list[[1]]$data</span></span>
+<span id="cb6-236"><a href="#cb6-236"></a></span>
+<span id="cb6-237"><a href="#cb6-237"></a><span class="in"># Merge the 'diff' column back to the main df using 'src_subject_id' as the key</span></span>
+<span id="cb6-238"><a href="#cb6-238"></a><span class="in">df &lt;- left_join(df, weight_diff_data %&gt;% select(src_subject_id, diff), by = "src_subject_id")</span></span>
+<span id="cb6-239"><a href="#cb6-239"></a></span>
+<span id="cb6-240"><a href="#cb6-240"></a><span class="in">```</span></span>
+<span id="cb6-241"><a href="#cb6-241"></a></span>
+<span id="cb6-242"><a href="#cb6-242"></a>:::</span>
+<span id="cb6-243"><a href="#cb6-243"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
