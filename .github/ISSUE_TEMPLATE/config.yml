@@ -37,5 +37,5 @@ issue_forms:
     template: user_support_question.yml
 
   - name: engagements-events
-    description: Propose a community event, meetup, or collaborative session. Ideal for enhancing community engagement and collaboration.
+    description: Propose a community event, livestream, or collaborative session. Ideal for enhancing community engagement and collaboration.
     template: community_engagement_event_proposal.yml
