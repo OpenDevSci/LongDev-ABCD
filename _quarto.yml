@@ -62,6 +62,8 @@ website:
       tools:
         - icon: github
           menu:
+            - text: Go to project repository
+              url: https://github.com/OpenDevSci/SUNLab
             - text: Source Code
               url: https://github.com/opendevsci/LongDev-ABCD
             - text: Report a Bug

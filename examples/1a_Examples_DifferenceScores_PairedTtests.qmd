@@ -1,7 +1,7 @@
 ---
 title: "Difference Scores: Paired Samples T-test"
 author: "Biostatistics Working Group"
-theme: cosmo
+
 ---
 
 ## Overview

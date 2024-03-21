@@ -116,10 +116,9 @@ bibliography: references.bib
 
 # Introduction
 
-[The Adolescent Brain Cognitive Development (ABCD) Study&reg;](https://abcdstudy.org/ "Visit the ABCD Study website"){#abcdwebsite} is the largest longitudinal investigation of neurodevelopment and child health in the United States. Conceived and initiated by the National Institutes of Health (NIH), this landmark prospective longitudinal study aims to transform our understanding of the genetic and environmental factors impacting neurodevelopment and their roles in behavioral and health outcomes across ten years of adolescence @volkow2018. At its heart, the study is designed to chart the course of human development across multiple interacting domains from late childhood to early adulthood and to identify factors that lead to both positive and negative outcomes. Central to achieving these goals is the commitment of the ABCD Study© and its NIH funders to an open science framework, intended to facilitate sharing of data and analytical methods by espousing practices that increase access, integrity, and reproducibility of scientific research. In this context, the ABCD Study is a collaboration with the broader research community.
+[The Adolescent Brain Cognitive Development (ABCD) Study&reg;](https://abcdstudy.org/ "Visit the ABCD Study website"){#abcdwebsite} is the largest longitudinal investigation of neurodevelopment and child health in the United States. Conceived and initiated by the National Institutes of Health (NIH), this landmark prospective longitudinal study aims to transform our understanding of the genetic and environmental factors impacting neurodevelopment and their roles in behavioral and health outcomes across ten years of adolescence @volkow2018. At its heart, the study is designed to chart the course of human development across multiple interacting domains from late childhood to early adulthood and to identify factors that lead to both positive and negative outcomes. Central to achieving these goals is the commitment of the ABCD Study and its NIH funders to an open science framework, intended to facilitate sharing of data and analytical methods by espousing practices that increase access, integrity, and reproducibility of scientific research. In this context, the ABCD Study is a collaboration with the broader research community.
 
-The size and scope of the ABCD Study data allow the research community to perform a large variety of developmental analyses of both substantive and methodological interest, presenting a unique opportunity to significantly advance our understanding of how a multitude of biopsychosocial processes unfold across critical periods of development. In this paper, we describe models and methods for longitudinal analysis of ABCD Study data that can address these fundamental scientific aims, including: 1) characterization of the genetic and environmental factors associated with variation in developmental trajectories; 2) assessment of how the level and timing of exposures may impact subsequent neurodevelopment; 3) quantification of how variation in developmental domains may be associated with outcomes, including mediation models and reciprocal relationships. We instantiate these longitudinal analyses in worked examples using the ABCD Release 5.0 data with accompanying R scripts. Worked examples are available in Quarto files, accessible in the project's [GitHub repository]( https://github.com/OpenDevSci/LongDev-ABCD/tree/main/examples)
-
+The size and scope of the ABCD Study data allow the research community to perform a large variety of developmental analyses of both substantive and methodological interest, presenting a unique opportunity to significantly advance our understanding of how a multitude of biopsychosocial processes unfold across critical periods of development. In this paper, we describe models and methods for longitudinal analysis of ABCD Study data that can address these fundamental scientific aims, including: 1) characterization of the genetic and environmental factors associated with variation in developmental trajectories; 2) assessment of how the level and timing of exposures may impact subsequent neurodevelopment; 3) quantification of how variation in developmental domains may be associated with outcomes, including mediation models and reciprocal relationships. We instantiate these longitudinal analyses in worked examples using the ABCD Release 5.0 data with accompanying R scripts. Worked examples are available in [Quarto](https://quarto.org/) files, accessible in the project's [GitHub repository]( https://github.com/OpenDevSci/LongDev-ABCD/tree/main/examples).
 
 ## The ABCD Study Data
 
@@ -134,13 +133,13 @@ Data are publicly released approximately annually, currently through the NIMH Da
 ::: {.callout-note collapse="true" icon="false"}
 ## Organization and Aims
 
-• Part I. Longitudinal Research
+• Part I. Introduction
 
--   Fundamental concepts
+-   The ABCD Study&reg;
 
-• Part II. Longitudinal Data
+• Part II. Developmental Research
 
--   Method and analysis
+-   Fundamental Concepts
 
 • Part III. Longitudinal Analysis
 
@@ -152,8 +151,6 @@ Data are publicly released approximately annually, currently through the NIMH Da
 :::
 
 # Developmental Research
-
-\label{sec:headings}
 
 ## Basic Concepts and Considerations
 
@@ -180,8 +177,6 @@ Normative development can also be upended by experiences (e.g., drug use) that, 
 Questions regarding the biological mechanisms whereby exposures impact outcomes can often be framed in terms of mediation analyses @mackinnon2007; @vanderweele2016. Mediation analyses can be implemented using the causal steps approach @baron1986 and structural equation models (SEM) @preacher2011. More recently, mediation models have been adapted for longitudinal exposures, mediators, and/or outcomes @bind2016; @vanderweele2017. All of these modeling approaches decompose the total effects of an exposure on an outcome into direct and indirect effects, where indirect effects of an exposure flow through its impact on a mediating process. @vanderweele2017 details conditions under which the direct and indirect causal effects can be in a longitudinal setting. An important example of mediational analyses in the ABCD Study is the impact of exposures on behavioral outcomes (e.g., neurocognition, mental health, substance use) via their impact on the brain, as quantified by imaging-derived phenotypes (IDPs). Methods for mediational analyses using multi-dimensional IDPs have been developed and applied to functional MRI data @lindquist2012; @zhao2018.
 
 # Longitudinal Data
-
-\label{sec:headings}
 
 ## Considerations and Challenges
 
@@ -277,11 +272,10 @@ While other longitudinal designs have their own unique strengths and application
 
 # Longitudinal Analysis
 
-\label{sec:headings}
-
 ### Types of longitudinal panel models
 
 With the large and continually expanding body of research on statistical methods for longitudinal analyses, determining which longitudinal model to implement can be challenging. This section aims to help researchers navigate these many options to identify the statistical approach most appropriate to their unique research question when deciding on how to measure change over time. Notably, there are a myriad of viable ways one can go about grouping various types of longitudinal models for presentation.
+
 Common examples include grouping by linear vs nonlinear models @collins2006, the number of measurement occasions @king2018, and statistical equivalency (e.g., change scores vs. residualized change; see @castro-schilo2018). The organization we use below overlaps in several ways with these examples, and in particular with @bauer2019. However, it is important to note that in each case, the chosen way of grouping is primarily intended to allow the reader to compare and contrast various analytical approaches. In the following sections, we briefly summarize the advantages/disadvantages of a series of longitudinal models organized into the following groupings: Traditional Models, Modern GLM Extensions, Structural Equation Models (SEM), and Advanced SEM (see Figure 2). We note that this is not an exhaustive review of each of these methods, and for more in-depth detail we do provide the reader with relevant resources. As aptly summarized by @bauer2019, “…there are many exceptions, alternatives, nuances, ‘what ifs’, and ’but couldn’t you’s that aren’t addressed here.”
 
 ![Longitudinal Models/Data Structures](img/Mindmap1.png){width=100% #fig-DataStructures fig-alt="Longitudinal Models & Data Structures" fig-align="left"}
@@ -350,11 +344,10 @@ A different yet efficient approach is used with Fast and Efficient Mixed-effects
 
 An alternative method for modeling longitudinal data is the marginal model. This approach differs from others by modeling only the population-level factors and covariates rather than explicitly modeling individual intercepts and slopes. It employs a flexible intra-subject covariance model to account for residual dependence. Like the LMM, it allows for unbalanced designs and singleton subjects, and it implicitly measures any covariance that would otherwise be explained by random covariates. In a marginal model, a “working covariance” matrix is utilized. This matrix does not need to be accurately modelled and may even be constructed under the potentially incorrect assumption that the errors are independent. In this case, parameter estimation reduces to ordinary least squares, but remains consistent. A crucial component of this method is the use of a robust “sandwich estimator” for standard errors, which accounts for any dependence not captured by the working covariance. The Sandwich Estimator (SwE) is a toolbox for SPM (https://www.nisox.org/Software/SwE, including CIFTI support) and FSL (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Swe) that provides marginal model inference using an independence working covariance matrix @guillaume2014.
 
-![Figure 3 Statistical modeling of brain imaging data](img/Picture1.png)
-![Figure 4 Statistical modeling of brain imaging data](img/Picture2.png)
+![Figure 3 Statistical modeling of brain imaging data](img/Picture1.png){width=100% #fig-StatBrainModel-1 fig-alt="Statistical modeling of brain imaging data" fig-align="left"}
+![Figure 4 Statistical modeling of brain imaging data](img/Picture2.png){width=100% #fig-StatBrainModel-2 fig-alt="Statistical modeling of brain imaging data" fig-align="left"}
 
 # Discussion
-\label{sec:headings}
 
 As we enter the era of large-scale longitudinal investigations, it is essential to critically examine the various analytical methods that can be employed to glean insights from these rich datasets. The complex nature of longitudinal data demands sophisticated and well-suited methodologies to accurately address research questions and minimize biases. This paper aimed to provide an overview of diverse longitudinal analysis techniques, with a particular emphasis on their application to extensive longitudinal studies such as the ABCD Study. Beyond contributing to the ever-growing body of knowledge on LDA, we hope this manuscript also serves as a valuable resource for researchers seeking to optimize the use of large-scale longitudinal investigations in advancing our understanding of human development and behavior. In this discussion, we will focus on the key findings and recommendations of our review and discuss potential innovations that can further enhance the utility of these methods.
 

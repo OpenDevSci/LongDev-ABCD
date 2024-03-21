@@ -1,7 +1,6 @@
 ---
 title: "Difference Scores: Simple Regression"
 author: "Biostatistics Working Group"
-theme: cosmo
 ---
 
 # Simple Regression {.unnumbered}

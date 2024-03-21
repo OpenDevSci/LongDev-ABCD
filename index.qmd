@@ -1,5 +1,5 @@
 ---
-#title: "Longitudinal Data Analysis with the ABCD Study"
+
 format:
   html:
     css: styles.css
