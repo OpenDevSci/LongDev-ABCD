@@ -50,7 +50,7 @@ website:
     tools:
       - icon: github
         menu:
-          - text: Source Code
+          - text: Go to Project Repository
             url: https://github.com/opendevsci/LongDev-ABCD
           - text: Report a Bug
             url: https://github.com/opendevsci/LongDev-ABCD/issues

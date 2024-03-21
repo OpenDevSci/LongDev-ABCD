@@ -11,7 +11,7 @@ format:
 This ongoing project, guided by the Biostatistics Working Group of the [Adolescent Brain Cognitive Development (ABCD) Study](https://abcdstudy.org/), aims to democratize access to longitudinal data analysis through practical examples and tutorials.
 
 ::: {.callout-important}
-**Note**: This project is currently in beta. [Examples](https://opendevsci.github.io/LongDev-ABCD/examples/examples.html) are under development and may not be ready for direct application. Your feedback and contributions are invaluable to us—join us in enhancing these resources. For more details on contributing, visit our [GitHub repository](https://github.com/OpenDevSci/LongDev-ABCD) and our [Contribution Guide](https://github.com/OpenDevSci/LongDev-ABCD/blob/main/docs/Contributing.md).
+**Note**: This project is currently in beta. [Examples](https://opendevsci.github.io/LongDev-ABCD/examples/examples.html) are under development and may not be ready for direct application. Your feedback and contributions are invaluable to us—join us in enhancing these resources. For more details on contributing, visit our [GitHub Repository](https://github.com/OpenDevSci/LongDev-ABCD) and our [Contribution Guide](https://github.com/OpenDevSci/LongDev-ABCD/blob/main/docs/Contributing.md).
 :::
 
 ## Our Mission
