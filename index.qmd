@@ -1,9 +1,4 @@
 ---
-
-# format:
-#   html:
-#     css: styles.css
-
 ---
 
 # Welcome to the Longitudinal Data Analysis Project
