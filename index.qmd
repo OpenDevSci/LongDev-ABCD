@@ -1,8 +1,8 @@
 ---
 
-format:
-  html:
-    css: styles.css
+# format:
+#   html:
+#     css: styles.css
 
 ---
 
