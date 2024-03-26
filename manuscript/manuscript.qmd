@@ -25,7 +25,7 @@ author:
     #region: TX
     #country: United States
 - name: Daniel A. Lopez
-  department: Department of Psychiatry
+  #department: Department of Psychiatry
   #email: lopdanie@ohsu.edu
   #affiliations:
     #name: Oregon Health & Science University
