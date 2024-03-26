@@ -221,7 +221,7 @@
     "href": "index.html#why-this-project",
     "title": "",
     "section": "Why This Project?",
-    "text": "Why This Project?\n\nPublicly Available Code: Future updates will include ready-to-use code examples for your research and educational needs. See some initial examples here or in the examples folder of our GitHub repository\nOpen Source Collaboration: Engage with our community to contribute, learn, and share insights on longitudinal data analysis.\nEducational Resource: Gain comprehensive knowledge in using GitHub, R, RMarkdown/Quarto, and various longitudinal analysis methods with our guidance."
+    "text": "Why This Project?\n\nPublicly Available Code: Future updates will include ready-to-use code examples for your research and educational needs. See some initial examples here or in the examples folder of our GitHub repository\nOpen Source Collaboration: Engage with our community to contribute, learn, and share insights on longitudinal data analysis.\nEducational Resource: Gain comprehensive knowledge in using GitHub, R, RMarkdown/Quarto, and various longitudinal analysis methods."
   },
   {
     "objectID": "index.html#how-to-contribute",
@@ -235,14 +235,14 @@
     "href": "index.html#project-resources",
     "title": "",
     "section": "Project Resources",
-    "text": "Project Resources\n\nCode Examples: Discover a variety of analysis examples to guide your research.\nDocumentation: Get detailed insights into our project’s progress, tasks, and timelines.\nCommunity Discussion Forum: Connect with fellow researchers and enthusiasts in our dedicated forum."
+    "text": "Project Resources\n\nCode Examples: Discover a variety of analysis examples to guide your research.\nDocumentation: Get detailed insights into our project’s progress, tasks, and timelines.\nCommunity Discussion Forum: Connect with fellow researchers and enthusiasts ."
   },
   {
     "objectID": "index.html#about-us",
     "href": "index.html#about-us",
     "title": "",
     "section": "About Us",
-    "text": "About Us\nWe are a team driven by the mission to make longitudinal data analysis more accessible and understandable. Our collective effort focuses on fostering an open source community where knowledge and skills in research methodologies can flourish.\nTogether, let’s advance the field of data analysis."
+    "text": "About Us\nWe are a team driven by the mission to make longitudinal data analysis more accessible and understandable. Our collective effort focuses on fostering an open source community where knowledge and skills in research methodologies can flourish."
   },
   {
     "objectID": "examples/1a_Examples_DifferenceScores_PairedTtests.html",
