@@ -9,215 +9,215 @@ correspondence-prefix: "Correspondence concerning this article should be address
 author:
 - name: Samuel W. Hawes
   #email: shawes@fiu.edu
-  affiliations:
-    name: Florida International University
+  #affiliations:
+    #name: Florida International University
     #department: Center for Children & Families
     #city: Miami
     #region: FL
     #country: United States
 - name: Andrew K. Littlefield
   #email: andrew.littlefield@ttu.edu
-  affiliations:
-    name: Texas Tech University
+  #affiliations:
+    #name: Texas Tech University
     #department: Psychological Sciences
     #city: Lubbock
     #region: TX
     #country: United States
 - name: Daniel A. Lopez
   #email: lopdanie@ohsu.edu
-  affiliations:
-    name: Oregon Health & Science University
+  #affiliations:
+    #name: Oregon Health & Science University
     #department: #department of Psychiatry
     #city: Portland
     #region: OR
     #country: United States
 - name: Kenneth J. Sher
   #email: SherK@missouri.edu
-  affiliations:
-    name: University of Missouri
+  #affiliations:
+    #name: University of Missouri
     #department: Psychological Sciences
     #city: Columbia
     #region: MO
     #country: United States
 - name: Erin L. Thompson
   #email: erthomps@fiu.edu
-  affiliations:
-    name: Florida International University
+  #affiliations:
+    #name: Florida International University
     #department: Center for Children & Families
     #city: Miami
     #region: FL
     #country: United States
 - name: Raul Gonzalez
   #email: gonzara@fiu.edu
-  affiliations:
-    name: Florida International University
+  #affiliations:
+    #name: Florida International University
     #department: Center for Children & Families
     #city: Miami
     #region: FL
     #country: United States
 - name: Laika Aguinaldo
   #email: laaguinaldo@health.ucsd.edu
-  affiliations:
-    name: University of California San Diego
+  #affiliations:
+    #name: University of California San Diego
     #department: #department of Psychiatry
     #city: San Diego
     #region: CA
     #country: United States
 - name: Ashley R. Adams
   #email: asadams@fiu.edu
-  affiliations:
-    name: Florida International University
+  #affiliations:
+    #name: Florida International University
     #department: Center for Children & Families
     #city: Miami
     #region: FL
     #country: United States
 - name: Mohammadreza Bayat
   #email: mbayat@fiu.edu
-  affiliations:
-    name: Florida International University
+  #affiliations:
+    #name: Florida International University
     #department: Cognitive Neuorscience
     #city: Miami
     #region: FL
     #country: United States
 - name: Amy L. Byrd
   #email: byrdal@upmc.edu
-  affiliations:
-    name: University of Pittsburgh
+  #affiliations:
+    #name: University of Pittsburgh
     #department: #department of Psychiatry
     #city: Pittsburgh
     #region: PA
     #country: United States
 - name: Luis FS Castro-de-Araujo
   #email: Luis.Araujo@vcuhealth.org
-  affiliations:
-    name: Virginia Commonwealth University
+  #affiliations:
+    #name: Virginia Commonwealth University
     #department: Virginia Institute for Psychiatric and Behavioral Genetics
     #city: Richmond
     #region: VA
     #country: United States
 - name: Anthony Dick
   #email: adick@fiu.edu
-  affiliations:
-    name: Florida International University
+  #affiliations:
+    #name: Florida International University
     #department: Cognitive Neuorscience
     #city: Miami
     #region: FL
     #country: United States
 - name: Steven F. Heeringa
   #email: sheering@umich.edu
-  affiliations:
-    name: University of Michigan
+  #affiliations:
+    #name: University of Michigan
     #department: Institute for Social Research
     #city: Ann Arbor
     #region: MI
     #country: United States
 - name: Christine M. Kaiver
   #email: ckaiv001@fiu.edu
-  affiliations:
-    name: Florida International University
+  #affiliations:
+    #name: Florida International University
     #department: Center for Children & Families
     #city: Miami
     #region: FL
     #country: United States
 - name: Sarah M. Lehman
   #email: slehman@fiu.edu
-  affiliations:
-    name: Florida International University
+  #affiliations:
+    #name: Florida International University
     #department: Center for Children & Families
     #city: Miami
     #region: FL
     #country: United States
 - name: Lin Li
   #email: lil033@ucsd.edu
-  affiliations:
-    name: University of California San Diego
+  #affiliations:
+    #name: University of California San Diego
     #department: #department of Radiology
     #city: San Diego
     #region: CA
     #country: United States
 - name: Janosch Linkersdörfer
   #email: jlinkersdoerfer@ucsd.edu
-  affiliations:
-    name: University of California San Diego
+  #affiliations:
+    #name: University of California San Diego
     #department: Center for Human Development
     #city: San Diego
     #region: CA
     #country: United States
 - name: Thomas J. Maullin-Sapey
   #email: Thomas.Maullin-Sapey@bdi.ox.ac.uk
-  affiliations:
-    name: University of Oxford
+  #affiliations:
+    #name: University of Oxford
     #department: Oxford Big Data Institute
     #city: Oxford
     #region: UK
     #country: United Kingdom
 - name: Michael C. Neale
   #email: Michael.Neale@vcuhealth.org
-  affiliations:
-    name: Virginia Commonwealth University
+  #affiliations:
+    #name: Virginia Commonwealth University
     #department: Virginia Institute for Psychiatric and Behavioral Genetics
     #city: Richmond
     #region: VA
     #country: United States
 - name: Thomas E. Nichols
   #email: thomas.nichols@bdi.ox.ac.uk
-  affiliations:
-    name: University of Oxford
+  #affiliations:
+    #name: University of Oxford
     #department: Oxford Big Data Institute
     #city: Oxford
     #region: UK
     #country: United Kingdom
 - name: Samantha Perlstein
   #email: sperl@sas.upenn.edu
-  affiliations:
-    name: University of Pennsylvania
+  #affiliations:
+    #name: University of Pennsylvania
     #department: #department of Psychology
     #city: Philadelphia
     #region: PA
     #country: United States
 - name: Susan F. Tapert
   #email: stapert@ucsd.edu
-  affiliations:
-    name: University of California San Diego
+  #affiliations:
+    #name: University of California San Diego
     #department: #department of Psychiatry
     #city: San Diego
     #region: CA
     #country: United States
 - name: Colin E. Vize
   #email: CEV18@pitt.edu
-  affiliations:
-    name: University of Pittsburgh
+  #affiliations:
+    #name: University of Pittsburgh
     #department: #department of Psychology
     #city: Pittsburgh
     #region: PA
     #country: United States
 - name: Margot Wagner
   #email: mwagner@ucsd.edu
-  affiliations:
-    name: University of California San Diego
+  #affiliations:
+    #name: University of California San Diego
     #department: The Institute for Neural Computation
     #city: San Diego
     #region: CA
     #country: United States
 - name: Rebecca Waller
   #email: rwaller@sas.upenn.edu
-  affiliations:
-    name: University of Pennsylvania
+  #affiliations:
+    #name: University of Pennsylvania
     #department: #department of Psychology
     #city: Philadelphia
     #region: PA
     #country: United States
 - name: Wesley K. Thompson
   #email: wes.stat@gmail.com
-  affiliations:
-    name: Laureate Institute for Brain Research
+  #affiliations:
+    #name: Laureate Institute for Brain Research
     #department: Center for Population Neuroscience and Genetics
     #city: Tulsa
     #region: OK
     #country: United States
         
 abstract: |
-  The Adolescent Brain Cognitive Development&reg; (ABCD) Study provides a unique opportunity for researchers to investigate developmental processes in a large, diverse cohort of youths, aged 9-10 at baseline and assessed annually for 10 years. Given the size and complexity of the ABCD Study, researchers analyzing its data will encounter a myriad of methodological and analytical considerations. This review provides an examination of key concepts and techniques related to longitudinal analyses of the ABCD Study data.  We discuss the importance of longitudinal data, focusing on the types of inferences that are possible when one assesses individuals across multiple time points, including: 1) characterization of the factors associated with variation in developmental trajectories; 2) assessment of how level and timing of exposures may impact subsequent development; 3) quantification of how variation in developmental domains may be associated with outcomes, including mediation models and reciprocal relationships. We emphasize the importance of selecting appropriate statistical models to address these research questions, e.g., accounting for correlation in repeated measurements, employing linear or non-linear models as indicated by the data, and using link functions that adequately model outcome distributions. By presenting the advantages and potential challenges of longitudinal analyses in the ABCD Study, this review seeks to equip researchers with foundational knowledge and tools to make informed decisions as they navigate and effectively analyze and interpret the multi-dimensional longitudinal data currently available.
+  The Adolescent Brain Cognitive Development&reg; (ABCD) Study provides a unique opportunity to investigate developmental processes in a large, diverse cohort of youths, aged approximately 9-10 at baseline and assessed annually for 10 years. Given the size and complexity of the ABCD Study, researchers analyzing its data will encounter a myriad of methodological and analytical considerations. This review provides an examination of key concepts and techniques related to longitudinal analyses of the ABCD Study data, including: 1) characterization of the factors associated with variation in developmental trajectories; 2) assessment of how level and timing of exposures may impact subsequent development; 3) quantification of how variation in developmental domains may be associated with outcomes, including mediation models and reciprocal relationships. We emphasize the importance of selecting appropriate statistical models to address these research questions. By presenting the advantages and potential challenges of longitudinal analyses in the ABCD Study, this review seeks to equip researchers with foundational knowledge and tools to make informed decisions as they navigate and effectively analyze and interpret the multi-dimensional longitudinal data currently available.
 
 index-terms: 
   - Longitudinal Analysis
@@ -225,6 +225,7 @@ index-terms:
   - Development
 
 format:
+  docx: default
   ieee-typst: default
   html:
     page-layout: article
