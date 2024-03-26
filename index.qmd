@@ -17,7 +17,7 @@ We aim to provide accessible resources for those interested in longitudinal data
 
 - **Publicly Available Code**: Future updates will include ready-to-use code examples for your research and educational needs. See some initial examples [here](https://opendevsci.github.io/LongDev-ABCD/examples/examples.html) or in the `examples` folder of our [GitHub repository](https://github.com/OpenDevSci/LongDev-ABCD)
 - **Open Source Collaboration**: Engage with our community to contribute, learn, and share insights on longitudinal data analysis.
-- **Educational Resource**: Gain comprehensive knowledge in using GitHub, R, RMarkdown/Quarto, and various longitudinal analysis methods with our guidance.
+- **Educational Resource**: Gain comprehensive knowledge in using GitHub, R, RMarkdown/Quarto, and various longitudinal analysis methods.
 
 ## How to Contribute
 
@@ -31,10 +31,9 @@ For more information on how you can make an impact, check out our [Contribution 
 
 - **[Code Examples](https://github.com/OpenDevSci/LongDev-ABCD)**: Discover a variety of analysis examples to guide your research.
 - **[Documentation](https://github.com/orgs/OpenDevSci/projects/13)**: Get detailed insights into our project's progress, tasks, and timelines.
-- **[Community Discussion Forum](https://github.com/orgs/OpenDevSci/discussions)**: Connect with fellow researchers and enthusiasts in our dedicated forum.
+- **[Community Discussion Forum](https://github.com/orgs/OpenDevSci/discussions)**: Connect with fellow researchers and enthusiasts .
 
 ## About Us
 
 We are a team driven by the mission to make longitudinal data analysis more accessible and understandable. Our collective effort focuses on fostering an open source community where knowledge and skills in research methodologies can flourish.
 
-**Together, let's advance the field of data analysis.**
