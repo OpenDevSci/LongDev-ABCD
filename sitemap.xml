@@ -2,38 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/4_Examples_SignedRankTest.html</loc>
-    <lastmod>2024-05-01T15:08:52.447Z</lastmod>
-  </url>
-  <url>
-    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/3a_Examples_LinearMixedModels.html</loc>
-    <lastmod>2024-05-01T15:08:52.323Z</lastmod>
-  </url>
-  <url>
-    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/1b_Examples_DifferenceScores_SimpleRegression.html</loc>
-    <lastmod>2024-05-01T15:08:52.275Z</lastmod>
-  </url>
-  <url>
-    <loc>https://opendevsci.github.io/LongDev-ABCD/manuscript/manuscript.html</loc>
-    <lastmod>2024-05-01T15:08:52.599Z</lastmod>
-  </url>
-  <url>
-    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/examples.html</loc>
-    <lastmod>2024-05-01T15:08:52.483Z</lastmod>
-  </url>
-  <url>
-    <loc>https://opendevsci.github.io/LongDev-ABCD/index.html</loc>
-    <lastmod>2024-05-01T15:08:52.563Z</lastmod>
-  </url>
-  <url>
-    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/1a_Examples_DifferenceScores_PairedTtests.html</loc>
-    <lastmod>2024-05-01T15:08:52.263Z</lastmod>
+    <lastmod>2024-05-01T15:32:49.779Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/2_Examples_ResidualizedChangeScores.html</loc>
-    <lastmod>2024-05-01T15:08:52.303Z</lastmod>
+    <lastmod>2024-05-01T15:32:49.683Z</lastmod>
   </url>
   <url>
-    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/3b_Examples_LinearMixedModels.html</loc>
-    <lastmod>2024-05-01T15:08:52.399Z</lastmod>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/1a_Examples_DifferenceScores_PairedTtests.html</loc>
+    <lastmod>2024-05-01T15:32:49.651Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/index.html</loc>
+    <lastmod>2024-05-01T15:32:49.895Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/examples.html</loc>
+    <lastmod>2024-05-01T15:32:49.815Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/manuscript/manuscript.html</loc>
+    <lastmod>2024-05-01T15:32:49.931Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/1b_Examples_DifferenceScores_SimpleRegression.html</loc>
+    <lastmod>2024-05-01T15:32:49.667Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/3a_Examples_LinearMixedModels.html</loc>
+    <lastmod>2024-05-01T15:32:49.703Z</lastmod>
   </url>
 </urlset>
