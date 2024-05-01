@@ -202,165 +202,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>
-</p><p>The LMM:ri is similar to traditional (fixed-effect) linear regression extending on this approach by including a subject-specific random-effect that allows each participant to have their own unique intercept value, in addition to the overall mean-level (fixed-effect) intercept value zzzzt</p>
-<p>In this example, we will use the LMM:ri to analyze trajectories of height obtained across multiple measurement occasions in a sample of youth taking part in the ABCD Study. Our primary aim is to characterize stability and change in height assessments, while accounting for observations that are clustered within youth over time. To do so, we will use the LMM:ri to simultaneously model an overall sample mean trajectory (fixed effect) and subject-specific (random) effects that vary randomly about the sample mean trajectory.</p>
-<p></p>
+<p>The Linear mixed model (LMM) with a random intercept is similar to traditional (fixed-effect) linear regression, extending on this approach by including a subject-specific random-effect that allows each participant to have their own unique intercept value, in addition to the overall mean-level (fixed-effect) intercept value.</p>
+<p>This example will examine trajectories of height obtained across 3 annual measurement occasions in a sample of youth taking part in the ABCD Study. The primary aim is to characterize stability and change in participant’s height, while accounting for observations that are clustered within youth over time. The random-intercept LMM will simultaneously estimate an overall sample mean (fixed effect) for the height trajectory’s intercept and slope values, as well as subject-specific (random) effects that vary randomly about the mean intercept value.</p>
 </section>
 <section id="preliminary-setup" class="level2">
 <h2 class="anchored" data-anchor-id="preliminary-setup">Preliminary Setup</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Install Packages</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Load Packages</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div class="blue">
-<blockquote class="blockquote">
-<p><strong>This code installs the r packages necessary for this example, if they are not already installed</strong></p>
-</blockquote>
-<div class="cell" data-messages="false">
+<section id="load-packages" class="level3">
+<h3 class="anchored" data-anchor-id="load-packages">Load Packages</h3>
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Create a list of required packages</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a>packages_required <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"tidyverse"</span>,<span class="st">"easystats"</span>,<span class="st">"lme4"</span>,<span class="st">"gtsummary"</span>,<span class="st">"report"</span>,<span class="st">"broom"</span>,<span class="st">"gridExtra"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Check which packages are not installed and install them</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>packages_to_install <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(packages_required, <span class="fu">rownames</span>(<span class="fu">installed.packages</span>()))</span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="cf">if</span> (<span class="fu">length</span>(packages_to_install) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="fu">install.packages</span>(packages_to_install)</span>
-<span id="cb1-8"><a href="#cb1-8"></a>}</span>
-<span id="cb1-9"><a href="#cb1-9"></a></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># Load the required packages</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">lapply</span>(packages_required, library, <span class="at">character.only =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Collection of R packages for data science</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(gtsummary) <span class="co"># Publication-ready tables</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(rstatix) <span class="co"># Statistical Tests in tidy format</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(lme4) <span class="co"># Linear mixed-effects models</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-</div>
-</div>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div class="blue">
-<p><strong>This code loads the r libraries necessary for this example</strong></p>
-<div class="cell" data-messages="false">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># Collection of R packages for data science</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">library</span>(easystats)    <span class="co"># Collection of R packages statistical modeling, visualization, and reporting</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">library</span>(lme4)         <span class="co"># Linear mixed-effects models</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">library</span>(gtsummary)    <span class="co"># Publication-ready tables</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="fu">library</span>(report)       <span class="co"># Easy reporting of regression analyses</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="fu">library</span>(broom)        <span class="co"># Tidy and augment statistical models output</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="fu">library</span>(gridExtra)    <span class="co"># Arrange multiple grid-based plots on a page</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</div>
-</div>
-</div>
 </div>
 </section>
-<section id="descriptives-overview" class="level2">
-<h2 class="anchored" data-anchor-id="descriptives-overview">Descriptives Overview</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Read and View Data</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Descriptives</a></li></ul>
-<div class="tab-content">
-<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div class="blue">
-<p><strong>This code reads in and shows the data to be used in the current example</strong></p>
-<div class="cell" data-messages="false">
+<section id="descriptives" class="level3">
+<h3 class="anchored" data-anchor-id="descriptives">Descriptives</h3>
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Set the data paths</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>data_path_1 <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a>data_path_2 <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># Read the data</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>data_demographics <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path_1)</span>
-<span id="cb3-7"><a href="#cb3-7"></a>data_nonimaging <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path_2)</span>
-<span id="cb3-8"><a href="#cb3-8"></a></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># Subset the nonimaging data to include desired variables</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>selected_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"src_subject_id"</span>, <span class="st">"eventname"</span>, <span class="st">"nihtbx_totalcomp_fc"</span>, <span class="st">"anthroweightcalc"</span>, <span class="st">"anthroheightcalc"</span>)</span>
-<span id="cb3-11"><a href="#cb3-11"></a>subset_data <span class="ot">&lt;-</span> data_nonimaging[, selected_vars]</span>
-<span id="cb3-12"><a href="#cb3-12"></a></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="co"># # Merge the datasets on 'src_subject_id' and 'eventname'</span></span>
-<span id="cb3-15"><a href="#cb3-15"></a>merged_data <span class="ot">&lt;-</span> data_demographics <span class="sc">%&gt;%</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a>  <span class="fu">full_join</span>(subset_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"src_subject_id"</span>, <span class="st">"eventname"</span>))</span>
-<span id="cb3-17"><a href="#cb3-17"></a></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co"># Inspect the merged data structure</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a><span class="fu">str</span>(merged_data)</span>
-<span id="cb3-20"><a href="#cb3-20"></a></span>
-<span id="cb3-21"><a href="#cb3-21"></a><span class="co"># Define event names to be retained in the analysis and convert variables to appropriate data types</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a>eventnames_to_include <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"baseline_year_1_arm_1"</span>,</span>
-<span id="cb3-23"><a href="#cb3-23"></a>                           <span class="st">"1_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb3-24"><a href="#cb3-24"></a>                           <span class="st">"2_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb3-25"><a href="#cb3-25"></a>                           <span class="st">"3_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb3-26"><a href="#cb3-26"></a>                           <span class="st">"4_year_follow_up_y_arm_1"</span>)</span>
-<span id="cb3-27"><a href="#cb3-27"></a></span>
-<span id="cb3-28"><a href="#cb3-28"></a>df <span class="ot">&lt;-</span> merged_data <span class="sc">%&gt;%</span></span>
-<span id="cb3-29"><a href="#cb3-29"></a>  <span class="fu">filter</span>(eventname <span class="sc">%in%</span> eventnames_to_include) <span class="sc">%&gt;%</span></span>
-<span id="cb3-30"><a href="#cb3-30"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-31"><a href="#cb3-31"></a>    <span class="at">src_subject_id =</span> <span class="fu">as.factor</span>(src_subject_id),</span>
-<span id="cb3-32"><a href="#cb3-32"></a>    <span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">levels =</span> eventnames_to_include, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb3-33"><a href="#cb3-33"></a>    <span class="at">age =</span> <span class="fu">as.numeric</span>(age),</span>
-<span id="cb3-34"><a href="#cb3-34"></a>    <span class="at">sex =</span> <span class="fu">as.factor</span>(sex),</span>
-<span id="cb3-35"><a href="#cb3-35"></a>    <span class="at">race.4level =</span> <span class="fu">as.factor</span>(race<span class="fl">.4</span>level),</span>
-<span id="cb3-36"><a href="#cb3-36"></a>    <span class="at">hisp =</span> <span class="fu">as.factor</span>(hisp),</span>
-<span id="cb3-37"><a href="#cb3-37"></a>    <span class="at">high.educ.bl =</span> <span class="fu">as.factor</span>(high.educ.bl),</span>
-<span id="cb3-38"><a href="#cb3-38"></a>    <span class="at">household.income.bl =</span> <span class="fu">as.factor</span>(household.income.bl),</span>
-<span id="cb3-39"><a href="#cb3-39"></a>    <span class="at">acs_raked_propensity_score =</span> <span class="fu">as.numeric</span>(acs_raked_propensity_score),</span>
-<span id="cb3-40"><a href="#cb3-40"></a>    <span class="at">rel_family_id.bl =</span> <span class="fu">as.factor</span>(rel_family_id.bl),</span>
-<span id="cb3-41"><a href="#cb3-41"></a>    <span class="at">site_id_l =</span> <span class="fu">as.factor</span>(site_id_l),</span>
-<span id="cb3-42"><a href="#cb3-42"></a>    <span class="at">nihtbx_totalcomp_fc =</span> <span class="fu">as.numeric</span>(nihtbx_totalcomp_fc),</span>
-<span id="cb3-43"><a href="#cb3-43"></a>    <span class="at">anthroweightcalc =</span> <span class="fu">as.numeric</span>(anthroweightcalc),</span>
-<span id="cb3-44"><a href="#cb3-44"></a>    <span class="at">anthroheightcalc =</span> <span class="fu">as.numeric</span>(anthroheightcalc)</span>
-<span id="cb3-45"><a href="#cb3-45"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-46"><a href="#cb3-46"></a>  <span class="co"># Exclude cases from unused assessment waves</span></span>
-<span id="cb3-47"><a href="#cb3-47"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventname))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</div>
-</div>
-<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<div class="blue">
-<p><strong>This code creates a descriptives table</strong></p>
-<div class="cell" data-messages="false">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>descriptives_table <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">select</span>(eventname, sex, race<span class="fl">.4</span>level, hisp, anthroweightcalc) <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>  <span class="fu">mutate</span>(<span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Baseline"</span>, <span class="st">"Year 1"</span>,<span class="st">"Year 2"</span>,<span class="st">"Year 3"</span>,<span class="st">"Year 4"</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">factor</span>(sex, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">"Male"</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a>  <span class="fu">tbl_summary</span>(</span>
-<span id="cb4-6"><a href="#cb4-6"></a>    <span class="at">by =</span> eventname,</span>
-<span id="cb4-7"><a href="#cb4-7"></a>    <span class="at">missing =</span> <span class="st">"no"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8"></a>    <span class="at">label =</span> <span class="fu">list</span>(sex <span class="sc">~</span> <span class="st">"Sex"</span>, race<span class="fl">.4</span>level <span class="sc">~</span> <span class="st">"Race"</span>, hisp <span class="sc">~</span> <span class="st">"Hispanic"</span>, </span>
-<span id="cb4-9"><a href="#cb4-9"></a>                 anthroweightcalc <span class="sc">~</span> <span class="st">"Weight"</span>),</span>
-<span id="cb4-10"><a href="#cb4-10"></a>    <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd}) )"</span>, <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span>),</span>
-<span id="cb4-11"><a href="#cb4-11"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a>  <span class="fu">bold_labels</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a>  <span class="fu">italicize_levels</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a>  <span class="fu">modify_spanning_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**Assessment Wave**"</span>)</span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="fu">theme_gtsummary_compact</span>()</span>
-<span id="cb4-17"><a href="#cb4-17"></a></span>
-<span id="cb4-18"><a href="#cb4-18"></a>descriptives_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>descriptives_table <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>    <span class="fu">select</span>(event, height) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>    <span class="fu">mutate</span>(<span class="at">event =</span> <span class="fu">factor</span>(event)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>    <span class="fu">tbl_summary</span>(</span>
+<span id="cb2-5"><a href="#cb2-5"></a>        <span class="at">by =</span> event,</span>
+<span id="cb2-6"><a href="#cb2-6"></a>        <span class="at">missing =</span> <span class="st">"no"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7"></a>        <span class="at">label =</span> <span class="fu">list</span>(height <span class="sc">~</span> <span class="st">"Height"</span>),</span>
+<span id="cb2-8"><a href="#cb2-8"></a>        <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>, <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span>),</span>
+<span id="cb2-9"><a href="#cb2-9"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>    <span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>    <span class="fu">bold_labels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>    <span class="fu">italicize_levels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>    <span class="fu">modify_spanning_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**Assessment Wave**"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="fu">theme_gtsummary_compact</span>()</span>
+<span id="cb2-15"><a href="#cb2-15"></a></span>
+<span id="cb2-16"><a href="#cb2-16"></a>descriptives_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
-<div id="rdmtlnhqhv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#rdmtlnhqhv table {
+<div id="ynyjlaklqv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ynyjlaklqv table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#rdmtlnhqhv thead, #rdmtlnhqhv tbody, #rdmtlnhqhv tfoot, #rdmtlnhqhv tr, #rdmtlnhqhv td, #rdmtlnhqhv th {
+#ynyjlaklqv thead, #ynyjlaklqv tbody, #ynyjlaklqv tfoot, #ynyjlaklqv tr, #ynyjlaklqv td, #ynyjlaklqv th {
   border-style: none;
 }
 
-#rdmtlnhqhv p {
+#ynyjlaklqv p {
   margin: 0;
   padding: 0;
 }
 
-#rdmtlnhqhv .gt_table {
+#ynyjlaklqv .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -386,12 +285,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_caption {
+#ynyjlaklqv .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#rdmtlnhqhv .gt_title {
+#ynyjlaklqv .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -403,7 +302,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#rdmtlnhqhv .gt_subtitle {
+#ynyjlaklqv .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -415,7 +314,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#rdmtlnhqhv .gt_heading {
+#ynyjlaklqv .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -427,13 +326,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_bottom_border {
+#ynyjlaklqv .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_col_headings {
+#ynyjlaklqv .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -448,7 +347,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_col_heading {
+#ynyjlaklqv .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -468,7 +367,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#rdmtlnhqhv .gt_column_spanner_outer {
+#ynyjlaklqv .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -480,15 +379,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#rdmtlnhqhv .gt_column_spanner_outer:first-child {
+#ynyjlaklqv .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#rdmtlnhqhv .gt_column_spanner_outer:last-child {
+#ynyjlaklqv .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#rdmtlnhqhv .gt_column_spanner {
+#ynyjlaklqv .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -500,11 +399,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#rdmtlnhqhv .gt_spanner_row {
+#ynyjlaklqv .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#rdmtlnhqhv .gt_group_heading {
+#ynyjlaklqv .gt_group_heading {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -530,7 +429,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#rdmtlnhqhv .gt_empty_group_heading {
+#ynyjlaklqv .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -545,15 +444,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#rdmtlnhqhv .gt_from_md > :first-child {
+#ynyjlaklqv .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#rdmtlnhqhv .gt_from_md > :last-child {
+#ynyjlaklqv .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#rdmtlnhqhv .gt_row {
+#ynyjlaklqv .gt_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -572,7 +471,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#rdmtlnhqhv .gt_stub {
+#ynyjlaklqv .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -585,7 +484,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#rdmtlnhqhv .gt_stub_row_group {
+#ynyjlaklqv .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -599,15 +498,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#rdmtlnhqhv .gt_row_group_first td {
+#ynyjlaklqv .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#rdmtlnhqhv .gt_row_group_first th {
+#ynyjlaklqv .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#rdmtlnhqhv .gt_summary_row {
+#ynyjlaklqv .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -617,16 +516,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#rdmtlnhqhv .gt_first_summary_row {
+#ynyjlaklqv .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_first_summary_row.thick {
+#ynyjlaklqv .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#rdmtlnhqhv .gt_last_summary_row {
+#ynyjlaklqv .gt_last_summary_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -636,7 +535,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_grand_summary_row {
+#ynyjlaklqv .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -646,7 +545,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#rdmtlnhqhv .gt_first_grand_summary_row {
+#ynyjlaklqv .gt_first_grand_summary_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -656,7 +555,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_last_grand_summary_row_top {
+#ynyjlaklqv .gt_last_grand_summary_row_top {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -666,11 +565,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_striped {
+#ynyjlaklqv .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#rdmtlnhqhv .gt_table_body {
+#ynyjlaklqv .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -679,7 +578,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_footnotes {
+#ynyjlaklqv .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -693,7 +592,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_footnote {
+#ynyjlaklqv .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 1px;
@@ -702,7 +601,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#rdmtlnhqhv .gt_sourcenotes {
+#ynyjlaklqv .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -716,7 +615,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#rdmtlnhqhv .gt_sourcenote {
+#ynyjlaklqv .gt_sourcenote {
   font-size: 90%;
   padding-top: 1px;
   padding-bottom: 1px;
@@ -724,178 +623,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#rdmtlnhqhv .gt_left {
+#ynyjlaklqv .gt_left {
   text-align: left;
 }
 
-#rdmtlnhqhv .gt_center {
+#ynyjlaklqv .gt_center {
   text-align: center;
 }
 
-#rdmtlnhqhv .gt_right {
+#ynyjlaklqv .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#rdmtlnhqhv .gt_font_normal {
+#ynyjlaklqv .gt_font_normal {
   font-weight: normal;
 }
 
-#rdmtlnhqhv .gt_font_bold {
+#ynyjlaklqv .gt_font_bold {
   font-weight: bold;
 }
 
-#rdmtlnhqhv .gt_font_italic {
+#ynyjlaklqv .gt_font_italic {
   font-style: italic;
 }
 
-#rdmtlnhqhv .gt_super {
+#ynyjlaklqv .gt_super {
   font-size: 65%;
 }
 
-#rdmtlnhqhv .gt_footnote_marks {
+#ynyjlaklqv .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#rdmtlnhqhv .gt_asterisk {
+#ynyjlaklqv .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#rdmtlnhqhv .gt_indent_1 {
+#ynyjlaklqv .gt_indent_1 {
   text-indent: 5px;
 }
 
-#rdmtlnhqhv .gt_indent_2 {
+#ynyjlaklqv .gt_indent_2 {
   text-indent: 10px;
 }
 
-#rdmtlnhqhv .gt_indent_3 {
+#ynyjlaklqv .gt_indent_3 {
   text-indent: 15px;
 }
 
-#rdmtlnhqhv .gt_indent_4 {
+#ynyjlaklqv .gt_indent_4 {
   text-indent: 20px;
 }
 
-#rdmtlnhqhv .gt_indent_5 {
+#ynyjlaklqv .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
 
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <colgroup>
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
 </colgroup>
 <thead>
 <tr class="header gt_col_headings gt_spanner_row">
 <th rowspan="2" id="<strong>Characteristic</strong>" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Characteristic</strong></th>
-<th colspan="5" id="<strong>Assessment Wave</strong>" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" scope="colgroup"><span class="gt_column_spanner"><strong>Assessment Wave</strong></span></th>
+<th colspan="3" id="<strong>Assessment Wave</strong>" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" scope="colgroup"><span class="gt_column_spanner"><strong>Assessment Wave</strong></span></th>
 </tr>
 <tr class="odd gt_col_headings">
-<th id="<strong>Baseline</strong><br>N = 11868<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Baseline</strong><br>
-N = 11868<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
-<th id="<strong>Year 1</strong><br>N = 11220<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year 1</strong><br>
-N = 11220<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
-<th id="<strong>Year 2</strong><br>N = 10973<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year 2</strong><br>
-N = 10973<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
-<th id="<strong>Year 3</strong><br>N = 10336<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year 3</strong><br>
-N = 10336<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
-<th id="<strong>Year 4</strong><br>N = 4754<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year 4</strong><br>
-N = 4754<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+<th id="<strong>Baseline</strong><br>N = 11859<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Baseline</strong><br>
+N = 11859<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+<th id="<strong>Year_1</strong><br>N = 11142<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year_1</strong><br>
+N = 11142<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+<th id="<strong>Year_2</strong><br>N = 9190<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year_2</strong><br>
+N = 9190<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-weight: bold">Sex</td>
-<td class="gt_row gt_center" headers="stat_1"></td>
-<td class="gt_row gt_center" headers="stat_2"></td>
-<td class="gt_row gt_center" headers="stat_3"></td>
-<td class="gt_row gt_center" headers="stat_4"></td>
-<td class="gt_row gt_center" headers="stat_5"></td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Female</td>
-<td class="gt_row gt_center" headers="stat_1">48%</td>
-<td class="gt_row gt_center" headers="stat_2">48%</td>
-<td class="gt_row gt_center" headers="stat_3">48%</td>
-<td class="gt_row gt_center" headers="stat_4">47%</td>
-<td class="gt_row gt_center" headers="stat_5">48%</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Male</td>
-<td class="gt_row gt_center" headers="stat_1">52%</td>
-<td class="gt_row gt_center" headers="stat_2">52%</td>
-<td class="gt_row gt_center" headers="stat_3">52%</td>
-<td class="gt_row gt_center" headers="stat_4">53%</td>
-<td class="gt_row gt_center" headers="stat_5">52%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-weight: bold">Race</td>
-<td class="gt_row gt_center" headers="stat_1"></td>
-<td class="gt_row gt_center" headers="stat_2"></td>
-<td class="gt_row gt_center" headers="stat_3"></td>
-<td class="gt_row gt_center" headers="stat_4"></td>
-<td class="gt_row gt_center" headers="stat_5"></td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Asian</td>
-<td class="gt_row gt_center" headers="stat_1">0.5%</td>
-<td class="gt_row gt_center" headers="stat_2">0.4%</td>
-<td class="gt_row gt_center" headers="stat_3">0.4%</td>
-<td class="gt_row gt_center" headers="stat_4">0.5%</td>
-<td class="gt_row gt_center" headers="stat_5">0.4%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Black</td>
-<td class="gt_row gt_center" headers="stat_1">16%</td>
-<td class="gt_row gt_center" headers="stat_2">15%</td>
-<td class="gt_row gt_center" headers="stat_3">15%</td>
-<td class="gt_row gt_center" headers="stat_4">14%</td>
-<td class="gt_row gt_center" headers="stat_5">12%</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Other/Mixed</td>
-<td class="gt_row gt_center" headers="stat_1">17%</td>
-<td class="gt_row gt_center" headers="stat_2">17%</td>
-<td class="gt_row gt_center" headers="stat_3">17%</td>
-<td class="gt_row gt_center" headers="stat_4">17%</td>
-<td class="gt_row gt_center" headers="stat_5">16%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;White</td>
-<td class="gt_row gt_center" headers="stat_1">66%</td>
-<td class="gt_row gt_center" headers="stat_2">67%</td>
-<td class="gt_row gt_center" headers="stat_3">67%</td>
-<td class="gt_row gt_center" headers="stat_4">68%</td>
-<td class="gt_row gt_center" headers="stat_5">72%</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-weight: bold">Hispanic</td>
-<td class="gt_row gt_center" headers="stat_1">21%</td>
-<td class="gt_row gt_center" headers="stat_2">20%</td>
-<td class="gt_row gt_center" headers="stat_3">20%</td>
-<td class="gt_row gt_center" headers="stat_4">20%</td>
-<td class="gt_row gt_center" headers="stat_5">21%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-weight: bold">Weight</td>
-<td class="gt_row gt_center" headers="stat_1">83 (24) )</td>
-<td class="gt_row gt_center" headers="stat_2">94 (28) )</td>
-<td class="gt_row gt_center" headers="stat_3">109 (49) )</td>
-<td class="gt_row gt_center" headers="stat_4">123 (38) )</td>
-<td class="gt_row gt_center" headers="stat_5">139 (111) )</td>
+<td class="gt_row gt_left" headers="label" style="font-weight: bold">Height</td>
+<td class="gt_row gt_center" headers="stat_1">55.2 (3.3)</td>
+<td class="gt_row gt_center" headers="stat_2">57.6 (3.7)</td>
+<td class="gt_row gt_center" headers="stat_3">60.2 (3.6)</td>
 </tr>
 </tbody><tfoot class="gt_footnotes">
-<tr class="even">
-<td colspan="6" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> %; Mean (SD) )</td>
+<tr class="odd">
+<td colspan="4" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> Mean (SD)</td>
 </tr>
 </tfoot>
 
@@ -905,275 +724,116 @@ N = 4754<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ita
 </div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
+</section>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Build Model</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Model Plots</a></li></ul>
-<div class="tab-content">
-<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div class="blue">
-<p>The code fits a linear mixed model to predict the ‘Height’ variable based on time points (‘eventname’) and handedness (‘Handedness’), while accounting for individual-level variability by including random intercepts for each participant (‘src_subject_id’). The results of the model are then printed to provide a summary of the fitted model parameters.</p>
-<p><strong>STEP 1: Compute LMM Model with Random Intercepts</strong></p>
-<div class="cell">
+<section id="compute-lmm-model-with-random-intercepts" class="level3">
+<h3 class="anchored" data-anchor-id="compute-lmm-model-with-random-intercepts">Compute LMM Model with Random Intercepts</h3>
+<p>This code fits a radom-intercept LMM to predict ‘Height’ across 3 annual visits, accounting for individual-level variability (random effects) of intercept values across participants. Model output is provided below, as well as a brief summary of results.</p>
+<p>This model accounts for individual variability in height by including a random intercept for each subject (id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion.</p>
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r fold-hide number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="do">## Linear Mixed Model with a random intercept (LMM-ri)</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(anthroweightcalc <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> eventname <span class="sc">+</span> sex <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>src_subject_id), <span class="at">data =</span> df, <span class="at">REML=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-messages="false">
-<details class="code-fold">
-<summary>testing</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="do">## Output and reports extending from the LMM-ri analyses</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#summary(model)</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#confint(model, level = 0.95, method = "Wald")</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="fu">model_performance</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["AIC"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["AICc"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["BIC"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["R2_conditional"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["R2_marginal"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["ICC"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["RMSE"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Sigma"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"391226.8","2":"391226.8","3":"391295","4":"0.3884303","5":"0.121518","6":"0.3038336","7":"35.10722","8":"38.74331"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-<details class="code-fold">
-<summary>testing</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">model_parameters</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["Parameter"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Coefficient"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["CI"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["df_error"],"name":[8],"type":["int"],"align":["right"]},{"label":["p"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["Effects"],"name":[10],"type":["chr"],"align":["left"]},{"label":["Group"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"(Intercept)","2":"110.7667848","3":"0.4860210","4":"0.95","5":"109.8141704","6":"111.7193992","7":"227.9053512","8":"37534","9":"0.000000e+00","10":"fixed","11":""},{"1":"eventname.L","2":"45.1358190","3":"0.5938320","4":"0.95","5":"43.9718922","6":"46.2997458","7":"76.0077278","8":"37534","9":"0.000000e+00","10":"fixed","11":""},{"1":"eventname.Q","2":"2.6254469","3":"0.5395901","4":"0.95","5":"1.5678356","6":"3.6830582","7":"4.8656318","8":"37534","9":"1.145538e-06","10":"fixed","11":""},{"1":"eventname.C","2":"0.2155570","3":"0.6706021","4":"0.95","5":"-1.0988413","6":"1.5299554","7":"0.3214381","8":"37534","9":"7.478802e-01","10":"fixed","11":""},{"1":"eventname^4","2":"0.9249291","3":"0.5649684","4":"0.95","5":"-0.1824242","6":"2.0322825","7":"1.6371344","8":"37534","9":"1.016108e-01","10":"fixed","11":""},{"1":"sexMale or other","2":"-2.1389773","3":"0.6255461","4":"0.95","5":"-3.3650646","6":"-0.9128899","7":"-3.4193759","8":"37534","9":"6.283165e-04","10":"fixed","11":""},{"1":"SD (Intercept)","2":"25.5951715","3":"NA","4":"0.95","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"random","11":"src_subject_id"},{"1":"SD (Observations)","2":"38.7433077","3":"NA","4":"0.95","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"random","11":"Residual"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-<details class="code-fold">
-<summary>testing</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">model_parameters</span>(model,<span class="at">standardize =</span> <span class="st">"refit"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["Parameter"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Coefficient"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["CI"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["df_error"],"name":[8],"type":["int"],"align":["right"]},{"label":["p"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["Effects"],"name":[10],"type":["chr"],"align":["left"]},{"label":["Group"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"(Intercept)","2":"0.221223895","3":"0.009739166","4":"0.95","5":"0.202134866","6":"0.24031292","7":"22.7148713","8":"37534","9":"1.863798e-113","10":"fixed","11":""},{"1":"eventname.L","2":"0.904457273","3":"0.011899544","4":"0.95","5":"0.881133844","6":"0.92778070","7":"76.0077278","8":"37534","9":"0.000000e+00","10":"fixed","11":""},{"1":"eventname.Q","2":"0.052610201","3":"0.010812614","4":"0.95","5":"0.031417183","6":"0.07380322","7":"4.8656318","8":"37534","9":"1.145538e-06","10":"fixed","11":""},{"1":"eventname.C","2":"0.004319455","3":"0.013437908","4":"0.95","5":"-0.022019209","6":"0.03065812","7":"0.3214381","8":"37534","9":"7.478802e-01","10":"fixed","11":""},{"1":"eventname^4","2":"0.018534257","3":"0.011321158","4":"0.95","5":"-0.003655521","6":"0.04072404","7":"1.6371344","8":"37534","9":"1.016108e-01","10":"fixed","11":""},{"1":"sexMale or other","2":"-0.042862046","3":"0.012535049","4":"0.95","5":"-0.067431083","6":"-0.01829301","7":"-3.4193759","8":"37534","9":"6.283165e-04","10":"fixed","11":""},{"1":"SD (Intercept)","2":"0.512890637","3":"NA","4":"0.95","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"random","11":"src_subject_id"},{"1":"SD (Observations)","2":"0.776360487","3":"NA","4":"0.95","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"random","11":"Residual"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-</div>
-<p>The code provided executes a linear mixed model (LMM) to predict children’s height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4), and also takes into account their sex. This model accounts for individual variability in height by including a random intercept for each subject (src_subject_id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion.</p>
-</div>
-</div>
-<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div class="blue">
-<p>The following set of plots are used to facilitate model diagnostics. The first is a histogram showcasing the distribution of random intercepts for individual subjects, indicating variations in height not explained by the fixed effects. The second depicts residuals versus fitted values, helping assess the model’s fit and potential heteroscedasticity. The third contrasts observed and predicted height values across different time points, offering a side-by-side evaluation of the model’s predictions against actual observations.</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Extract the random effects</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>random_effects <span class="ot">&lt;-</span> <span class="fu">ranef</span>(model)[[<span class="dv">1</span>]]</span>
-<span id="cb9-3"><a href="#cb9-3"></a></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="co"># Convert to dataframe</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a>random_effects_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Intercept =</span> random_effects<span class="sc">$</span><span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>)</span>
-<span id="cb9-6"><a href="#cb9-6"></a></span>
-<span id="cb9-7"><a href="#cb9-7"></a><span class="co"># Plot 1: Histogram</span></span>
-<span id="cb9-8"><a href="#cb9-8"></a>hist_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(random_effects_df, <span class="fu">aes</span>(<span class="at">x =</span> Intercept)) <span class="sc">+</span></span>
-<span id="cb9-9"><a href="#cb9-9"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> ..density..), <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Histogram of Random Effects"</span>, <span class="at">x =</span> <span class="st">"Random Intercept Values"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
-<span id="cb9-10"><a href="#cb9-10"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb9-11"><a href="#cb9-11"></a></span>
-<span id="cb9-12"><a href="#cb9-12"></a><span class="co"># Plot 2: Residuals vs Fitted Values</span></span>
-<span id="cb9-13"><a href="#cb9-13"></a>resid_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="cn">NULL</span>, <span class="fu">aes</span>(<span class="at">x =</span> fitted_values, <span class="at">y =</span> residuals)) <span class="sc">+</span></span>
-<span id="cb9-14"><a href="#cb9-14"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb9-15"><a href="#cb9-15"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb9-16"><a href="#cb9-16"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Residuals vs Fitted Values"</span>, <span class="at">x =</span> <span class="st">"Fitted Values"</span>, <span class="at">y =</span> <span class="st">"Residuals"</span>) <span class="sc">+</span></span>
-<span id="cb9-17"><a href="#cb9-17"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">theme_set</span>(<span class="fu">theme_modern</span>(<span class="at">base_size =</span> <span class="dv">6</span>))</span>
-<span id="cb10-3"><a href="#cb10-3"></a></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(model)) <span class="sc">+</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"A Dot-and-Whisker Plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="3a_Examples_LinearMixedModels_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">#plot(model)</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a></span>
-<span id="cb11-3"><a href="#cb11-3"></a>result <span class="ot">&lt;-</span> <span class="fu">estimate_expectation</span>(model, <span class="at">data =</span> <span class="st">"grid"</span>)</span>
-<span id="cb11-4"><a href="#cb11-4"></a><span class="fu">plot</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="3a_Examples_LinearMixedModels_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co">#plot(result, type = "qq")</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="co">#plot(result, type = "pp")</span></span>
-<span id="cb12-3"><a href="#cb12-3"></a></span>
-<span id="cb12-4"><a href="#cb12-4"></a>normality <span class="ot">&lt;-</span> <span class="fu">check_normality</span>(model, <span class="at">effects =</span> <span class="st">"random"</span>)</span>
-<span id="cb12-5"><a href="#cb12-5"></a><span class="co">#plot(normality)</span></span>
-<span id="cb12-6"><a href="#cb12-6"></a></span>
-<span id="cb12-7"><a href="#cb12-7"></a>heteroscedasticity <span class="ot">&lt;-</span> <span class="fu">check_heteroscedasticity</span>(model)</span>
-<span id="cb12-8"><a href="#cb12-8"></a><span class="co">#plot(heteroscedasticity)</span></span>
-<span id="cb12-9"><a href="#cb12-9"></a></span>
-<span id="cb12-10"><a href="#cb12-10"></a>homogeneity <span class="ot">&lt;-</span> <span class="fu">check_homogeneity</span>(model)</span>
-<span id="cb12-11"><a href="#cb12-11"></a><span class="co">#plot(homogeneity, type = "density")</span></span>
-<span id="cb12-12"><a href="#cb12-12"></a></span>
-<span id="cb12-13"><a href="#cb12-13"></a>distribution <span class="ot">&lt;-</span> <span class="fu">check_distribution</span>(model)</span>
-<span id="cb12-14"><a href="#cb12-14"></a><span class="co">#plot(distribution)</span></span>
-<span id="cb12-15"><a href="#cb12-15"></a></span>
-<span id="cb12-16"><a href="#cb12-16"></a><span class="co">#contrasts &lt;- estimate_contrasts(model, contrast = "sex")</span></span>
-<span id="cb12-17"><a href="#cb12-17"></a><span class="co">#means &lt;- estimate_means(model)</span></span>
-<span id="cb12-18"><a href="#cb12-18"></a><span class="co">#plot(means)</span></span>
-<span id="cb12-19"><a href="#cb12-19"></a><span class="co">#plot(contrasts, means)</span></span>
-<span id="cb12-20"><a href="#cb12-20"></a></span>
-<span id="cb12-21"><a href="#cb12-21"></a>params <span class="ot">&lt;-</span> <span class="fu">model_parameters</span>(model, <span class="at">effects =</span> <span class="st">"fixed"</span>)</span>
-<span id="cb12-22"><a href="#cb12-22"></a><span class="co">#plot(params, show_labels = TRUE, size_text = 4)</span></span>
-<span id="cb12-23"><a href="#cb12-23"></a></span>
-<span id="cb12-24"><a href="#cb12-24"></a><span class="co">#check_model(model)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Extract the data frame used in the model</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>model_data <span class="ot">&lt;-</span> model<span class="sc">@</span>frame</span>
-<span id="cb13-3"><a href="#cb13-3"></a></span>
-<span id="cb13-4"><a href="#cb13-4"></a><span class="co"># Extract unique subject IDs from the model's data</span></span>
-<span id="cb13-5"><a href="#cb13-5"></a>original_subject_ids <span class="ot">&lt;-</span> <span class="fu">unique</span>(model_data<span class="sc">$</span>src_subject_id)</span>
-<span id="cb13-6"><a href="#cb13-6"></a></span>
-<span id="cb13-7"><a href="#cb13-7"></a><span class="co"># Subset the original data to include only those subjects</span></span>
-<span id="cb13-8"><a href="#cb13-8"></a>df_subset <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(src_subject_id <span class="sc">%in%</span> original_subject_ids)</span>
-<span id="cb13-9"><a href="#cb13-9"></a></span>
-<span id="cb13-10"><a href="#cb13-10"></a>eventname_map <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb13-11"><a href="#cb13-11"></a>  <span class="st">"baseline_year_1_arm_1"</span> <span class="ot">=</span> <span class="st">"Baseline"</span>,</span>
-<span id="cb13-12"><a href="#cb13-12"></a>  <span class="st">"1_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_1"</span>,</span>
-<span id="cb13-13"><a href="#cb13-13"></a>  <span class="st">"2_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_2"</span>,</span>
-<span id="cb13-14"><a href="#cb13-14"></a>  <span class="st">"3_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_3"</span>,</span>
-<span id="cb13-15"><a href="#cb13-15"></a>  <span class="st">"4_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_4"</span></span>
-<span id="cb13-16"><a href="#cb13-16"></a>)</span>
-<span id="cb13-17"><a href="#cb13-17"></a></span>
-<span id="cb13-18"><a href="#cb13-18"></a><span class="co"># Apply the recoding to the eventname variable</span></span>
-<span id="cb13-19"><a href="#cb13-19"></a>df_subset<span class="sc">$</span>eventname <span class="ot">&lt;-</span> <span class="fu">factor</span>(df_subset<span class="sc">$</span>eventname, <span class="at">levels =</span> <span class="fu">names</span>(eventname_map), <span class="at">labels =</span> eventname_map)</span>
-<span id="cb13-20"><a href="#cb13-20"></a></span>
-<span id="cb13-21"><a href="#cb13-21"></a><span class="co"># Verify the recoding</span></span>
-<span id="cb13-22"><a href="#cb13-22"></a><span class="fu">table</span>(df_subset<span class="sc">$</span>eventname)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(height <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> event <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id), <span class="at">data =</span> df_long, <span class="at">REML =</span> T)</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="do">## Output and summary statistics</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Baseline   Year_1   Year_2   Year_3   Year_4 
-   11867    11220    10973    10336     4754 </code></pre>
+<pre><code>Linear mixed model fit by REML ['lmerMod']
+Formula: height ~ 1 + event + (1 | id)
+   Data: df_long
+
+REML criterion at convergence: 154311
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-22.541  -0.277  -0.007   0.272  25.590 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 9.20     3.03    
+ Residual             3.19     1.79    
+Number of obs: 32191, groups:  id, 11867
+
+Fixed effects:
+            Estimate Std. Error t value
+(Intercept)  55.2411     0.0323  1709.2
+eventYear_1   2.3648     0.0238    99.3
+eventYear_2   5.0188     0.0256   196.3
+
+Correlation of Fixed Effects:
+            (Intr) evnY_1
+eventYear_1 -0.350       
+eventYear_2 -0.326  0.456</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Generate the plot</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">ggplot</span>(df_subset, <span class="fu">aes</span>(<span class="at">x =</span> eventname, <span class="at">y =</span> anthroheightcalc, <span class="at">group =</span> src_subject_id)) <span class="sc">+</span></span>
-<span id="cb15-3"><a href="#cb15-3"></a>  <span class="co"># Individual estimated height trajectories in faded lines</span></span>
-<span id="cb15-4"><a href="#cb15-4"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> src_subject_id), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
-<span id="cb15-5"><a href="#cb15-5"></a>  <span class="co"># Overall group-mean trajectory in blue with increased thickness</span></span>
-<span id="cb15-6"><a href="#cb15-6"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="dv">1</span>), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb15-7"><a href="#cb15-7"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Individual and Group-Mean Height Trajectories"</span>,</span>
-<span id="cb15-8"><a href="#cb15-8"></a>       <span class="at">x =</span> <span class="st">"Event Name"</span>,</span>
-<span id="cb15-9"><a href="#cb15-9"></a>       <span class="at">y =</span> <span class="st">"Height"</span>) <span class="sc">+</span></span>
-<span id="cb15-10"><a href="#cb15-10"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">confint</span>(model, <span class="at">level =</span> <span class="fl">0.95</span>, <span class="at">method =</span> <span class="st">"Wald"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            2.5 % 97.5 %
+.sig01         NA     NA
+.sigma         NA     NA
+(Intercept) 55.18  55.30
+eventYear_1  2.32   2.41
+eventYear_2  4.97   5.07</code></pre>
+</div>
+</div>
+<p>These results show an increasing trajectory of height across the years, with an increase of approximately 2.36 inches in Year 1 and 5.02 inches by Year 2 compared to the baseline, as evidenced by the fixed effects estimates. The random intercepts effect suggests some between-subject variability in particpant’s height values at baseline, with a standard deviation of about 3.03 inches. The model’s residuals are mostly well-behaved, although the range suggests a few extreme values or outliers.</p>
+</section>
+<section id="model-plots" class="level3">
+<h3 class="anchored" data-anchor-id="model-plots">Model Plots</h3>
+<p>The following set of plots xxxxx.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Extract fixed effects</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>fixed_effects <span class="ot">&lt;-</span> <span class="fu">fixef</span>(model)</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co"># Prepare data frame for plotting</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>df_long<span class="sc">$</span>predicted_height <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">re.form =</span> <span class="cn">NA</span>) <span class="co"># Overall fixed effect predictions</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co"># Calculate individual intercept adjustments</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>df_long<span class="sc">$</span>individual_intercept <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">re.form =</span> <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">|</span> id)) <span class="sc">-</span> fixed_effects[<span class="dv">1</span>]</span>
+<span id="cb7-9"><a href="#cb7-9"></a></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co"># Generate the plot</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="fu">ggplot</span>(df_long, <span class="fu">aes</span>(<span class="at">x =</span> event, <span class="at">y =</span> height)) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> height, <span class="at">color =</span> <span class="st">"Individual Trajectories"</span>), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> predicted_height <span class="sc">+</span> individual_intercept, <span class="at">group =</span> id, <span class="at">color =</span> <span class="st">"Adjusted Individual Trajectories"</span>), <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> event, <span class="at">y =</span> predicted_height, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"Sample Mean Trajectory"</span>), <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Individual Trajectories"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Adjusted Individual Trajectories"</span> <span class="ot">=</span> <span class="st">"grey"</span>, <span class="st">"Sample Mean Trajectory"</span> <span class="ot">=</span> <span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a>    <span class="fu">labs</span>(</span>
+<span id="cb7-17"><a href="#cb7-17"></a>        <span class="at">title =</span> <span class="st">"Individual Trajectories with Fixed Slope and Random Intercepts"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18"></a>        <span class="at">x =</span> <span class="st">"Event Name"</span>,</span>
+<span id="cb7-19"><a href="#cb7-19"></a>        <span class="at">y =</span> <span class="st">"Height (inches)"</span>,</span>
+<span id="cb7-20"><a href="#cb7-20"></a>        <span class="at">color =</span> <span class="st">"Trajectory Type"</span></span>
+<span id="cb7-21"><a href="#cb7-21"></a>    ) <span class="sc">+</span></span>
+<span id="cb7-22"><a href="#cb7-22"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb7-23"><a href="#cb7-23"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="3a_Examples_LinearMixedModels_files/figure-html/trajectoryplot-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="3a_Examples_LinearMixedModels_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">report</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>We fitted a linear mixed model (estimated using REML and nloptwrap optimizer)
-to predict anthroweightcalc with eventname and sex (formula: anthroweightcalc ~
-1 + eventname + sex). The model included src_subject_id as random effect
-(formula: ~1 | src_subject_id). The model's total explanatory power is
-substantial (conditional R2 = 0.39) and the part related to the fixed effects
-alone (marginal R2) is of 0.12. The model's intercept, corresponding to
-eventname = and sex = Female, is at 110.77 (95% CI [109.81, 111.72], t(37534) =
-227.91, p &lt; .001). Within this model:
-
-  - The effect of eventname [linear] is statistically significant and positive
-(beta = 45.14, 95% CI [43.97, 46.30], t(37534) = 76.01, p &lt; .001; Std. beta =
-0.90, 95% CI [0.88, 0.93])
-  - The effect of eventname [quadratic] is statistically significant and positive
-(beta = 2.63, 95% CI [1.57, 3.68], t(37534) = 4.87, p &lt; .001; Std. beta = 0.05,
-95% CI [0.03, 0.07])
-  - The effect of eventname [cubic] is statistically non-significant and positive
-(beta = 0.22, 95% CI [-1.10, 1.53], t(37534) = 0.32, p = 0.748; Std. beta =
-4.32e-03, 95% CI [-0.02, 0.03])
-  - The effect of eventname [4th degree] is statistically non-significant and
-positive (beta = 0.92, 95% CI [-0.18, 2.03], t(37534) = 1.64, p = 0.102; Std.
-beta = 0.02, 95% CI [-3.66e-03, 0.04])
-  - The effect of sex [Male or other] is statistically significant and negative
-(beta = -2.14, 95% CI [-3.37, -0.91], t(37534) = -3.42, p &lt; .001; Std. beta =
--0.04, 95% CI [-0.07, -0.02])
-
-Standardized parameters were obtained by fitting the model on a standardized
-version of the dataset. 95% Confidence Intervals (CIs) and p-values were
-computed using a Wald t-distribution approximation.</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
+<p>This plot illustrates the change in participant’s height across 3 annual measurement occassions. The individual raw data points are shown as red lines, representing the original height measurements, which demonstrate the variability among participants at each time point. These are overlaid with grey lines, which adjust each individual’s trajectory to start from their unique intercept while following a common growth pattern indicated by the fixed effects from the model. The blue line represents the sample mean trajectory, calculated from the model’s fixed effects, showcasing the average growth trend across all participants.</p>
+<p>The plot shows individual trajectories that vary around the model’s predicted values due to random effects, indicating substantial inter-individual variability in baseline heights. On average, participants experienced an increase in height of approximately 2.36 inches from baseline to Year 1 and an additional 2.66 inches from Year 1 to Year 2. The random effects for individual intercepts suggest differences in starting heights, with a standard deviation of 3.03 inches, reflecting the variability in growth patterns among the participants.</p>
+</section>
 </section>
 <section id="wrapping-up" class="level2">
 <h2 class="anchored" data-anchor-id="wrapping-up">Wrapping Up</h2>
-<div class="blue">
-
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Write-up</a></li></ul>
-<div class="tab-content">
-<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div class="blue">
-<p>The estimate of the random intercept was 110.767 (<em>SE</em> 0.486). The fixed effects section provides the coefficients for the intercept, eventname, and the sex variable.</p>
-<p>The linear mixed model analysis was conducted to predict children’s height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4) using the event name (eventname) and height (Height) variables. The intercept, corresponding to the reference levels of the predictors is estimated at 110.767 units, and this effect is highly significant. Regarding sex, boys show an increase in height of about -2.139 (<em>SE</em> 0.486) units compared to girls.</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">report_performance</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>The model's total explanatory power is substantial (conditional R2 = 0.39) and
-the part related to the fixed effects alone (marginal R2) is of 0.12</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+<p>The random-intercept LMM analysis revealed an increasing pattern of change in children’s height measured over 3 annual assessments. The mean intercept value showed an average initial height of 55.24 inches (sd = 3.03) with evidence of individual variability around this (random effect) estimate. An examination of the slope factor revealed year-to-year growth increments of approxmiately 2.5 inches, with the rate of change held constant across all participants.</p>
+<p>The LMM framework used in this example offered the ability to account for individual differences in initial height and the consistent growth patterns over time, demonstrating its utility in handling clustered or correlated data that arise from repeated measurements on the same subjects. More generally, this approach is often particularly useful in developmental studies as it allows for the inclusion of both fixed effects, which estimate common parameters across all individuals, and random effects, which capture unique variations among individuals. This enables a more precise understanding of both the group-level trends and individual-specific trajectories in longitudinal data.</p>
 
 
 <!-- -->
 
-</div></section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1634,403 +1294,151 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1"></a><span class="co">---</span></span>
-<span id="cb20-2"><a href="#cb20-2"></a><span class="an">title:</span><span class="co"> "Linear Mixed Models: Random Intercept"</span></span>
-<span id="cb20-3"><a href="#cb20-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
-<span id="cb20-4"><a href="#cb20-4"></a><span class="an">execute:</span></span>
-<span id="cb20-5"><a href="#cb20-5"></a><span class="co">  freeze: auto  # re-render only when source changes</span></span>
-<span id="cb20-6"><a href="#cb20-6"></a><span class="co">  cache: true</span></span>
-<span id="cb20-7"><a href="#cb20-7"></a><span class="co">---</span></span>
-<span id="cb20-8"><a href="#cb20-8"></a></span>
-<span id="cb20-9"><a href="#cb20-9"></a><span class="fu">## Overview</span></span>
-<span id="cb20-10"><a href="#cb20-10"></a></span>
-<span id="cb20-11"><a href="#cb20-11"></a>&lt;p&gt;</span>
-<span id="cb20-12"><a href="#cb20-12"></a></span>
-<span id="cb20-13"><a href="#cb20-13"></a>The LMM:ri is similar to traditional (fixed-effect) linear regression extending on this approach by including a subject-specific random-effect that allows each participant to have their own unique intercept value, in addition to the overall mean-level (fixed-effect) intercept value zzzzt</span>
-<span id="cb20-14"><a href="#cb20-14"></a></span>
-<span id="cb20-15"><a href="#cb20-15"></a>In this example, we will use the LMM:ri to analyze trajectories of height obtained across multiple measurement occasions in a sample of youth taking part in the ABCD Study. Our primary aim is to characterize stability and change in height assessments, while accounting for observations that are clustered within youth over time. To do so, we will use the LMM:ri to simultaneously model an overall sample mean trajectory (fixed effect) and subject-specific (random) effects that vary randomly about the sample mean trajectory.</span>
-<span id="cb20-16"><a href="#cb20-16"></a></span>
-<span id="cb20-17"><a href="#cb20-17"></a>&lt;/p&gt;</span>
-<span id="cb20-18"><a href="#cb20-18"></a></span>
-<span id="cb20-19"><a href="#cb20-19"></a><span class="fu">## Preliminary Setup</span></span>
-<span id="cb20-20"><a href="#cb20-20"></a></span>
-<span id="cb20-21"><a href="#cb20-21"></a>::: panel-tabset</span>
-<span id="cb20-22"><a href="#cb20-22"></a><span class="fu">### Install Packages {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb20-23"><a href="#cb20-23"></a></span>
-<span id="cb20-24"><a href="#cb20-24"></a>::: blue</span>
-<span id="cb20-25"><a href="#cb20-25"></a><span class="at">&gt; **This code installs the r packages necessary for this example, if</span></span>
-<span id="cb20-26"><a href="#cb20-26"></a><span class="at">&gt; they are not already installed**</span></span>
-<span id="cb20-27"><a href="#cb20-27"></a></span>
-<span id="cb20-28"><a href="#cb20-28"></a><span class="in">```{r pckg-install}</span></span>
-<span id="cb20-29"><a href="#cb20-29"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb20-30"><a href="#cb20-30"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb20-31"><a href="#cb20-31"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb20-32"><a href="#cb20-32"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb20-33"><a href="#cb20-33"></a></span>
-<span id="cb20-34"><a href="#cb20-34"></a><span class="in"># Create a list of required packages</span></span>
-<span id="cb20-35"><a href="#cb20-35"></a><span class="in">packages_required &lt;- c("tidyverse","easystats","lme4","gtsummary","report","broom","gridExtra")</span></span>
-<span id="cb20-36"><a href="#cb20-36"></a></span>
-<span id="cb20-37"><a href="#cb20-37"></a><span class="in"># Check which packages are not installed and install them</span></span>
-<span id="cb20-38"><a href="#cb20-38"></a><span class="in">packages_to_install &lt;- setdiff(packages_required, rownames(installed.packages()))</span></span>
-<span id="cb20-39"><a href="#cb20-39"></a><span class="in">if (length(packages_to_install) &gt; 0) {</span></span>
-<span id="cb20-40"><a href="#cb20-40"></a><span class="in">    install.packages(packages_to_install)</span></span>
-<span id="cb20-41"><a href="#cb20-41"></a><span class="in">}</span></span>
-<span id="cb20-42"><a href="#cb20-42"></a></span>
-<span id="cb20-43"><a href="#cb20-43"></a><span class="in"># Load the required packages</span></span>
-<span id="cb20-44"><a href="#cb20-44"></a><span class="in">lapply(packages_required, library, character.only = TRUE)</span></span>
-<span id="cb20-45"><a href="#cb20-45"></a></span>
-<span id="cb20-46"><a href="#cb20-46"></a><span class="in">```</span></span>
-<span id="cb20-47"><a href="#cb20-47"></a>:::</span>
-<span id="cb20-48"><a href="#cb20-48"></a></span>
-<span id="cb20-49"><a href="#cb20-49"></a><span class="fu">### Load Packages</span></span>
-<span id="cb20-50"><a href="#cb20-50"></a></span>
-<span id="cb20-51"><a href="#cb20-51"></a>::: blue</span>
-<span id="cb20-52"><a href="#cb20-52"></a>**This code loads the r libraries necessary for this example**</span>
-<span id="cb20-53"><a href="#cb20-53"></a></span>
-<span id="cb20-54"><a href="#cb20-54"></a><span class="in">```{r lib-load}</span></span>
-<span id="cb20-55"><a href="#cb20-55"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb20-56"><a href="#cb20-56"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb20-57"><a href="#cb20-57"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb20-58"><a href="#cb20-58"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb20-59"><a href="#cb20-59"></a></span>
-<span id="cb20-60"><a href="#cb20-60"></a><span class="in">library(tidyverse)    # Collection of R packages for data science</span></span>
-<span id="cb20-61"><a href="#cb20-61"></a><span class="in">library(easystats)    # Collection of R packages statistical modeling, visualization, and reporting</span></span>
-<span id="cb20-62"><a href="#cb20-62"></a><span class="in">library(lme4)         # Linear mixed-effects models</span></span>
-<span id="cb20-63"><a href="#cb20-63"></a><span class="in">library(gtsummary)    # Publication-ready tables</span></span>
-<span id="cb20-64"><a href="#cb20-64"></a><span class="in">library(report)       # Easy reporting of regression analyses</span></span>
-<span id="cb20-65"><a href="#cb20-65"></a><span class="in">library(broom)        # Tidy and augment statistical models output</span></span>
-<span id="cb20-66"><a href="#cb20-66"></a><span class="in">library(gridExtra)    # Arrange multiple grid-based plots on a page</span></span>
-<span id="cb20-67"><a href="#cb20-67"></a></span>
-<span id="cb20-68"><a href="#cb20-68"></a><span class="in">```</span></span>
-<span id="cb20-69"><a href="#cb20-69"></a>:::</span>
-<span id="cb20-70"><a href="#cb20-70"></a></span>
-<span id="cb20-71"><a href="#cb20-71"></a><span class="in">```{r config}</span></span>
-<span id="cb20-72"><a href="#cb20-72"></a><span class="in">#| echo: FALSE</span></span>
-<span id="cb20-73"><a href="#cb20-73"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb20-74"><a href="#cb20-74"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb20-75"><a href="#cb20-75"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb20-76"><a href="#cb20-76"></a></span>
-<span id="cb20-77"><a href="#cb20-77"></a><span class="in">### Config Options</span></span>
-<span id="cb20-78"><a href="#cb20-78"></a><span class="in">#::: blue</span></span>
-<span id="cb20-79"><a href="#cb20-79"></a><span class="in">#**This code configures knitr code chunk options** </span></span>
-<span id="cb20-80"><a href="#cb20-80"></a></span>
-<span id="cb20-81"><a href="#cb20-81"></a><span class="in">knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, </span></span>
-<span id="cb20-82"><a href="#cb20-82"></a><span class="in">                      comment=NA, cache=T, code_folding=T,</span></span>
-<span id="cb20-83"><a href="#cb20-83"></a><span class="in">                      R.options=list(width=220, digits = 3),</span></span>
-<span id="cb20-84"><a href="#cb20-84"></a><span class="in">                      fig.align='center', </span></span>
-<span id="cb20-85"><a href="#cb20-85"></a><span class="in">                      out.width='75%', fig.asp=.75)</span></span>
-<span id="cb20-86"><a href="#cb20-86"></a><span class="in">```</span></span>
-<span id="cb20-87"><a href="#cb20-87"></a>:::</span>
-<span id="cb20-88"><a href="#cb20-88"></a></span>
-<span id="cb20-89"><a href="#cb20-89"></a><span class="fu">## Descriptives Overview</span></span>
-<span id="cb20-90"><a href="#cb20-90"></a></span>
-<span id="cb20-91"><a href="#cb20-91"></a>::: panel-tabset</span>
-<span id="cb20-92"><a href="#cb20-92"></a><span class="fu">### Read and View Data {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb20-93"><a href="#cb20-93"></a></span>
-<span id="cb20-94"><a href="#cb20-94"></a>::: blue</span>
-<span id="cb20-95"><a href="#cb20-95"></a>**This code reads in and shows the data to be used in the current</span>
-<span id="cb20-96"><a href="#cb20-96"></a>example**</span>
-<span id="cb20-97"><a href="#cb20-97"></a></span>
-<span id="cb20-98"><a href="#cb20-98"></a><span class="in">```{r read-data}</span></span>
-<span id="cb20-99"><a href="#cb20-99"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb20-100"><a href="#cb20-100"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb20-101"><a href="#cb20-101"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb20-102"><a href="#cb20-102"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb20-103"><a href="#cb20-103"></a><span class="in">#| cache: FALSE</span></span>
-<span id="cb20-104"><a href="#cb20-104"></a></span>
-<span id="cb20-105"><a href="#cb20-105"></a><span class="in"># Set the data paths</span></span>
-<span id="cb20-106"><a href="#cb20-106"></a><span class="in">data_path_1 &lt;- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"</span></span>
-<span id="cb20-107"><a href="#cb20-107"></a><span class="in">data_path_2 &lt;- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
-<span id="cb20-108"><a href="#cb20-108"></a></span>
-<span id="cb20-109"><a href="#cb20-109"></a><span class="in"># Read the data</span></span>
-<span id="cb20-110"><a href="#cb20-110"></a><span class="in">data_demographics &lt;- readRDS(data_path_1)</span></span>
-<span id="cb20-111"><a href="#cb20-111"></a><span class="in">data_nonimaging &lt;- readRDS(data_path_2)</span></span>
-<span id="cb20-112"><a href="#cb20-112"></a></span>
-<span id="cb20-113"><a href="#cb20-113"></a><span class="in"># Subset the nonimaging data to include desired variables</span></span>
-<span id="cb20-114"><a href="#cb20-114"></a><span class="in">selected_vars &lt;- c("src_subject_id", "eventname", "nihtbx_totalcomp_fc", "anthroweightcalc", "anthroheightcalc")</span></span>
-<span id="cb20-115"><a href="#cb20-115"></a><span class="in">subset_data &lt;- data_nonimaging[, selected_vars]</span></span>
-<span id="cb20-116"><a href="#cb20-116"></a></span>
-<span id="cb20-117"><a href="#cb20-117"></a><span class="in">library(dplyr)</span></span>
-<span id="cb20-118"><a href="#cb20-118"></a><span class="in"># # Merge the datasets on 'src_subject_id' and 'eventname'</span></span>
-<span id="cb20-119"><a href="#cb20-119"></a><span class="in">merged_data &lt;- data_demographics %&gt;%</span></span>
-<span id="cb20-120"><a href="#cb20-120"></a><span class="in">  full_join(subset_data, by = c("src_subject_id", "eventname"))</span></span>
-<span id="cb20-121"><a href="#cb20-121"></a></span>
-<span id="cb20-122"><a href="#cb20-122"></a><span class="in"># Inspect the merged data structure</span></span>
-<span id="cb20-123"><a href="#cb20-123"></a><span class="in">str(merged_data)</span></span>
-<span id="cb20-124"><a href="#cb20-124"></a></span>
-<span id="cb20-125"><a href="#cb20-125"></a><span class="in"># Define event names to be retained in the analysis and convert variables to appropriate data types</span></span>
-<span id="cb20-126"><a href="#cb20-126"></a><span class="in">eventnames_to_include &lt;- c("baseline_year_1_arm_1",</span></span>
-<span id="cb20-127"><a href="#cb20-127"></a><span class="in">                           "1_year_follow_up_y_arm_1",</span></span>
-<span id="cb20-128"><a href="#cb20-128"></a><span class="in">                           "2_year_follow_up_y_arm_1",</span></span>
-<span id="cb20-129"><a href="#cb20-129"></a><span class="in">                           "3_year_follow_up_y_arm_1",</span></span>
-<span id="cb20-130"><a href="#cb20-130"></a><span class="in">                           "4_year_follow_up_y_arm_1")</span></span>
-<span id="cb20-131"><a href="#cb20-131"></a></span>
-<span id="cb20-132"><a href="#cb20-132"></a><span class="in">df &lt;- merged_data %&gt;%</span></span>
-<span id="cb20-133"><a href="#cb20-133"></a><span class="in">  filter(eventname %in% eventnames_to_include) %&gt;%</span></span>
-<span id="cb20-134"><a href="#cb20-134"></a><span class="in">  mutate(</span></span>
-<span id="cb20-135"><a href="#cb20-135"></a><span class="in">    src_subject_id = as.factor(src_subject_id),</span></span>
-<span id="cb20-136"><a href="#cb20-136"></a><span class="in">    eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),</span></span>
-<span id="cb20-137"><a href="#cb20-137"></a><span class="in">    age = as.numeric(age),</span></span>
-<span id="cb20-138"><a href="#cb20-138"></a><span class="in">    sex = as.factor(sex),</span></span>
-<span id="cb20-139"><a href="#cb20-139"></a><span class="in">    race.4level = as.factor(race.4level),</span></span>
-<span id="cb20-140"><a href="#cb20-140"></a><span class="in">    hisp = as.factor(hisp),</span></span>
-<span id="cb20-141"><a href="#cb20-141"></a><span class="in">    high.educ.bl = as.factor(high.educ.bl),</span></span>
-<span id="cb20-142"><a href="#cb20-142"></a><span class="in">    household.income.bl = as.factor(household.income.bl),</span></span>
-<span id="cb20-143"><a href="#cb20-143"></a><span class="in">    acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),</span></span>
-<span id="cb20-144"><a href="#cb20-144"></a><span class="in">    rel_family_id.bl = as.factor(rel_family_id.bl),</span></span>
-<span id="cb20-145"><a href="#cb20-145"></a><span class="in">    site_id_l = as.factor(site_id_l),</span></span>
-<span id="cb20-146"><a href="#cb20-146"></a><span class="in">    nihtbx_totalcomp_fc = as.numeric(nihtbx_totalcomp_fc),</span></span>
-<span id="cb20-147"><a href="#cb20-147"></a><span class="in">    anthroweightcalc = as.numeric(anthroweightcalc),</span></span>
-<span id="cb20-148"><a href="#cb20-148"></a><span class="in">    anthroheightcalc = as.numeric(anthroheightcalc)</span></span>
-<span id="cb20-149"><a href="#cb20-149"></a><span class="in">  ) %&gt;%</span></span>
-<span id="cb20-150"><a href="#cb20-150"></a><span class="in">  # Exclude cases from unused assessment waves</span></span>
-<span id="cb20-151"><a href="#cb20-151"></a><span class="in">  filter(!is.na(eventname))</span></span>
-<span id="cb20-152"><a href="#cb20-152"></a></span>
-<span id="cb20-153"><a href="#cb20-153"></a><span class="in">```</span></span>
-<span id="cb20-154"><a href="#cb20-154"></a>:::</span>
-<span id="cb20-155"><a href="#cb20-155"></a></span>
-<span id="cb20-156"><a href="#cb20-156"></a><span class="fu">### Descriptives</span></span>
-<span id="cb20-157"><a href="#cb20-157"></a></span>
-<span id="cb20-158"><a href="#cb20-158"></a>::: blue</span>
-<span id="cb20-159"><a href="#cb20-159"></a>**This code creates a descriptives table**</span>
-<span id="cb20-160"><a href="#cb20-160"></a></span>
-<span id="cb20-161"><a href="#cb20-161"></a><span class="in">```{r descriptives}</span></span>
-<span id="cb20-162"><a href="#cb20-162"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb20-163"><a href="#cb20-163"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb20-164"><a href="#cb20-164"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb20-165"><a href="#cb20-165"></a></span>
-<span id="cb20-166"><a href="#cb20-166"></a><span class="in">descriptives_table &lt;- df %&gt;%</span></span>
-<span id="cb20-167"><a href="#cb20-167"></a><span class="in">  select(eventname, sex, race.4level, hisp, anthroweightcalc) %&gt;%</span></span>
-<span id="cb20-168"><a href="#cb20-168"></a><span class="in">  mutate(eventname = factor(eventname, labels = c("Baseline", "Year 1","Year 2","Year 3","Year 4"))) %&gt;%</span></span>
-<span id="cb20-169"><a href="#cb20-169"></a><span class="in">  mutate(sex = factor(sex, labels = c("Female", "Male"))) %&gt;%</span></span>
-<span id="cb20-170"><a href="#cb20-170"></a><span class="in">  tbl_summary(</span></span>
-<span id="cb20-171"><a href="#cb20-171"></a><span class="in">    by = eventname,</span></span>
-<span id="cb20-172"><a href="#cb20-172"></a><span class="in">    missing = "no",</span></span>
-<span id="cb20-173"><a href="#cb20-173"></a><span class="in">    label = list(sex ~ "Sex", race.4level ~ "Race", hisp ~ "Hispanic", </span></span>
-<span id="cb20-174"><a href="#cb20-174"></a><span class="in">                 anthroweightcalc ~ "Weight"),</span></span>
-<span id="cb20-175"><a href="#cb20-175"></a><span class="in">    statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),</span></span>
-<span id="cb20-176"><a href="#cb20-176"></a><span class="in">  ) %&gt;%</span></span>
-<span id="cb20-177"><a href="#cb20-177"></a><span class="in">modify_header(all_stat_cols() ~ "**{level}**&lt;br&gt;N = {n}") %&gt;%</span></span>
-<span id="cb20-178"><a href="#cb20-178"></a><span class="in">  bold_labels() %&gt;%</span></span>
-<span id="cb20-179"><a href="#cb20-179"></a><span class="in">  italicize_levels() %&gt;%</span></span>
-<span id="cb20-180"><a href="#cb20-180"></a><span class="in">  modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")</span></span>
-<span id="cb20-181"><a href="#cb20-181"></a><span class="in">theme_gtsummary_compact()</span></span>
-<span id="cb20-182"><a href="#cb20-182"></a></span>
-<span id="cb20-183"><a href="#cb20-183"></a><span class="in">descriptives_table</span></span>
-<span id="cb20-184"><a href="#cb20-184"></a><span class="in">```</span></span>
-<span id="cb20-185"><a href="#cb20-185"></a>:::</span>
-<span id="cb20-186"><a href="#cb20-186"></a>:::</span>
-<span id="cb20-187"><a href="#cb20-187"></a></span>
-<span id="cb20-188"><a href="#cb20-188"></a><span class="fu">## Results</span></span>
-<span id="cb20-189"><a href="#cb20-189"></a></span>
-<span id="cb20-190"><a href="#cb20-190"></a>::: panel-tabset</span>
-<span id="cb20-191"><a href="#cb20-191"></a><span class="fu">### Build Model {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb20-192"><a href="#cb20-192"></a></span>
-<span id="cb20-193"><a href="#cb20-193"></a>::: blue</span>
-<span id="cb20-194"><a href="#cb20-194"></a>The code fits a linear mixed model to predict the 'Height' variable based on time points ('eventname') and handedness ('Handedness'), while accounting for individual-level variability by including random intercepts for each participant ('src_subject_id'). The results of the model are then printed to provide a summary of the fitted model parameters.</span>
-<span id="cb20-195"><a href="#cb20-195"></a></span>
-<span id="cb20-196"><a href="#cb20-196"></a>**STEP 1: Compute LMM Model with Random Intercepts**</span>
-<span id="cb20-197"><a href="#cb20-197"></a><span class="in">```{r build-model-1}</span></span>
-<span id="cb20-198"><a href="#cb20-198"></a><span class="in">#| class.source: 'fold-hide'</span></span>
-<span id="cb20-199"><a href="#cb20-199"></a><span class="in">#| message: FALSE</span></span>
-<span id="cb20-200"><a href="#cb20-200"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb20-201"><a href="#cb20-201"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb20-202"><a href="#cb20-202"></a><span class="in">#| cache: true</span></span>
-<span id="cb20-203"><a href="#cb20-203"></a></span>
-<span id="cb20-204"><a href="#cb20-204"></a><span class="in">## Linear Mixed Model with a random intercept (LMM-ri)</span></span>
-<span id="cb20-205"><a href="#cb20-205"></a><span class="in">model &lt;- lmer(anthroweightcalc ~ 1 + eventname + sex + (1|src_subject_id), data = df, REML=T)</span></span>
-<span id="cb20-206"><a href="#cb20-206"></a></span>
-<span id="cb20-207"><a href="#cb20-207"></a><span class="in">```</span></span>
-<span id="cb20-208"><a href="#cb20-208"></a></span>
-<span id="cb20-209"><a href="#cb20-209"></a></span>
-<span id="cb20-210"><a href="#cb20-210"></a><span class="in">```{r model-output}</span></span>
-<span id="cb20-211"><a href="#cb20-211"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb20-212"><a href="#cb20-212"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb20-213"><a href="#cb20-213"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb20-214"><a href="#cb20-214"></a><span class="in">#| code-summary: testing</span></span>
-<span id="cb20-215"><a href="#cb20-215"></a></span>
-<span id="cb20-216"><a href="#cb20-216"></a><span class="in">## Output and reports extending from the LMM-ri analyses</span></span>
-<span id="cb20-217"><a href="#cb20-217"></a><span class="in">#summary(model)</span></span>
-<span id="cb20-218"><a href="#cb20-218"></a><span class="in">#confint(model, level = 0.95, method = "Wald")</span></span>
-<span id="cb20-219"><a href="#cb20-219"></a></span>
-<span id="cb20-220"><a href="#cb20-220"></a><span class="in">model_performance(model)</span></span>
-<span id="cb20-221"><a href="#cb20-221"></a></span>
-<span id="cb20-222"><a href="#cb20-222"></a><span class="in">model_parameters(model)</span></span>
-<span id="cb20-223"><a href="#cb20-223"></a></span>
-<span id="cb20-224"><a href="#cb20-224"></a><span class="in">model_parameters(model,standardize = "refit")</span></span>
-<span id="cb20-225"><a href="#cb20-225"></a></span>
-<span id="cb20-226"><a href="#cb20-226"></a><span class="in">```</span></span>
-<span id="cb20-227"><a href="#cb20-227"></a></span>
-<span id="cb20-228"><a href="#cb20-228"></a>The code provided executes a linear mixed model (LMM) to predict children's </span>
-<span id="cb20-229"><a href="#cb20-229"></a>height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4), and also takes into account their sex. This model accounts for individual variability in height by including a random intercept for each subject (src_subject_id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion. </span>
-<span id="cb20-230"><a href="#cb20-230"></a></span>
-<span id="cb20-231"><a href="#cb20-231"></a>:::</span>
-<span id="cb20-232"><a href="#cb20-232"></a></span>
-<span id="cb20-233"><a href="#cb20-233"></a><span class="fu">### Model Plots</span></span>
-<span id="cb20-234"><a href="#cb20-234"></a></span>
-<span id="cb20-235"><a href="#cb20-235"></a>::: blue</span>
-<span id="cb20-236"><a href="#cb20-236"></a>The following set of plots are used to facilitate model diagnostics. The first is a histogram showcasing the distribution of random intercepts for individual subjects, indicating variations in height not explained by the fixed effects. The second depicts residuals versus fitted values, helping assess the model's fit and potential heteroscedasticity. The third contrasts observed and predicted height values across different time points, offering a side-by-side evaluation of the model's predictions against actual observations.</span>
-<span id="cb20-237"><a href="#cb20-237"></a></span>
-<span id="cb20-238"><a href="#cb20-238"></a><span class="in">```{r diagnosticplots}</span></span>
-<span id="cb20-239"><a href="#cb20-239"></a></span>
-<span id="cb20-240"><a href="#cb20-240"></a><span class="in"># Extract the random effects</span></span>
-<span id="cb20-241"><a href="#cb20-241"></a><span class="in">random_effects &lt;- ranef(model)[[1]]</span></span>
-<span id="cb20-242"><a href="#cb20-242"></a></span>
-<span id="cb20-243"><a href="#cb20-243"></a><span class="in"># Convert to dataframe</span></span>
-<span id="cb20-244"><a href="#cb20-244"></a><span class="in">random_effects_df &lt;- data.frame(Intercept = random_effects$`(Intercept)`)</span></span>
-<span id="cb20-245"><a href="#cb20-245"></a></span>
-<span id="cb20-246"><a href="#cb20-246"></a><span class="in"># Plot 1: Histogram</span></span>
-<span id="cb20-247"><a href="#cb20-247"></a><span class="in">hist_plot &lt;- ggplot(random_effects_df, aes(x = Intercept)) +</span></span>
-<span id="cb20-248"><a href="#cb20-248"></a><span class="in">  geom_histogram(aes(y = ..density..), bins = 30, color = "black", fill = "lightblue") + labs(title = "Histogram of Random Effects", x = "Random Intercept Values", y = "Density") +</span></span>
-<span id="cb20-249"><a href="#cb20-249"></a><span class="in">  theme_minimal()</span></span>
-<span id="cb20-250"><a href="#cb20-250"></a></span>
-<span id="cb20-251"><a href="#cb20-251"></a><span class="in"># Plot 2: Residuals vs Fitted Values</span></span>
-<span id="cb20-252"><a href="#cb20-252"></a><span class="in">resid_plot &lt;- ggplot(NULL, aes(x = fitted_values, y = residuals)) +</span></span>
-<span id="cb20-253"><a href="#cb20-253"></a><span class="in">  geom_point(alpha = 0.5) +</span></span>
-<span id="cb20-254"><a href="#cb20-254"></a><span class="in">  geom_hline(yintercept = 0, linetype = "dashed") +</span></span>
-<span id="cb20-255"><a href="#cb20-255"></a><span class="in">  labs(title = "Residuals vs Fitted Values", x = "Fitted Values", y = "Residuals") +</span></span>
-<span id="cb20-256"><a href="#cb20-256"></a><span class="in">  theme_minimal()</span></span>
-<span id="cb20-257"><a href="#cb20-257"></a></span>
-<span id="cb20-258"><a href="#cb20-258"></a><span class="in">```</span></span>
-<span id="cb20-259"><a href="#cb20-259"></a></span>
-<span id="cb20-262"><a href="#cb20-262"></a><span class="in">```{r}</span></span>
-<span id="cb20-263"><a href="#cb20-263"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb20-264"><a href="#cb20-264"></a><span class="fu">theme_set</span>(<span class="fu">theme_modern</span>(<span class="at">base_size =</span> <span class="dv">6</span>))</span>
-<span id="cb20-265"><a href="#cb20-265"></a></span>
-<span id="cb20-266"><a href="#cb20-266"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(model)) <span class="sc">+</span></span>
-<span id="cb20-267"><a href="#cb20-267"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"A Dot-and-Whisker Plot"</span>)</span>
-<span id="cb20-268"><a href="#cb20-268"></a><span class="co">#plot(model)</span></span>
-<span id="cb20-269"><a href="#cb20-269"></a></span>
-<span id="cb20-270"><a href="#cb20-270"></a>result <span class="ot">&lt;-</span> <span class="fu">estimate_expectation</span>(model, <span class="at">data =</span> <span class="st">"grid"</span>)</span>
-<span id="cb20-271"><a href="#cb20-271"></a><span class="fu">plot</span>(result)</span>
-<span id="cb20-272"><a href="#cb20-272"></a><span class="co">#plot(result, type = "qq")</span></span>
-<span id="cb20-273"><a href="#cb20-273"></a><span class="co">#plot(result, type = "pp")</span></span>
-<span id="cb20-274"><a href="#cb20-274"></a></span>
-<span id="cb20-275"><a href="#cb20-275"></a>normality <span class="ot">&lt;-</span> <span class="fu">check_normality</span>(model, <span class="at">effects =</span> <span class="st">"random"</span>)</span>
-<span id="cb20-276"><a href="#cb20-276"></a><span class="co">#plot(normality)</span></span>
-<span id="cb20-277"><a href="#cb20-277"></a></span>
-<span id="cb20-278"><a href="#cb20-278"></a>heteroscedasticity <span class="ot">&lt;-</span> <span class="fu">check_heteroscedasticity</span>(model)</span>
-<span id="cb20-279"><a href="#cb20-279"></a><span class="co">#plot(heteroscedasticity)</span></span>
-<span id="cb20-280"><a href="#cb20-280"></a></span>
-<span id="cb20-281"><a href="#cb20-281"></a>homogeneity <span class="ot">&lt;-</span> <span class="fu">check_homogeneity</span>(model)</span>
-<span id="cb20-282"><a href="#cb20-282"></a><span class="co">#plot(homogeneity, type = "density")</span></span>
-<span id="cb20-283"><a href="#cb20-283"></a></span>
-<span id="cb20-284"><a href="#cb20-284"></a>distribution <span class="ot">&lt;-</span> <span class="fu">check_distribution</span>(model)</span>
-<span id="cb20-285"><a href="#cb20-285"></a><span class="co">#plot(distribution)</span></span>
-<span id="cb20-286"><a href="#cb20-286"></a></span>
-<span id="cb20-287"><a href="#cb20-287"></a><span class="co">#contrasts &lt;- estimate_contrasts(model, contrast = "sex")</span></span>
-<span id="cb20-288"><a href="#cb20-288"></a><span class="co">#means &lt;- estimate_means(model)</span></span>
-<span id="cb20-289"><a href="#cb20-289"></a><span class="co">#plot(means)</span></span>
-<span id="cb20-290"><a href="#cb20-290"></a><span class="co">#plot(contrasts, means)</span></span>
-<span id="cb20-291"><a href="#cb20-291"></a></span>
-<span id="cb20-292"><a href="#cb20-292"></a>params <span class="ot">&lt;-</span> <span class="fu">model_parameters</span>(model, <span class="at">effects =</span> <span class="st">"fixed"</span>)</span>
-<span id="cb20-293"><a href="#cb20-293"></a><span class="co">#plot(params, show_labels = TRUE, size_text = 4)</span></span>
-<span id="cb20-294"><a href="#cb20-294"></a></span>
-<span id="cb20-295"><a href="#cb20-295"></a><span class="co">#check_model(model)</span></span>
-<span id="cb20-296"><a href="#cb20-296"></a></span>
-<span id="cb20-297"><a href="#cb20-297"></a><span class="in">```</span></span>
-<span id="cb20-298"><a href="#cb20-298"></a></span>
-<span id="cb20-299"><a href="#cb20-299"></a>:::</span>
-<span id="cb20-300"><a href="#cb20-300"></a></span>
-<span id="cb20-301"><a href="#cb20-301"></a><span class="in">```{r trajectoryplot}</span></span>
-<span id="cb20-302"><a href="#cb20-302"></a></span>
-<span id="cb20-303"><a href="#cb20-303"></a><span class="in"># Extract the data frame used in the model</span></span>
-<span id="cb20-304"><a href="#cb20-304"></a><span class="in">model_data &lt;- model@frame</span></span>
-<span id="cb20-305"><a href="#cb20-305"></a></span>
-<span id="cb20-306"><a href="#cb20-306"></a><span class="in"># Extract unique subject IDs from the model's data</span></span>
-<span id="cb20-307"><a href="#cb20-307"></a><span class="in">original_subject_ids &lt;- unique(model_data$src_subject_id)</span></span>
-<span id="cb20-308"><a href="#cb20-308"></a></span>
-<span id="cb20-309"><a href="#cb20-309"></a><span class="in"># Subset the original data to include only those subjects</span></span>
-<span id="cb20-310"><a href="#cb20-310"></a><span class="in">df_subset &lt;- df %&gt;% filter(src_subject_id %in% original_subject_ids)</span></span>
-<span id="cb20-311"><a href="#cb20-311"></a></span>
-<span id="cb20-312"><a href="#cb20-312"></a><span class="in">eventname_map &lt;- c(</span></span>
-<span id="cb20-313"><a href="#cb20-313"></a><span class="in">  "baseline_year_1_arm_1" = "Baseline",</span></span>
-<span id="cb20-314"><a href="#cb20-314"></a><span class="in">  "1_year_follow_up_y_arm_1" = "Year_1",</span></span>
-<span id="cb20-315"><a href="#cb20-315"></a><span class="in">  "2_year_follow_up_y_arm_1" = "Year_2",</span></span>
-<span id="cb20-316"><a href="#cb20-316"></a><span class="in">  "3_year_follow_up_y_arm_1" = "Year_3",</span></span>
-<span id="cb20-317"><a href="#cb20-317"></a><span class="in">  "4_year_follow_up_y_arm_1" = "Year_4"</span></span>
-<span id="cb20-318"><a href="#cb20-318"></a><span class="in">)</span></span>
-<span id="cb20-319"><a href="#cb20-319"></a></span>
-<span id="cb20-320"><a href="#cb20-320"></a><span class="in"># Apply the recoding to the eventname variable</span></span>
-<span id="cb20-321"><a href="#cb20-321"></a><span class="in">df_subset$eventname &lt;- factor(df_subset$eventname, levels = names(eventname_map), labels = eventname_map)</span></span>
-<span id="cb20-322"><a href="#cb20-322"></a></span>
-<span id="cb20-323"><a href="#cb20-323"></a><span class="in"># Verify the recoding</span></span>
-<span id="cb20-324"><a href="#cb20-324"></a><span class="in">table(df_subset$eventname)</span></span>
-<span id="cb20-325"><a href="#cb20-325"></a></span>
-<span id="cb20-326"><a href="#cb20-326"></a><span class="in"># Generate the plot</span></span>
-<span id="cb20-327"><a href="#cb20-327"></a><span class="in">ggplot(df_subset, aes(x = eventname, y = anthroheightcalc, group = src_subject_id)) +</span></span>
-<span id="cb20-328"><a href="#cb20-328"></a><span class="in">  # Individual estimated height trajectories in faded lines</span></span>
-<span id="cb20-329"><a href="#cb20-329"></a><span class="in">  geom_line(aes(group = src_subject_id), alpha = 0.3, color = "grey50") +</span></span>
-<span id="cb20-330"><a href="#cb20-330"></a><span class="in">  # Overall group-mean trajectory in blue with increased thickness</span></span>
-<span id="cb20-331"><a href="#cb20-331"></a><span class="in">  stat_summary(aes(group = 1), fun = mean, geom = "line", color = "blue", linewidth = 1) +</span></span>
-<span id="cb20-332"><a href="#cb20-332"></a><span class="in">  labs(title = "Individual and Group-Mean Height Trajectories",</span></span>
-<span id="cb20-333"><a href="#cb20-333"></a><span class="in">       x = "Event Name",</span></span>
-<span id="cb20-334"><a href="#cb20-334"></a><span class="in">       y = "Height") +</span></span>
-<span id="cb20-335"><a href="#cb20-335"></a><span class="in">  theme_minimal()</span></span>
-<span id="cb20-336"><a href="#cb20-336"></a></span>
-<span id="cb20-337"><a href="#cb20-337"></a><span class="in">```</span></span>
-<span id="cb20-338"><a href="#cb20-338"></a></span>
-<span id="cb20-339"><a href="#cb20-339"></a></span>
-<span id="cb20-342"><a href="#cb20-342"></a><span class="in">```{r}</span></span>
-<span id="cb20-343"><a href="#cb20-343"></a><span class="co">#| echo: false</span></span>
-<span id="cb20-344"><a href="#cb20-344"></a></span>
-<span id="cb20-345"><a href="#cb20-345"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
-<span id="cb20-346"><a href="#cb20-346"></a></span>
-<span id="cb20-347"><a href="#cb20-347"></a><span class="fu">library</span>(broom.mixed)</span>
-<span id="cb20-348"><a href="#cb20-348"></a><span class="fu">library</span>(easystats)</span>
-<span id="cb20-349"><a href="#cb20-349"></a></span>
-<span id="cb20-350"><a href="#cb20-350"></a>tidyfit <span class="ot">&lt;-</span> <span class="fu">tidy</span>(model)</span>
-<span id="cb20-351"><a href="#cb20-351"></a>tidyaugment <span class="ot">&lt;-</span> <span class="fu">augment</span>(model)</span>
-<span id="cb20-352"><a href="#cb20-352"></a>tidyglance <span class="ot">&lt;-</span> <span class="fu">glance</span>(model)</span>
-<span id="cb20-353"><a href="#cb20-353"></a></span>
-<span id="cb20-354"><a href="#cb20-354"></a>Intercept_estimate <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"(Intercept)"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
-<span id="cb20-355"><a href="#cb20-355"></a>Intercept_SE <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"(Intercept)"</span>, <span class="st">"std.error"</span>], <span class="dv">3</span>)</span>
-<span id="cb20-356"><a href="#cb20-356"></a></span>
-<span id="cb20-357"><a href="#cb20-357"></a>sex_effect <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"sexMale or other"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
-<span id="cb20-358"><a href="#cb20-358"></a></span>
-<span id="cb20-359"><a href="#cb20-359"></a><span class="co"># Extract values from the tibble for inline text</span></span>
-<span id="cb20-360"><a href="#cb20-360"></a>Intercept_estimate <span class="ot">&lt;-</span> Intercept_estimate<span class="sc">$</span>estimate</span>
-<span id="cb20-361"><a href="#cb20-361"></a>Intercept_SE <span class="ot">&lt;-</span> Intercept_SE<span class="sc">$</span>std.error</span>
-<span id="cb20-362"><a href="#cb20-362"></a>sex_effect <span class="ot">&lt;-</span>sex_effect<span class="sc">$</span>estimate</span>
-<span id="cb20-363"><a href="#cb20-363"></a></span>
-<span id="cb20-364"><a href="#cb20-364"></a><span class="do">#############</span></span>
-<span id="cb20-365"><a href="#cb20-365"></a></span>
-<span id="cb20-366"><a href="#cb20-366"></a><span class="co">#r eventname_estimate</span></span>
-<span id="cb20-367"><a href="#cb20-367"></a><span class="co">#r sex_effect</span></span>
-<span id="cb20-368"><a href="#cb20-368"></a><span class="co">#r conditional_R2</span></span>
-<span id="cb20-369"><a href="#cb20-369"></a><span class="co">#r conditional_R2*100**%</span></span>
-<span id="cb20-370"><a href="#cb20-370"></a><span class="co">#r marginal_R2</span></span>
-<span id="cb20-371"><a href="#cb20-371"></a></span>
-<span id="cb20-372"><a href="#cb20-372"></a></span>
-<span id="cb20-373"><a href="#cb20-373"></a><span class="in">```</span></span>
-<span id="cb20-374"><a href="#cb20-374"></a></span>
-<span id="cb20-377"><a href="#cb20-377"></a><span class="in">```{r}</span></span>
-<span id="cb20-378"><a href="#cb20-378"></a><span class="fu">report</span>(model)</span>
-<span id="cb20-379"><a href="#cb20-379"></a><span class="in">```</span></span>
-<span id="cb20-380"><a href="#cb20-380"></a>:::</span>
-<span id="cb20-381"><a href="#cb20-381"></a></span>
-<span id="cb20-382"><a href="#cb20-382"></a></span>
-<span id="cb20-383"><a href="#cb20-383"></a><span class="fu">## Wrapping Up</span></span>
-<span id="cb20-384"><a href="#cb20-384"></a>&lt;div class = "blue"&gt;</span>
-<span id="cb20-385"><a href="#cb20-385"></a></span>
-<span id="cb20-386"><a href="#cb20-386"></a>::: panel-tabset</span>
-<span id="cb20-387"><a href="#cb20-387"></a><span class="fu">### Write-up {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb20-388"><a href="#cb20-388"></a></span>
-<span id="cb20-389"><a href="#cb20-389"></a>::: blue</span>
-<span id="cb20-390"><a href="#cb20-390"></a></span>
-<span id="cb20-391"><a href="#cb20-391"></a>The estimate of the random intercept was <span class="in">`r Intercept_estimate`</span> (*SE* <span class="in">`r Intercept_SE`</span>). The fixed effects section provides the coefficients for the intercept, eventname, and the sex variable.</span>
-<span id="cb20-392"><a href="#cb20-392"></a></span>
-<span id="cb20-393"><a href="#cb20-393"></a></span>
-<span id="cb20-394"><a href="#cb20-394"></a>The linear mixed model analysis was conducted to predict children's height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4) using the event name (eventname) and height (Height) variables. The intercept, corresponding to the reference levels of the predictors is estimated at <span class="in">`r Intercept_estimate`</span> units, and this effect is highly significant. Regarding sex, boys show an increase in height of about <span class="in">`r sex_effect`</span> (*SE* <span class="in">`r Intercept_SE`</span>) units compared to girls.</span>
-<span id="cb20-395"><a href="#cb20-395"></a></span>
-<span id="cb20-398"><a href="#cb20-398"></a><span class="in">```{r}</span></span>
-<span id="cb20-399"><a href="#cb20-399"></a><span class="fu">report_performance</span>(model)</span>
-<span id="cb20-400"><a href="#cb20-400"></a><span class="in">```</span></span>
-<span id="cb20-401"><a href="#cb20-401"></a></span>
-<span id="cb20-402"><a href="#cb20-402"></a>:::</span>
-<span id="cb20-403"><a href="#cb20-403"></a>:::</span>
-<span id="cb20-404"><a href="#cb20-404"></a></span>
-<span id="cb20-405"><a href="#cb20-405"></a></span>
+<div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="an">title:</span><span class="co"> "Linear Mixed Models: Random Intercept"</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">---</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="in">```{r}</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#| echo: FALSE # The content of this code block will not be shown when rendered</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#| output: FALSE # Output from this code block will not be shown when rendered</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co"># This code configures knitr code chunk options</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a></span>
+<span id="cb8-14"><a href="#cb8-14"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb8-15"><a href="#cb8-15"></a>    <span class="at">echo =</span> T, <span class="at">message =</span> F, <span class="at">warning =</span> F, <span class="at">error =</span> F, <span class="at">output =</span> T,</span>
+<span id="cb8-16"><a href="#cb8-16"></a>    <span class="at">comment =</span> <span class="cn">NA</span>, <span class="at">cache =</span> T, <span class="at">code_folding =</span> T,</span>
+<span id="cb8-17"><a href="#cb8-17"></a>    <span class="at">R.options =</span> <span class="fu">list</span>(<span class="at">width =</span> <span class="dv">220</span>, <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb8-18"><a href="#cb8-18"></a>    <span class="at">fig.align =</span> <span class="st">"center"</span>,</span>
+<span id="cb8-19"><a href="#cb8-19"></a>    <span class="at">out.width =</span> <span class="st">"75%"</span>, <span class="at">fig.asp =</span> .<span class="dv">75</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a>)</span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="in">```</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="in">```{r}</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a><span class="co">#| echo: FALSE # The content of this code block will not be shown when rendered</span></span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="co">#| output: FALSE # Output from this code block will not be shown when rendered</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="co">#| cache: FALSE</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a></span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="co"># This code loads the data to be used for the example</span></span>
+<span id="cb8-31"><a href="#cb8-31"></a></span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb8-33"><a href="#cb8-33"></a></span>
+<span id="cb8-34"><a href="#cb8-34"></a><span class="co"># Set the data path</span></span>
+<span id="cb8-35"><a href="#cb8-35"></a>data_path <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
+<span id="cb8-36"><a href="#cb8-36"></a></span>
+<span id="cb8-37"><a href="#cb8-37"></a><span class="co"># Read the data</span></span>
+<span id="cb8-38"><a href="#cb8-38"></a>df <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path)</span>
+<span id="cb8-39"><a href="#cb8-39"></a></span>
+<span id="cb8-40"><a href="#cb8-40"></a><span class="co"># Create and mutate the dataframe</span></span>
+<span id="cb8-41"><a href="#cb8-41"></a>df_long <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a>    <span class="fu">select</span>(src_subject_id, eventname, anthroheightcalc) <span class="sc">%&gt;%</span></span>
+<span id="cb8-43"><a href="#cb8-43"></a>    <span class="fu">filter</span>(eventname <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"baseline_year_1_arm_1"</span>, <span class="st">"1_year_follow_up_y_arm_1"</span>, <span class="st">"2_year_follow_up_y_arm_1"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-44"><a href="#cb8-44"></a>    <span class="fu">drop_na</span>(anthroheightcalc) <span class="sc">%&gt;%</span></span>
+<span id="cb8-45"><a href="#cb8-45"></a>    <span class="fu">arrange</span>(src_subject_id, eventname) <span class="sc">%&gt;%</span></span>
+<span id="cb8-46"><a href="#cb8-46"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb8-47"><a href="#cb8-47"></a>        <span class="at">src_subject_id =</span> <span class="fu">factor</span>(src_subject_id),</span>
+<span id="cb8-48"><a href="#cb8-48"></a>        <span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"baseline_year_1_arm_1"</span>, <span class="st">"1_year_follow_up_y_arm_1"</span>, <span class="st">"2_year_follow_up_y_arm_1"</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Baseline"</span>, <span class="st">"Year_1"</span>, <span class="st">"Year_2"</span>)),</span>
+<span id="cb8-49"><a href="#cb8-49"></a>        <span class="at">anthroheightcalc =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(anthroheightcalc), <span class="dv">2</span>)</span>
+<span id="cb8-50"><a href="#cb8-50"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-51"><a href="#cb8-51"></a>    <span class="fu">rename</span>(</span>
+<span id="cb8-52"><a href="#cb8-52"></a>        <span class="at">id =</span> src_subject_id,</span>
+<span id="cb8-53"><a href="#cb8-53"></a>        <span class="at">event =</span> eventname,</span>
+<span id="cb8-54"><a href="#cb8-54"></a>        <span class="at">height =</span> anthroheightcalc</span>
+<span id="cb8-55"><a href="#cb8-55"></a>    )</span>
+<span id="cb8-56"><a href="#cb8-56"></a></span>
+<span id="cb8-57"><a href="#cb8-57"></a><span class="in">```</span></span>
+<span id="cb8-58"><a href="#cb8-58"></a></span>
+<span id="cb8-59"><a href="#cb8-59"></a><span class="fu">## Overview</span></span>
+<span id="cb8-60"><a href="#cb8-60"></a>The Linear mixed model (LMM) with a random intercept is similar to traditional (fixed-effect) linear regression, extending on this approach by including a subject-specific random-effect that allows each participant to have their own unique intercept value, in addition to the overall mean-level (fixed-effect) intercept value.</span>
+<span id="cb8-61"><a href="#cb8-61"></a></span>
+<span id="cb8-62"><a href="#cb8-62"></a>This example will examine trajectories of height obtained across 3 annual measurement occasions in a sample of youth taking part in the ABCD Study. The primary aim is to characterize stability and change in participant's height, while accounting for observations that are clustered within youth over time. The random-intercept LMM will simultaneously estimate an overall sample mean (fixed effect) for the height trajectory's intercept and slope values, as well as subject-specific (random) effects that vary randomly about the mean intercept value.</span>
+<span id="cb8-63"><a href="#cb8-63"></a></span>
+<span id="cb8-64"><a href="#cb8-64"></a><span class="fu">## Preliminary Setup</span></span>
+<span id="cb8-65"><a href="#cb8-65"></a><span class="fu">### Load Packages</span></span>
+<span id="cb8-68"><a href="#cb8-68"></a><span class="in">```{r}</span></span>
+<span id="cb8-69"><a href="#cb8-69"></a><span class="fu">library</span>(tidyverse) <span class="co"># Collection of R packages for data science</span></span>
+<span id="cb8-70"><a href="#cb8-70"></a><span class="fu">library</span>(gtsummary) <span class="co"># Publication-ready tables</span></span>
+<span id="cb8-71"><a href="#cb8-71"></a><span class="fu">library</span>(rstatix) <span class="co"># Statistical Tests in tidy format</span></span>
+<span id="cb8-72"><a href="#cb8-72"></a><span class="fu">library</span>(lme4) <span class="co"># Linear mixed-effects models</span></span>
+<span id="cb8-73"><a href="#cb8-73"></a><span class="in">```</span></span>
+<span id="cb8-74"><a href="#cb8-74"></a></span>
+<span id="cb8-75"><a href="#cb8-75"></a><span class="fu">### Descriptives</span></span>
+<span id="cb8-78"><a href="#cb8-78"></a><span class="in">```{r}</span></span>
+<span id="cb8-79"><a href="#cb8-79"></a>descriptives_table <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
+<span id="cb8-80"><a href="#cb8-80"></a>    <span class="fu">select</span>(event, height) <span class="sc">%&gt;%</span></span>
+<span id="cb8-81"><a href="#cb8-81"></a>    <span class="fu">mutate</span>(<span class="at">event =</span> <span class="fu">factor</span>(event)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-82"><a href="#cb8-82"></a>    <span class="fu">tbl_summary</span>(</span>
+<span id="cb8-83"><a href="#cb8-83"></a>        <span class="at">by =</span> event,</span>
+<span id="cb8-84"><a href="#cb8-84"></a>        <span class="at">missing =</span> <span class="st">"no"</span>,</span>
+<span id="cb8-85"><a href="#cb8-85"></a>        <span class="at">label =</span> <span class="fu">list</span>(height <span class="sc">~</span> <span class="st">"Height"</span>),</span>
+<span id="cb8-86"><a href="#cb8-86"></a>        <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>, <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span>),</span>
+<span id="cb8-87"><a href="#cb8-87"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-88"><a href="#cb8-88"></a>    <span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-89"><a href="#cb8-89"></a>    <span class="fu">bold_labels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-90"><a href="#cb8-90"></a>    <span class="fu">italicize_levels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-91"><a href="#cb8-91"></a>    <span class="fu">modify_spanning_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**Assessment Wave**"</span>)</span>
+<span id="cb8-92"><a href="#cb8-92"></a><span class="fu">theme_gtsummary_compact</span>()</span>
+<span id="cb8-93"><a href="#cb8-93"></a></span>
+<span id="cb8-94"><a href="#cb8-94"></a>descriptives_table</span>
+<span id="cb8-95"><a href="#cb8-95"></a></span>
+<span id="cb8-96"><a href="#cb8-96"></a><span class="in">```</span></span>
+<span id="cb8-97"><a href="#cb8-97"></a></span>
+<span id="cb8-98"><a href="#cb8-98"></a><span class="fu">## Results</span></span>
+<span id="cb8-99"><a href="#cb8-99"></a><span class="fu">### Compute LMM Model with Random Intercepts</span></span>
+<span id="cb8-100"><a href="#cb8-100"></a>This code fits a radom-intercept LMM to predict 'Height' across 3 annual visits, accounting for individual-level variability (random effects) of intercept values across participants. Model output is provided below, as well as a brief summary of results.</span>
+<span id="cb8-101"><a href="#cb8-101"></a></span>
+<span id="cb8-102"><a href="#cb8-102"></a>This model accounts for individual variability in height by including a random intercept for each subject (id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion. </span>
+<span id="cb8-103"><a href="#cb8-103"></a></span>
+<span id="cb8-106"><a href="#cb8-106"></a><span class="in">```{r}</span></span>
+<span id="cb8-107"><a href="#cb8-107"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(height <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> event <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id), <span class="at">data =</span> df_long, <span class="at">REML =</span> T)</span>
+<span id="cb8-108"><a href="#cb8-108"></a></span>
+<span id="cb8-109"><a href="#cb8-109"></a><span class="do">## Output and summary statistics</span></span>
+<span id="cb8-110"><a href="#cb8-110"></a><span class="fu">summary</span>(model)</span>
+<span id="cb8-111"><a href="#cb8-111"></a><span class="fu">confint</span>(model, <span class="at">level =</span> <span class="fl">0.95</span>, <span class="at">method =</span> <span class="st">"Wald"</span>)</span>
+<span id="cb8-112"><a href="#cb8-112"></a></span>
+<span id="cb8-113"><a href="#cb8-113"></a><span class="in">```</span></span>
+<span id="cb8-114"><a href="#cb8-114"></a></span>
+<span id="cb8-115"><a href="#cb8-115"></a>These results show an increasing trajectory of height across the years, with an increase of approximately 2.36 inches in Year 1 and 5.02 inches by Year 2 compared to the baseline, as evidenced by the fixed effects estimates. The random intercepts effect suggests some between-subject variability in particpant's height values at baseline, with a standard deviation of about 3.03 inches. The model's residuals are mostly well-behaved, although the range suggests a few extreme values or outliers.</span>
+<span id="cb8-116"><a href="#cb8-116"></a></span>
+<span id="cb8-117"><a href="#cb8-117"></a><span class="fu">### Model Plots</span></span>
+<span id="cb8-118"><a href="#cb8-118"></a>The following set of plots xxxxx.</span>
+<span id="cb8-119"><a href="#cb8-119"></a></span>
+<span id="cb8-122"><a href="#cb8-122"></a><span class="in">```{r}</span></span>
+<span id="cb8-123"><a href="#cb8-123"></a><span class="co"># Extract fixed effects</span></span>
+<span id="cb8-124"><a href="#cb8-124"></a>fixed_effects <span class="ot">&lt;-</span> <span class="fu">fixef</span>(model)</span>
+<span id="cb8-125"><a href="#cb8-125"></a></span>
+<span id="cb8-126"><a href="#cb8-126"></a><span class="co"># Prepare data frame for plotting</span></span>
+<span id="cb8-127"><a href="#cb8-127"></a>df_long<span class="sc">$</span>predicted_height <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">re.form =</span> <span class="cn">NA</span>) <span class="co"># Overall fixed effect predictions</span></span>
+<span id="cb8-128"><a href="#cb8-128"></a></span>
+<span id="cb8-129"><a href="#cb8-129"></a><span class="co"># Calculate individual intercept adjustments</span></span>
+<span id="cb8-130"><a href="#cb8-130"></a>df_long<span class="sc">$</span>individual_intercept <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">re.form =</span> <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">|</span> id)) <span class="sc">-</span> fixed_effects[<span class="dv">1</span>]</span>
+<span id="cb8-131"><a href="#cb8-131"></a></span>
+<span id="cb8-132"><a href="#cb8-132"></a><span class="co"># Generate the plot</span></span>
+<span id="cb8-133"><a href="#cb8-133"></a><span class="fu">ggplot</span>(df_long, <span class="fu">aes</span>(<span class="at">x =</span> event, <span class="at">y =</span> height)) <span class="sc">+</span></span>
+<span id="cb8-134"><a href="#cb8-134"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> height, <span class="at">color =</span> <span class="st">"Individual Trajectories"</span>), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb8-135"><a href="#cb8-135"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> predicted_height <span class="sc">+</span> individual_intercept, <span class="at">group =</span> id, <span class="at">color =</span> <span class="st">"Adjusted Individual Trajectories"</span>), <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb8-136"><a href="#cb8-136"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> event, <span class="at">y =</span> predicted_height, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"Sample Mean Trajectory"</span>), <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb8-137"><a href="#cb8-137"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Individual Trajectories"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Adjusted Individual Trajectories"</span> <span class="ot">=</span> <span class="st">"grey"</span>, <span class="st">"Sample Mean Trajectory"</span> <span class="ot">=</span> <span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb8-138"><a href="#cb8-138"></a>    <span class="fu">labs</span>(</span>
+<span id="cb8-139"><a href="#cb8-139"></a>        <span class="at">title =</span> <span class="st">"Individual Trajectories with Fixed Slope and Random Intercepts"</span>,</span>
+<span id="cb8-140"><a href="#cb8-140"></a>        <span class="at">x =</span> <span class="st">"Event Name"</span>,</span>
+<span id="cb8-141"><a href="#cb8-141"></a>        <span class="at">y =</span> <span class="st">"Height (inches)"</span>,</span>
+<span id="cb8-142"><a href="#cb8-142"></a>        <span class="at">color =</span> <span class="st">"Trajectory Type"</span></span>
+<span id="cb8-143"><a href="#cb8-143"></a>    ) <span class="sc">+</span></span>
+<span id="cb8-144"><a href="#cb8-144"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb8-145"><a href="#cb8-145"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb8-146"><a href="#cb8-146"></a></span>
+<span id="cb8-147"><a href="#cb8-147"></a><span class="in">```</span></span>
+<span id="cb8-148"><a href="#cb8-148"></a></span>
+<span id="cb8-149"><a href="#cb8-149"></a>This plot illustrates the change in participant's height across 3 annual measurement occassions. The individual raw data points are shown as red lines, representing the original height measurements, which demonstrate the variability among participants at each time point. These are overlaid with grey lines, which adjust each individual's trajectory to start from their unique intercept while following a common growth pattern indicated by the fixed effects from the model. The blue line represents the sample mean trajectory, calculated from the model's fixed effects, showcasing the average growth trend across all participants. </span>
+<span id="cb8-150"><a href="#cb8-150"></a></span>
+<span id="cb8-151"><a href="#cb8-151"></a>The plot shows individual trajectories that vary around the model's predicted values due to random effects, indicating substantial inter-individual variability in baseline heights. On average, participants experienced an increase in height of approximately 2.36 inches from baseline to Year 1 and an additional 2.66 inches from Year 1 to Year 2. The random effects for individual intercepts suggest differences in starting heights, with a standard deviation of 3.03 inches, reflecting the variability in growth patterns among the participants.</span>
+<span id="cb8-152"><a href="#cb8-152"></a></span>
+<span id="cb8-153"><a href="#cb8-153"></a><span class="fu">## Wrapping Up</span></span>
+<span id="cb8-154"><a href="#cb8-154"></a>The random-intercept LMM analysis revealed an increasing pattern of change in children's height measured over 3 annual assessments. The mean intercept value showed an average initial height of 55.24 inches (sd = 3.03) with evidence of individual variability around this (random effect) estimate. An examination of the slope factor revealed year-to-year growth increments of approxmiately 2.5 inches, with the rate of change held constant across all participants. </span>
+<span id="cb8-155"><a href="#cb8-155"></a></span>
+<span id="cb8-156"><a href="#cb8-156"></a>The LMM framework used in this example offered the ability to account for individual differences in initial height and the consistent growth patterns over time, demonstrating its utility in handling clustered or correlated data that arise from repeated measurements on the same subjects. More generally, this approach is often particularly useful in developmental studies as it allows for the inclusion of both fixed effects, which estimate common parameters across all individuals, and random effects, which capture unique variations among individuals. This enables a more precise understanding of both the group-level trends and individual-specific trajectories in longitudinal data.</span>
+<span id="cb8-157"><a href="#cb8-157"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

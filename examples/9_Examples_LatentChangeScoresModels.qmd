@@ -1,0 +1,201 @@
+---
+title: "Latent Change Score Models"
+author: "Biostatistics Working Group"
+---
+
+```{r}
+#| echo: FALSE # The content of this code block will not be rendered
+#| output: FALSE # Output from this code block will not be rendered
+
+# This code configures knitr code chunk options
+
+knitr::opts_chunk$set(
+    echo = T, message = F, warning = F, error = F, output = T,
+    comment = NA, cache = T, code_folding = T,
+    R.options = list(width = 220, digits = 3),
+    fig.align = "center",
+    out.width = "75%", fig.asp = .75
+)
+```
+
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
+#| cache: FALSE
+
+# This code loads the data to be used for the example
+
+library(tidyverse)
+
+# Set the data path
+data_path <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+df <- readRDS(data_path)
+
+# Create and mutate the dataframe
+df_long <- df %>%
+    select(src_subject_id, eventname, anthroheightcalc) %>%
+    filter(eventname %in% c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1")) %>%
+    drop_na(anthroheightcalc) %>%
+    arrange(src_subject_id, eventname) %>%
+    mutate(
+        src_subject_id = factor(src_subject_id),
+        eventname = factor(eventname, levels = c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1"), labels = c("Baseline", "Year_1", "Year_2", "Year_3")),
+        anthroheightcalc = round(as.numeric(anthroheightcalc), 2)
+    ) %>%
+    rename(
+        id = src_subject_id,
+        event = eventname,
+        height = anthroheightcalc
+    )
+
+df_long <- df_long %>%
+    group_by(id) %>%
+    filter(all(c("Baseline", "Year_1", "Year_2", "Year_3") %in% event)) %>%
+    ungroup()
+
+```
+
+## Overview
+Latent change score models are a statistical technique used for analyzing changes over time by integrating aspects of both structural equation modeling and traditional change score methods. This approach constructs latent variables that directly represent change between time points. First, latent variables for each time point are modeled to capture the true score of the variable of interest, adjusting for measurement error. Then, latent change scores are defined as the difference between latent variables across consecutive time points.
+
+This example will explore changes in height from baseline to 3 subsequent annual follow-ups in a sample of participants from the ABCD Study. Initially, latent variables for height at each time point are defined to account for measurement error and capture the true height scores. Latent change scores are then calculated between each pair of consecutive time points to model the true change in height. The dynamics of these changes are visually depicted using trajectory plots, providing a clear visual representation of growth patterns across participants the study.
+
+## Preliminary Setup
+### Load Packages
+```{r}
+
+library(tidyverse) # Collection of R packages for data science
+library(gtsummary) # Publication-ready tables
+library(rstatix) # Statistical Tests in tidy format
+library(lme4) # Linear mixed-effects models
+library(lcsm) # Latent Change Score Models
+library(lavaan) # Structural Equation Modeling
+library(kableExtra) # Table formatting
+```
+
+### Descriptives
+```{r}
+
+descriptives_table <- df_long %>%
+    select(event, height) %>%
+    mutate(event = factor(event)) %>%
+    tbl_summary(
+        by = event,
+        missing = "no",
+        label = list(height ~ "Height"),
+        statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),
+    ) %>%
+    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+    bold_labels() %>%
+    italicize_levels() %>%
+    modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+theme_gtsummary_compact()
+
+descriptives_table
+
+```
+
+## Results 
+### Compute Latent Change Score Model
+The code below is used to compute a latent change score analysis to investigate changes in height across four annual assessments. This statistical approach models growth factors, including constant and proportional changes, and how they vary between individuals. It also evaluates the stability of growth patterns over time, giving a more nuanced understanding of developmental trajectories and the amount of change between each time point.
+```{r}
+
+# Reshape data from long to wide format
+df_wide <- df_long %>%
+    pivot_wider(
+        id_cols = c(id),
+        names_from = event,
+        values_from = height,
+        names_prefix = "Height_"
+    )
+
+df_wide <- na.omit(df_wide)
+
+# Fit lcsm and save the results
+uni_lavaan_results <- fit_uni_lcsm(
+    data = df_wide,
+    var = c(
+        "Height_Baseline", "Height_Year_1",
+        "Height_Year_2", "Height_Year_3"
+    ),
+    model = list(
+        alpha_constant = TRUE,
+        beta = TRUE,
+        phi = TRUE
+    )
+)
+
+uni_lavaan_results
+
+# Save the lavaan syntax that is used to create the layout matrix for semPlot
+uni_lavaan_syntax <- fit_uni_lcsm(
+    data = df_wide,
+    var = c(
+        "Height_Baseline", "Height_Year_1",
+        "Height_Year_2", "Height_Year_3"
+    ),
+    model = list(
+        alpha_constant = TRUE,
+        beta = TRUE,
+        phi = TRUE
+    ),
+    return_lavaan_syntax = TRUE
+)
+
+# Now extract parameter estimates
+# Only extract first 7 columns for this example by adding [ , 1:7]
+param_bi_lcsm_01 <- extract_param(uni_lavaan_results, printp = TRUE)[, 1:6]
+
+# Print table of parameter estimates
+kable(param_bi_lcsm_01, digits = 3)
+
+```
+
+The results of the latent change score model (LCSM) for height indicated increasing patterns of growth. The fitted model included a constant change factor of .52, reflecting a uniform base growth factor across all individuals consistently over time. The proportional change factor of -.27 illustrates a negative relationship, indicating that higher initial heights might result in lesser incremental growth. The phi estimate .43 shows autoregressive effects of the change scores, where the direction and magnitude of past growth significantly predict subsequent changes. 
+
+### Model Plots
+```{r}
+
+# Path diagram plot of model results
+plot_lcsm(
+    lavaan_object = uni_lavaan_results,
+    lavaan_syntax = uni_lavaan_syntax,
+    edge.label.cex = .9,
+    lcsm_colours = TRUE,
+    lcsm = "univariate"
+)
+
+```
+
+This path diagram represents the structural relationships specified in the LCSM by simplifying the model structure into a more intuitive graphical format. The diagram highlights connections and dependencies among the variables, as well as the model's estimated parameters.
+```{r}
+# Trajectory Plots
+plot <- plot_trajectories(
+    data = df_wide,
+    id_var = "id",
+    var_list = c(
+        "Height_Baseline",
+        "Height_Year_1",
+        "Height_Year_2",
+        "Height_Year_3"
+    ),
+    xlab = "Time", ylab = "X Score",
+    connect_missing = FALSE,
+    random_sample_frac = 0.3
+)
+
+plot
+```
+
+This trajectory plot depicts individual growth patterns based on a random sample of 30% of the data. The plot reveals individual variability in changes in height measurements among participants across 4 annual assessments, providing a visualization of how different individuals progress over time. 
+
+## Wrapping Up
+
+This analysis utilized a latent change score model (LCSM) to study the progression of participants' height across multiple time points, controlling for baseline height measurements. Model results demonstrated a consistent growth pattern, with a constant change factor (γ = .52), which suggests a uniform growth rate across all individuals over time. The proportional change factor (β = -.27) indicated a negative relationship, revealing that individuals with greater initial heights experienced smaller incremental increases. Additionally, the autoregressive parameter (φ = 0.43) highlighted that previous growth trajectories significantly influence subsequent changes, providing insights into the dynamic nature of growth.
+
+The LCSM offers a robust framework for analyzing longitudinal data, as it accounts for measurement errors and individual differences in baseline scores. This approach is particularly useful in developmental studies where understanding the intricacies of growth patterns is emphasized. This approach disentangles the elements of growth over time showing the predictive utility of earlier measurements and extending our understanding of growth dynamics.
+
+
+

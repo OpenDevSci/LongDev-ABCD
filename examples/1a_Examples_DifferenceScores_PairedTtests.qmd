@@ -11,7 +11,7 @@ author: "Biostatistics Working Group"
 
 knitr::opts_chunk$set(
     echo = T, message = F, warning = F, error = F, output = T,
-    comment = NA, cache = T, code_folding = show,
+    comment = NA, cache = T,
     R.options = list(width = 220, digits = 3),
     fig.align = "center",
     out.width = "75%", fig.asp = .75
