@@ -97,12 +97,12 @@ This code computes a difference score by subtracting participant's height at bas
 
 # Reshaping data from long to wide
 df_wide <- df_long %>%
-  pivot_wider(
-    id_cols = id,
-    names_from = event,
-    values_from = height,
-    names_prefix = "Height_"
-  )
+    pivot_wider(
+        id_cols = id,
+        names_from = event,
+        values_from = height,
+        names_prefix = "Height_"
+    )
 
 # Compute the height difference score
 df_wide <- df_wide %>%
@@ -134,8 +134,7 @@ model
 
 ```
 
-The results from the one-sample t-test conducted on the height difference scores reveals an increase in height from Baseline to Year 1. The t-test yields a t-value of 98.86 with a p-value less than <.001, indicating that the average height increase of 2.36 inches is significantly different from zero. Additionally, the 95% confidence interval
-indicates that the true mean difference score in the population lies between approximately 2.31 to 2.41 inches.
+The results from the one-sample t-test conducted on the height difference scores reveals an increase in height from Baseline to Year 1. The t-test yields a t-value of 98.86 with a p-value less than <.001, indicating that the average height increase of 2.36 inches is significantly different from zero. Additionally, the 95% confidence interval indicates that the true mean difference score in the population lies between approximately 2.31 to 2.41 inches.
 
 ### Model Plots
 ```{r}
