@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.552">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -1060,7 +1060,7 @@ F-statistic: 214.7 on 1 and 47586 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>standard error of 0.0230434;</li>
 <li>p-value of 1.6900378^{-48}.</li>
 </ol>
-<p>Compared to boys (the reference group), girls have an average increase in height difference of approximately -0.338 units. This effect was marginally significant with a p-value of 0. Overall, the model explained a very small portion of the variance in height difference, with an adjusted R-squared value of 0.00447, and the overall model significance was not statistically significant with a p-value of 1.6900378^{-48}.</p>
+<p>Compared to girls (the reference group), boys have an average height difference of approximately -0.338 units. This effect was statistically significant with a p-value of 0. Overall, the model explained a very small portion of the variance in height difference, with an adjusted R-squared value of 0.00447, and the overall model significance was statistically significant with a p-value of 1.6900378^{-48}.</p>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
@@ -1900,7 +1900,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb13-302"><a href="#cb13-302"></a>iv. standard error of <span class="in">`r model_summary$coefficients["sexMale or other", "Std. Error"]`</span>; </span>
 <span id="cb13-303"><a href="#cb13-303"></a>v. p-value of <span class="in">`r model_summary$coefficients["sexMale or other", "Pr(&gt;|t|)"]`</span>. </span>
 <span id="cb13-304"><a href="#cb13-304"></a></span>
-<span id="cb13-305"><a href="#cb13-305"></a>Compared to boys (the reference group), girls have an average increase in height difference of approximately <span class="in">`r round(model_summary$coefficients["sexMale or other", "Estimate"], 3)`</span> units. This effect was marginally significant with a p-value of <span class="in">`r round(model_summary$coefficients["sexMale or other", "Pr(&gt;|t|)"], 4)`</span>. Overall, the model explained a very small portion of the variance in height difference, with an adjusted R-squared value of <span class="in">`r round(model_summary$adj.r.squared, 6)`</span>, and the overall model significance was not statistically significant with a p-value of <span class="in">`r pf(model_summary$fstatistic[1], model_summary$fstatistic[2], model_summary$fstatistic[3], lower.tail = FALSE)`</span>.</span>
+<span id="cb13-305"><a href="#cb13-305"></a>Compared to girls (the reference group), boys have an average height difference of approximately <span class="in">`r round(model_summary$coefficients["sexMale or other", "Estimate"], 3)`</span> units. This effect was statistically significant with a p-value of <span class="in">`r round(model_summary$coefficients["sexMale or other", "Pr(&gt;|t|)"], 4)`</span>. Overall, the model explained a very small portion of the variance in height difference, with an adjusted R-squared value of <span class="in">`r round(model_summary$adj.r.squared, 6)`</span>, and the overall model significance was  statistically significant with a p-value of <span class="in">`r pf(model_summary$fstatistic[1], model_summary$fstatistic[2], model_summary$fstatistic[3], lower.tail = FALSE)`</span>.</span>
 <span id="cb13-306"><a href="#cb13-306"></a></span>
 <span id="cb13-307"><a href="#cb13-307"></a>:::</span>
 <span id="cb13-308"><a href="#cb13-308"></a></span>
