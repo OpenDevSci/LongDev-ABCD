@@ -229,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>This code installs the r packages necessary for this example, if they are not already installed</strong></p>
 </blockquote>
 <div class="cell" data-messages="false">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Create a list of required packages</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a>packages_required <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"tidyverse"</span>,<span class="st">"rstatix"</span>,<span class="st">"DT"</span>, <span class="st">"gtsummary"</span>,<span class="st">"easystats"</span>)</span>
@@ -250,7 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="blue">
 <p><strong>This code loads the r libraries necessary for this example</strong></p>
 <div class="cell" data-messages="false">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># Collection of R packages for data science</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="fu">library</span>(rstatix)      <span class="co"># Pipe-friendly framework for basic statistical tests</span></span>
@@ -273,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="blue">
 <p><strong>This code reads in and shows the data to be used in the current example</strong></p>
 <div class="cell" data-layout-align="center" data-messages="false">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Set the data paths</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>data_path_1 <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"</span></span>
@@ -391,7 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="blue">
 <p><strong>This code creates a descriptives table</strong></p>
 <div class="cell" data-layout-align="center" data-messages="false">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>descriptives_table <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">select</span>(eventname, sex, race<span class="fl">.4</span>level, income_numeric, education) <span class="sc">%&gt;%</span></span>
@@ -1054,7 +1054,7 @@ N = 4754<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ita
 <p>The code fits a xxxx to examine the ‘xxxxx’ variable across time points (‘eventname’). It incorporates xxxxxx. The results of the model are then printed to provide a detailed summary of the fitted model parameters.</p>
 <p><strong>STEP 1: Convert dataframe from long-to-wide format</strong></p>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r fold-hide number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Split the data into static (unchanging) and changing variables</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="co"># Static variables are taken only from the baseline measurement occasion</span></span>
@@ -1090,7 +1090,7 @@ N = 4754<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ita
 </div>
 <p><strong>Descriptive Statistics for the Income Variable</strong></p>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="do">## Summary statistics</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="co"># Compute summary statistics for Income by eventname</span></span>
@@ -1111,7 +1111,7 @@ N = 4754<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ita
 <p>The summary statistics provide insights into the Weight variable across different <code>eventname</code> categories. At baseline, the average weight is approximately 7.224 units with a standard deviation of 2.423. Over the years, there’s a noticeable increase in average weight: by the first year, it’s about 7.299 units, and it continues to rise, reaching approximately 7.424 units by the fourth year. The standard deviation remains relatively consistent over the years, suggesting similar variability in weight measurements across these time points.</p>
 <p><strong>STEP 2: Compute Signed Rank Test</strong></p>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="do">#########</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a>df_wide<span class="sc">$</span>income_numeric_0 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>income_numeric_0))</span>
