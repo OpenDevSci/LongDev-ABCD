@@ -24,3 +24,4 @@ lme4
 gtsummary
 broom
 gridExtra
+rstatix
