@@ -108,8 +108,6 @@ confint(model, level = 0.95, method = "Wald")
 These results show an increasing trajectory of height across the years, with an increase of approximately 2.36 inches in Year 1 and 5.02 inches by Year 2 compared to the baseline, as evidenced by the fixed effects estimates. The random intercepts effect suggests some between-subject variability in particpant's height values at baseline, with a standard deviation of about 3.03 inches. The model's residuals are mostly well-behaved, although the range suggests a few extreme values or outliers.
 
 ### Model Plots
-The following set of plots xxxxx.
-
 ```{r}
 
 # Extract fixed effects

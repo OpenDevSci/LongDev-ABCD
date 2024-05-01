@@ -101,16 +101,20 @@
 				<div class="postcard__preview-txt">
 				<ul class="postcard__tagbox">
 				  <li class="tag__item play blue">
-						<a href="./_9_Examples_LatentChangeScoresModels.qmd"><i class="fas fa-play
+						<a href="./9_Examples_LatentChangeScoresModels.qmd"><i class="fas fa-play
 						mr-2"></i>Latent Change Score Models</a>
 						</li>
 					<li class="tag__item play blue">
-						<a href="./_10_Examples_LatentGrowthCurveModels.qmd"><i class="fas fa-play
+						<a href="./10_Examples_LatentGrowthCurveModels.qmd"><i class="fas fa-play
 						mr-2"></i>Latent Growth Curve Models</a>
 						</li>
 					<li class="tag__item play blue">
 						<a href="./_12_Examples_LatentTransitionAnalysis.qmd"><i class="fas fa-play
 						mr-2"></i>Latent Transition Analysis</a>
+						</li>
+					<li class="tag__item play blue">
+						<a href="./13b_Examples_LatentClassGrowthAnalysis.qmd"><i class="fas fa-play
+						mr-2"></i>Latent Class Growth Analysis</a>
 						</li>
 				</ul>
 			</div>
