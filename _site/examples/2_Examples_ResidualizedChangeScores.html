@@ -210,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="load-packages" class="level3">
 <h3 class="anchored" data-anchor-id="load-packages">Load Packages</h3>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Collection of R packages for data science</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(gtsummary) <span class="co"># Publication-ready tables</span></span>
@@ -222,7 +222,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="descriptives" class="level3">
 <h3 class="anchored" data-anchor-id="descriptives">Descriptives</h3>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>descriptives_table <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="fu">select</span>(event, handedness, height) <span class="sc">%&gt;%</span></span>
@@ -744,7 +744,7 @@ N = 9629<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ita
 <h3 class="anchored" data-anchor-id="compute-multiple-regression-model">Compute Multiple Regression Model</h3>
 <p>The code below is used to compute a residualized change score by first adjusting participants’ height at the 1-year follow-up for their baseline height through a regression analysis. The residuals from this model represent the adjusted height changes that are not explained by their initial measurements. Subsequently, these residualized change scores are used in a simple regression analysis to explore whether handedness predicts the changes in height between the two timepoints. This approach helps to isolate any effect of handedness on height growth, independent of the baseline height values.</p>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Reshape data from long to wide format</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>df_wide <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
@@ -791,7 +791,7 @@ F-statistic: 0.606 on 1 and 9627 DF,  p-value: 0.436</code></pre>
 <section id="model-plots" class="level3">
 <h3 class="anchored" data-anchor-id="model-plots">Model Plots</h3>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)) <span class="co"># Set up a 2x2 plotting area</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="fu">plot</span>(model_baseline) <span class="co"># Generate diagnostic plots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -803,7 +803,7 @@ F-statistic: 0.606 on 1 and 9627 DF,  p-value: 0.436</code></pre>
 </figure>
 </div>
 </div>
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Visualize the residualized change scores across different levels of handedness</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>

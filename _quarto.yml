@@ -19,10 +19,11 @@ project:
     # - 6_Examples_GeneralizedEstimatingEquations.qmd
     # - 7_Examples_GeneralizedLinearMixedEffectsModels.qmd
     # - 8_Examples_AutoregressiveCrosslaggedPanelModels.qmd
-    # - 9_Examples_LatentChangeScoresModels.qmd
-    # - 10_Examples_LatentGrowthCurveModels.qmd
+    - examples/9_Examples_LatentChangeScoresModels.qmd
+    - examples/10_Examples_LatentGrowthCurveModels.qmd
     # - 11_Examples_MultivariateLatentGrowthCurveModels.qmd
     # - 12_Examples_LatentTransitionAnalysis.qmd
+    - examples/13b_Examples_LatentClassGrowthAnalysis.qmd
     # - 13_Examples_GrowthMixtureModels.qmd
     # - 14_Examples_StateTraitModels.qmd
     # - 15_Examples_RandomInterceptCrosslaggedPanelModels.qmd
@@ -104,23 +105,26 @@ website:
         #     - section: "Generalized Linear Mixed-Effects Models"
         #       contents:
         #         - 7_Examples_GeneralizedLinearMixedEffectsModels.qmd
-        # - section: "SEM Approaches"
-        #   contents:
+        - section: "SEM Approaches"
+          contents:
         #     - section: "Autoregressive Crosslagged Panel Models"
         #       contents:
         #         - 8_Examples_AutoregressiveCrosslaggedPanelModels.qmd
-        #     - section: "Latent Change Scores Models"
-        #       contents:
-        #         - 9_Examples_LatentChangeScoresModels.qmd
-        #     - section: "LatentGrowthCurveModels"
-        #       contents:
-        #         - 10_Examples_LatentGrowthCurveModels.qmd
+             - section: "Latent Change Scores Models"
+               contents:
+                 - 9_Examples_LatentChangeScoresModels.qmd
+             - section: "LatentGrowthCurveModels"
+               contents:
+                 - 10_Examples_LatentGrowthCurveModels.qmd
         #     - section: "Multivariate Latent Growth Curve Models"
         #       contents:
         #         - 11_Examples_MultivariateLatentGrowthCurveModels.qmd
         #     - section: "Latent Transition Analysis"
         #       contents:
         #         - 12_Examples_LatentTransitionAnalysis.qmd
+             - section: "Latent Class Growth Analysis"
+               contents:
+                 - 13b_Examples_LatentClassGrowthAnalysis.qmd
         #     - section: "Growth Mixture Models"
         #       contents:
         #         - 13_Examples_GrowthMixtureModels.qmd
@@ -150,7 +154,7 @@ format:
     link-external-icon: true
     link-external-newwindow: true
     code-copy: true
-    code-fold: true
+    code-fold: show
     code-summary: "Code"
     code-overflow: scroll
     code-line-numbers: TRUE

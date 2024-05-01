@@ -210,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="load-r-libraries" class="level3">
 <h3 class="anchored" data-anchor-id="load-r-libraries">Load R libraries</h3>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Collection of R packages for data science</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(gtsummary) <span class="co"># Publication-ready tables</span></span>
@@ -221,7 +221,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="descriptives" class="level3">
 <h3 class="anchored" data-anchor-id="descriptives">Descriptives</h3>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>descriptives_table <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="fu">select</span>(event, height) <span class="sc">%&gt;%</span></span>
@@ -727,7 +727,7 @@ N = 11142<span class="gt_footnote_marks" style="white-space:nowrap;font-style:it
 <h3 class="anchored" data-anchor-id="compute-difference-score">Compute Difference Score</h3>
 <p>This code computes a difference score by subtracting participant’s height at baseline from height at the 1-year follow-up. Next, a one-sample t-test is conducted to determine whether the mean difference score is different from zero. Model output is provided below, as well as a brief summary of results.</p>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Reshaping data from long to wide</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>df_wide <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
@@ -751,7 +751,7 @@ N = 11142<span class="gt_footnote_marks" style="white-space:nowrap;font-style:it
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
     -52       2       2       2       3      67     729 </code></pre>
 </div>
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Compute summary statistics for Height by eventname</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>summary <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
@@ -774,7 +774,7 @@ N = 11142<span class="gt_footnote_marks" style="white-space:nowrap;font-style:it
 <h3 class="anchored" data-anchor-id="conduct-t-test-on-difference-score">Conduct t-test on Difference Score</h3>
 <p>A one-sample t-test is computed on the difference scores to examine whether there is evidence of change in participant’s height between the two timepoints.</p>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Perform a one-sample t-test on the difference scores for height</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>model <span class="ot">&lt;-</span> <span class="fu">t.test</span>(df_wide<span class="sc">$</span>height_diff, <span class="at">mu =</span> <span class="dv">0</span>)</span>
@@ -799,7 +799,7 @@ mean of x
 <section id="model-plots" class="level3">
 <h3 class="anchored" data-anchor-id="model-plots">Model Plots</h3>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
+<details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Scatterplot to compare height differences across two events</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a><span class="fu">ggplot</span>(df_wide, <span class="fu">aes</span>(<span class="at">x =</span> Height_Baseline, <span class="at">y =</span> Height_Year_1)) <span class="sc">+</span></span>
