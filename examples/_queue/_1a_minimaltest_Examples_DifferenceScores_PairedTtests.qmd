@@ -1,0 +1,151 @@
+---
+title: "Difference Scores: Paired Samples T-test"
+author: "Biostatistics Working Group"
+---
+
+```{r}
+#| echo: FALSE
+#| output: FALSE
+
+# This code configures knitr code chunk options 
+
+knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, output=T,
+                      comment=NA, cache=T, code_folding=T,
+                      R.options=list(width=220, digits = 3),
+                      fig.align='center', 
+                      out.width='75%', fig.asp=.75)
+```
+
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
+#| cache: FALSE
+
+# This code loads the data to be used for the example
+
+library(dplyr)  # Ensure dplyr is loaded
+
+# Set the data path
+data_path <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+df <- readRDS(data_path)
+
+# Create and mutate the dataframe
+df_long <- df %>%
+  select(src_subject_id, eventname, anthroheightcalc) %>%
+  mutate(
+    src_subject_id = as.factor(src_subject_id),
+    eventname = as.factor(eventname),
+    anthroheightcalc = as.numeric(anthroheightcalc)
+  ) %>%
+  filter(eventname %in% c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1")) %>%
+  na.omit()
+
+```
+
+## Overview
+
+This example assesses growth in a subsample of ABCD participants from Baseline (T0) to the 1-Year follow-up (T1), using height as a representative metric. The analysis is conducted in two primary steps: 1) a difference score is calculated between baseline and year 1 height measurements for each participant; 2) a one-sample t-test is used to test whether the difference score is statistically different than a null hypothesis of zero change. Finally, a visual inspection is further conducted via a boxplot to graphically represent the relationship between participant's height at Baseline and the Year 1 follow-up.
+
+## Preliminary Setup
+
+### Load R libraries
+```{r}
+
+library(tidyverse)    # Collection of R packages for data science
+library(easystats)    # Collection of R packages statistical modeling, visualization, and reporting
+library(gtsummary)    # Publication-ready tables
+library(report)       # Easy reporting of regression analyses
+library(gridExtra)    # Arrange multiple grid-based plots on a page
+library(rstatix)      # 
+```
+
+### Descriptives
+
+```{r}
+
+#Mean response over time
+group_by(df_long, eventname) %>% 
+  get_summary_stats(anthroheightcalc)
+
+```
+
+## Results
+
+### Compute Difference Score
+The code snippet below tells R to compute a difference score by subtracting each participant's height at baseline and the one-year follow-up. Relevant summary statistics are also provided.
+
+```{r}
+
+# Reshape data from long to wide format
+df_wide <- df_long %>%
+  pivot_wider(
+    names_from = eventname,
+    values_from = anthroheightcalc,
+    names_prefix = "height_"
+  )
+
+# Compute the height difference
+# Replace 'baseline_year_1_arm_1' and '1_year_follow_up_y_arm_1' with the exact names used in your dataset
+df_wide <- df_wide %>%
+  mutate(
+    height_diff = height_baseline_year_1_arm_1 - height_1_year_follow_up_y_arm_1
+  )
+
+# Calculate summary statistics for the difference score
+summary_stats <- summary(df_wide$height_diff)
+print(summary_stats)
+
+```
+
+This R code effectively calculates the difference in height for each participant across two time points. The summary statistics, such as the mean, median, and range of these differences, provide a quantitative measure of change.
+
+This summary of the difference score variable indicates that the differences range from a minimum xx units to an increase of xx units. The median difference is xx units, and the average difference is approximately xx units.
+
+The summary statistics provide insights into the height variable across different xxx categories. At baseline, the average height is approximately xxx units with a standard deviation of xxxxx. Over the years, there’s a noticeable increase in average height: by the first year, it’s about xxxx units, and it continues to rise, reaching approximately xxxxx units by the fourth year. The standard deviation remains relatively consistent over the years, suggesting similar variability in height measurements across these time points.
+
+
+### One-Sample T-test on Difference Score
+After computing the difference scores, a one-sample t-test was conducted to examine if the average change in height (i.e., the difference score) is significantly different from zero (indicating change). This is key to determining whether there is a statistically significant growth on average across all participants.
+
+```{r}
+
+# Assuming df_wide is your dataframe and height_diff is your column of interest
+# Perform a one-sample t-test
+t_test_result <- t.test(df_wide$height_diff, mu = 0)
+
+# Print the results
+print(t_test_result)
+```
+This one-sample t-test assesses the null hypothesis that there is no change in height on average (mean difference = 0). The results of this test will indicate whether the observed changes are likely to be due to random variation or represent a true change in height over the period. A significant p-value (< 0.05) would reject the null hypothesis, suggesting that the average height change is statistically significant, either as an increase or a decrease.
+
+### Model Plots
+The boxplot visualization is a powerful tool for showing the distribution of height at both time points and visually assessing changes.
+
+```{r}
+
+# Assuming df_long is your dataframe
+df_long <- df_long %>%
+  mutate(eventname = factor(eventname,
+                            levels = rev(c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1")),
+                            labels = c("Baseline", "1 Year Follow-up")))
+
+# Create a boxplot with jitter for the height data
+ggplot(df_long, aes(x = eventname, y = anthroheightcalc, fill = eventname)) +
+  geom_boxplot() +  # Adds the boxplot
+  geom_jitter(width = 0.2, alpha = 0.5, color = "black") +  # Adds jitter to show individual data points
+  guides(fill = "none") +  # Removes the legend for fill, since it's redundant
+  labs(x = "", y = "Height (inches)") +  # Sets the labels for axes
+  theme_minimal() +  # Applies a minimal theme for a cleaner look
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotates x-axis labels for better readability
+
+```
+The boxplot clearly delineates the range and distribution of heights at baseline and one-year follow-up. The central box represents the interquartile range (IQR) where the middle 50% of scores lie, and the whiskers extend to show the range of the data. This visualization helps highlight outliers and potential anomalies in data collection or entry. Observing how the IQR shifts from Baseline to 1 Year Follow-up can inform us about overall growth trends and variances.
+
+## Wrapping Up
+
+In the study sample, the average weight at baseline was approximately xxxx units with a standard deviation of xx, which showed a noticeable increase to an average of xx units by Year_1. A one-sample t-test was conducted to determine if the mean difference in weight from baseline to Year_1 significantly deviated from zero. The results indicated a statistically significant increase with a mean difference of approximately xx units (xxx to xxx), t(xx) = xxx, p < xx. Further, a scatterplot visualizing the relationship between baseline and Year_1 weights showed a strong positive linear trend. This suggests that participants who were taller at baseline generally remained taller at Year_1, reaffirming the consistent growth trend observed in the data.
+
+
+

@@ -1,0 +1,529 @@
+---
+title: "Latent Class Growth Analysis"
+author: "Biostatistics Working Group"
+---
+
+
+# LCGA: {.unnumbered}
+
+## Overview
+
+<p>
+
+"A valuable tool for investigating heterogeneity in symptom patterns is Latent Growth Curve Modelling (GCM), a statistical method that analyses inter-individual variability in intra-individual patterns over time @curran2010. One specific type of GCM is Latent Class Growth Analysis (LCGA), which considers unobserved heterogeneity (different groups) over time within a larger population @jung2008, @nguena2020, @ram2009. In other words, LCGA can examine the growth and shape of the course of depressive symptoms over time and assess how individuals in the population group together based on their symptom patterns."
+
+"The aim of the present study is to investigate the course of depressive symptoms over a period of xx years .... and to .... . To achieve this goal, LGCM will be performed on data from the xxxx ABCD cohort (add citation). The ABCD study was initiated in xxxxx. Based on previous literature @musliner2016, we hypothesize that three or four trajectories of depression can be identified. Given that xxxxx, we additionally hypothesize that individuals following more xxxx trajectories will be more/less likely to experience xxxx and exhibit reduced levels of xxxxx"
+
+</p>
+
+## Preliminary Setup
+
+::: panel-tabset
+### Install Packages {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+> **This code installs the r packages necessary for this example, if
+> they are not already installed**
+
+```{r pckg-install}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+# Create a list of required packages
+packages_required <- c("tidyverse","tidySEM","rstatix","report","broom","gridExtra","easystats","gtsummary")
+
+# Check which packages are not installed and install them
+packages_to_install <- setdiff(packages_required, rownames(installed.packages()))
+if (length(packages_to_install) > 0) {
+    install.packages(packages_to_install)
+}
+
+# Load the required packages
+lapply(packages_required, library, character.only = TRUE)
+
+```
+:::
+
+### Load Packages
+
+::: blue
+**This code loads the r libraries necessary for this example**
+
+```{r lib-load}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+library(tidyverse)    # Collection of R packages for data science
+library(rstatix)      # Pipe-friendly framework for basic statistical tests
+library(tidySEM)      # Structural equation modeling in R
+library(report)       # Easy reporting of regression analyses
+library(broom)        # Tidy and augment statistical models output
+library(gridExtra)    # Arrange multiple grid-based plots on a page
+library(easystats)    # Descriptive statistics and robust statistical methods
+library(gtsummary)    # Presentation-ready data summary and analytic result tables
+```
+:::
+
+### Config Options
+
+::: blue
+**This code configures knitr code chunk options**
+
+```{r config}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, 
+                      comment=NA, cache=T, code_folding=T,
+                      R.options=list(width=220, digits = 3),
+                      fig.align='center', 
+                      out.width='75%', fig.asp=.75)
+```
+:::
+:::
+
+## Descriptives Overview
+
+::: panel-tabset
+### Read and View Data {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+**This code reads in and shows the data to be used in the current
+example**
+
+```{r read-data}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+#| cache: FALSE
+
+# Set the data paths
+data_path_1 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"
+data_path_2 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+data_demographics <- readRDS(data_path_1)
+data_nonimaging <- readRDS(data_path_2)
+
+# Subset the nonimaging data to include desired variables
+selected_vars <- c("src_subject_id", "eventname", "nihtbx_totalcomp_fc", "anthroweightcalc", "anthroheightcalc")
+subset_data <- data_nonimaging[, selected_vars]
+
+library(dplyr)
+# # Merge the datasets on 'src_subject_id' and 'eventname'
+merged_data <- data_demographics %>%
+  full_join(subset_data, by = c("src_subject_id", "eventname"))
+
+# Inspect the merged data structure
+str(merged_data)
+
+# Define event names to be retained in the analysis and convert variables to appropriate data types
+eventnames_to_include <- c("baseline_year_1_arm_1",
+                           "1_year_follow_up_y_arm_1",
+                           "2_year_follow_up_y_arm_1",
+                           "3_year_follow_up_y_arm_1",
+                           "4_year_follow_up_y_arm_1")
+
+df <- merged_data %>%
+  filter(eventname %in% eventnames_to_include) %>%
+  mutate(
+    src_subject_id = as.factor(src_subject_id),
+    eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),
+    age = as.numeric(age),
+    sex = as.factor(sex),
+    race.4level = as.factor(race.4level),
+    hisp = as.factor(hisp),
+    high.educ.bl = as.factor(high.educ.bl),
+    household.income.bl = as.factor(household.income.bl),
+    acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),
+    rel_family_id.bl = as.factor(rel_family_id.bl),
+    site_id_l = as.factor(site_id_l),
+    nihtbx_totalcomp_fc = as.numeric(nihtbx_totalcomp_fc),
+    anthroweightcalc = as.numeric(anthroweightcalc),
+    anthroheightcalc = as.numeric(anthroheightcalc)
+  ) #%>%
+#   # Exclude cases from unused assessment waves
+#   filter(!is.na(eventname))
+
+```
+:::
+
+```{r}
+
+# Long to wide conversion
+df_long <- df %>%
+  select(src_subject_id, eventname, anthroheightcalc) %>% na.omit()
+
+# Creating df_wide
+df_wide <- pivot_wider(
+    data = df_long,
+    names_from = eventname,
+    values_from = anthroheightcalc,
+    id_cols = src_subject_id
+)
+
+df_wide <- df_wide %>%
+    rename(
+        anthroheight.0 = baseline_year_1_arm_1,
+        anthroheight.1 = `1_year_follow_up_y_arm_1`,
+        anthroheight.2 = `2_year_follow_up_y_arm_1`,
+        anthroheight.3 = `3_year_follow_up_y_arm_1`,
+        anthroheight.4 = `4_year_follow_up_y_arm_1`
+    )
+
+## Subset the nonimaging data to include desired variables
+selected_vars_wide <- c("anthroheight.0", "anthroheight.1", "anthroheight.2", "anthroheight.3", "anthroheight.4")
+df_wide <- df_wide[, selected_vars_wide]
+str(df_wide)
+
+```
+
+### Descriptives
+
+::: blue
+**This code creates a descriptives table**
+
+```{r descriptives}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+
+descriptives_table <- df %>%
+  select(eventname, sex, race.4level, hisp, anthroweightcalc) %>%
+  mutate(eventname = factor(eventname, labels = c("Baseline", "Year 1","Year 2","Year 3","Year 4"))) %>%
+  mutate(sex = factor(sex, labels = c("Female", "Male"))) %>%
+  tbl_summary(
+    by = eventname,
+    missing = "no",
+    label = list(sex ~ "Sex", race.4level ~ "Race", hisp ~ "Hispanic", 
+                 anthroweightcalc ~ "Weight"),
+    statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),
+  ) %>%
+modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+  bold_labels() %>%
+  italicize_levels() %>%
+  modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+theme_gtsummary_compact()
+
+descriptives_table
+```
+:::
+
+:::
+
+We can examine these distributions visually as well:
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: TRUE
+
+# df_long Plots
+ggplot(df_long, aes(x = anthroheightcalc)) +
+    geom_density() +
+    facet_wrap(~eventname) +
+    theme_bw()
+
+```
+
+As this type of skew can result in convergence problems in LCGA, we compared several transformations to reduce skew: The square and cube root, log, inverse, and Box-Cox transformations.
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+df_scores <- df_long
+# Store original range of cbcl_scr_dsm5_depress_t
+rng_height <- range(df_scores$anthroheightcalc, na.rm = TRUE)
+# Log-transform
+df_scores$log <- scales::rescale(log(df_scores$anthroheightcalc), to = c(
+    0,
+    1
+))
+# Square root transform
+df_scores$sqrt <- scales::rescale(sqrt(df_scores$anthroheightcalc), to = c(
+    0,
+    1
+))
+# Cube root transform
+df_scores$qrt <- scales::rescale(df_scores$anthroheightcalc^0.33, to = c(
+    0,
+    1
+))
+# Reciprocal transform
+df_scores$reciprocal <- scales::rescale(1 / df_scores$anthroheightcalc, to = c(
+    0,
+    1
+))
+
+# # Define function for Box-Cox transformation
+# bc <- function(x, lambda) {
+#     (((x^lambda) - 1) / lambda)
+# }
+
+# # Inverse Box-Cox transformation
+# invbc <- function(x, lambda) {
+#     ((x * lambda) + 1)^(1 / lambda)
+# }
+# # Box-Cox transform
+# b <- MASS::boxcox(lm(df_scores$anthroheightcalc ~ 1), plotit = FALSE)
+# lambda <- b$x[which.max(b$y)]
+# df_scores$boxcox <- bc(df_scores$anthroheightcalc, lambda)
+# # Store range of Box-Cox transformed data
+# rng_bc <- range(df_scores$boxcox)
+# df_scores$boxcox <- scales::rescale(df_scores$boxcox, to = c(
+#     0,
+#     1
+# ))
+
+# Rescale anthroheightcalc
+df_scores$anthroheightcalc <- scales::rescale(df_scores$anthroheightcalc, to = c(0, 1))
+
+```
+
+We can plot these transformations:
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: TRUE
+
+# Make plot data
+df_plot <- do.call(rbind, lapply(c(
+    "anthroheightcalc", "log", "sqrt", "qrt" #,
+    #"boxcox"
+), function(n) {
+    data.frame(df_scores[c("eventname", "src_subject_id")],
+        Value = df_scores[[n]],
+        Transformation = n
+    )
+}))
+# Plot
+ggplot(df_plot, aes(x = Value, colour = Transformation)) +
+    geom_density() +
+    facet_wrap(~eventname) +
+    scale_y_sqrt() +
+    xlab("Height (rescaled to 0-1)") +
+    theme_bw()
+
+```
+
+The Box-Cox transformation (maybe/slightly?) reduced skew the most. Consequently, we proceeded with the Box-Cox transformed scores for analysis.
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+dat <- df_scores[, c("src_subject_id", "eventname", "log")]
+dat <- reshape(dat,
+    direction = "wide", v.names = "log", timevar = "eventname",
+    idvar = "src_subject_id"
+)
+
+dat <- na.omit(dat)
+
+names(dat) <- gsub("log.", "anthroheightcalc", names(dat))
+```
+
+:::
+
+## Results 
+
+::: panel-tabset
+### Build Model {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+The code fits an LCGA to examine the 'Height' variable across time points ('eventname'). It xxxxxx. The results of the model are then printed to provide a detailed summary of model parameters.
+
+**STEP 1: Compute LCGA**
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+#set.seed(27796)
+dat[["src_subject_id"]] <- NULL
+res_step <- mx_growth_mixture(
+    model = "
+  i =~ 1*anthroheightcalcbaseline_year_1_arm_1 + 1*anthroheightcalc1_year_follow_up_y_arm_1 + 1*anthroheightcalc2_year_follow_up_y_arm_1 +1*anthroheightcalc3_year_follow_up_y_arm_1 +1*anthroheightcalc4_year_follow_up_y_arm_1
+  step =~ 0*anthroheightcalcbaseline_year_1_arm_1 + 1*anthroheightcalc1_year_follow_up_y_arm_1 + 1*anthroheightcalc2_year_follow_up_y_arm_1 +1*anthroheightcalc3_year_follow_up_y_arm_1 +1*anthroheightcalc4_year_follow_up_y_arm_1
+  s =~ 0*anthroheightcalcbaseline_year_1_arm_1 + 0*anthroheightcalc1_year_follow_up_y_arm_1 + 1*anthroheightcalc2_year_follow_up_y_arm_1 +2*anthroheightcalc3_year_follow_up_y_arm_1 +3*anthroheightcalc4_year_follow_up_y_arm_1
+  anthroheightcalcbaseline_year_1_arm_1 ~~ vanthroheightcalcbaseline_year_1_arm_1*anthroheightcalcbaseline_year_1_arm_1
+  anthroheightcalc1_year_follow_up_y_arm_1 ~~ vanthroheightcalc1_year_follow_up_y_arm_1*anthroheightcalc1_year_follow_up_y_arm_1
+  anthroheightcalc2_year_follow_up_y_arm_1 ~~ vanthroheightcalc2_year_follow_up_y_arm_1*anthroheightcalc2_year_follow_up_y_arm_1
+  anthroheightcalc3_year_follow_up_y_arm_1 ~~ vanthroheightcalc3_year_follow_up_y_arm_1*anthroheightcalc3_year_follow_up_y_arm_1
+  anthroheightcalc4_year_follow_up_y_arm_1 ~~ vanthroheightcalc4_year_follow_up_y_arm_1*anthroheightcalc4_year_follow_up_y_arm_1
+  i ~~ 0*i
+  step ~~ 0*step
+  s ~~ 0*s
+  i ~~ 0*s
+  i ~~ 0*step
+  s ~~ 0*step",
+    classes = 1:3, data = dat
+)
+# Additional iterations because of convergence problems for
+# model 1:
+res_step[[1]] <- mxTryHardWideSearch(res_step[[1]], extraTries = 50)
+```
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: TRUE
+
+# Get fit table fit
+tab_fit <- table_fit(res_step)
+# Select columns
+tab_fit[, c("Name", "Classes", "LL", "Parameters", "AIC", "BIC", "saBIC", "Entropy", "prob_min", "n_min")]
+
+# , "warning", "lmr_p")]
+
+```
+
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: TRUE
+
+plot(tab_fit, statistics = c("AIC", "BIC", "saBIC"))
+```
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: TRUE
+
+res_final <- mx_switch_labels(res_step[[3]],
+    param = "M[1,7]",
+    decreasing = FALSE
+)
+tab_res <- table_results(res_final, columns = NULL)
+# Select rows and columns
+tab_res <- tab_res[
+    tab_res$Category %in% c("Means", "Variances"),
+    c("Category", "lhs", "est", "se", "pval", "confint", "name")
+]
+tab_res
+```
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: TRUE
+
+names(coef(res_final))
+```
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: TRUE
+
+wald_tests <- wald_test(res_final, "
+                   class1.M[1,6] = class2.M[1,6] &
+                   class1.M[1,6] = class3.M[1,6] ;
+                   class1.M[1,7] = class2.M[1,7] &
+                   class1.M[1,7] = class3.M[1,7] ;
+                   class1.M[1,8] = class2.M[1,8] &
+                   class1.M[1,8] = class3.M[1,8]")
+
+# Rename the hypothesis
+wald_tests$Hypothesis <- c("Mean i", "Mean step", "Mean slope")
+knitr::kable(wald_tests, digits = 2, caption = "Wald tests")
+
+```
+
+
+```{r}
+# Assuming rng_height and lambda are defined previously in your script
+brks <- seq(0, 1, length.out = 5) # Breaks in the rescaled 0-1 range
+
+# Convert breaks back to the original log scale
+# Note: This assumes that the original transformation was simply log(x) scaled to 0-1
+labs <- exp(scales::rescale(brks, from = c(0, 1), to = rng_height))
+
+p <- plot_growth(res_step[[3]], rawdata = TRUE, alpha_range = c(0, 0.05))
+p <- p + scale_y_continuous(
+    breaks = brks, # Use the same breaks for simplicity
+    labels = round(labs, 2) # Round the labels for readability
+) + ylab("Height (rescaled from log)")
+p
+
+```
+
+#### Covariates
+
+Assessment of covariates using the three-step approach revealed that the trajectories did not differ in any of the demogra phical variables, including sex (ΔLL(5) = 6.3 , p = .27, pcorr = .37), age (ΔLL(8) = 8.4 , p = .40, pcorr = .50), rank Journal of Affective Disorders 354 (2024) 702--711 707(ΔLL(11) = 13.5 , p = .26, pcorr = .37), educational level (ΔLL(9) = 7.1 , p = .63, pcorr = .66), function (ΔLL(8) = 8.1 , p = .43, pcorr = .51). Significant disparities in xxxx were observed, with the xxxxx group exhibiting lower counts of xxxxx compared to the xxxxx group (ΔLL(2) = 23.0 , p \< .01, pcorr \< .01), xxxxx (ΔLL(2) = 325.7 , p \< .01, pcorr \< .01), and xxxxx group (ΔLL(2) = 9.5 , p \< .01, pcorr \< .05) (Supplementary Fig. Sxx). A detailed breakdown of percentages per xxxxx is provided in Supplementary Table Sxx
+
+#### Depression and GDT
+
+#### Depression and substance use
+
+## Add additional analyses section
+
+Note that the observed individual trajectories show very high variability within classes.
+
+:::
+
+### Model Plots
+
+::: blue
+The following set of plots are xxxxxxx.
+
+:::
+
+## Wrapping Up
+<div class = "blue">
+
+::: panel-tabset
+### Write-up {.tabset .tabset-fade .tabset-pills}
+
+::: blue
+
+The lcga was conducted to xxxxxx.
+
+:::
+:::
+
+
+
+
+
+
+
+---------------
+
+
+
+
+# Discussion
+
+```{r}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: TRUE
+
+lorem::ipsum(5, sentences = c(3))
+# lorem::ipsum(2, avg_words_per_sentence = 4)
+
+```

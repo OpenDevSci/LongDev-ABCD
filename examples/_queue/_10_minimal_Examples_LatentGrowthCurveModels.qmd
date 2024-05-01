@@ -1,0 +1,162 @@
+---
+title: "Latent Growth Curve Models"
+author: "Biostatistics Working Group"
+---
+
+```{r}
+#| echo: FALSE # The content of this code block will not be rendered
+#| output: FALSE # Output from this code block will not be rendered
+
+# This code configures knitr code chunk options
+
+knitr::opts_chunk$set(
+    echo = T, message = F, warning = F, error = F, output = T,
+    comment = NA, cache = T, code_folding = T,
+    R.options = list(width = 220, digits = 3),
+    fig.align = "center",
+    out.width = "75%", fig.asp = .75
+)
+```
+
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
+#| cache: FALSE
+
+# This code loads the data to be used for the example
+
+library(tidyverse)
+
+# Set the data path
+data_path <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+df <- readRDS(data_path)
+
+# Create and mutate the dataframe
+df_long <- df %>%
+    select(src_subject_id, eventname, anthroheightcalc) %>%
+    filter(eventname %in% c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1")) %>%
+    drop_na(anthroheightcalc) %>%
+    arrange(src_subject_id, eventname) %>%
+    mutate(
+        src_subject_id = factor(src_subject_id),
+        eventname = factor(eventname, levels = c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1"), labels = c("Baseline", "Year_1", "Year_2", "Year_3")),
+        anthroheightcalc = round(as.numeric(anthroheightcalc), 2)
+    ) %>%
+    rename(
+        id = src_subject_id,
+        event = eventname,
+        height = anthroheightcalc
+    )
+
+df_long <- df_long %>%
+    group_by(id) %>%
+    filter(all(c("Baseline", "Year_1", "Year_2", "Year_3") %in% event)) %>%
+    ungroup()
+
+```
+
+## Overview
+
+Latent growth curve models (LGCM) are an analytical tool within the framework of structural equation modeling that enable the examination of change over time. This model type effectively separates the true trajectory of a variable from random measurement error, allowing for the estimation of an underlying growth process. The primary components of LGCM include the intercept, which represents the initial status, and the slope, which reflects the rate of change over time.
+
+This example investigates a growth trajectory of participant's height, measured across 4 annual assessments in participants from the ABCD Study. Fitting the latent growth curve model will allow for an examination of the initial status (intercept) and rate of change (slope) of height from baseline through successive yearly follow-ups. Each participant's height trajectory is modeled to capture both the starting point and the growth pattern over time. The results are illustrated through growth plots that demonstrate the mean trajectory across the cohort, along with the variability in growth rates among individuals, providing insights into the developmental patterns of height over time.
+
+## Preliminary Setup
+### Load Packages
+```{r}
+
+library(tidyverse) # Collection of R packages for data science
+library(gtsummary) # Publication-ready tables
+library(rstatix) # Statistical Tests in tidy format
+library(lavaan) # Structural Equation Modeling in R
+
+```
+
+### Descriptives
+```{r}
+
+descriptives_table <- df_long %>%
+    select(event, height) %>%
+    mutate(event = factor(event)) %>%
+    tbl_summary(
+        by = event,
+        missing = "no",
+        label = list(height ~ "Height"),
+        statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),
+    ) %>%
+    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+    bold_labels() %>%
+    italicize_levels() %>%
+    modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+theme_gtsummary_compact()
+
+descriptives_table
+
+```
+
+## Results 
+### Compute Latent Growth Curve Model
+The code below is used to compute a growth curve model to investigate changes in height across four annual assessments. This statistical approach provides insights into how much individuals vary around the average trajectory and the consistency of their growth patterns across time. This model estimates an overall intercept, representing the initial status, and a slope that captures the rate of growth across time points. 
+
+```{r}
+
+# Reshape data from long to wide format
+df_wide <- df_long %>%
+    pivot_wider(
+        id_cols = c(id),
+        names_from = event,
+        values_from = height,
+        names_prefix = "Height_"
+    )
+
+df_wide <- na.omit(df_wide)
+
+model <- " i =~ 1*Height_Baseline + 1*Height_Year_1 + 1*Height_Year_2 + 1*Height_Year_3
+           s =~ 0*Height_Baseline + 1*Height_Year_1 + 2*Height_Year_2 + 3*Height_Year_3
+
+           # Intercept and slope variances
+           i ~~ i
+           s ~~ s
+
+           # Residual variances for each observed variable
+           Height_Baseline ~~ var_baseline*Height_Baseline
+           Height_Year_1 ~~ var_year1*Height_Year_1
+           Height_Year_2 ~~ var_year2*Height_Year_2
+           Height_Year_3 ~~ var_year3*Height_Year_3
+"
+
+fit <- growth(model, data = df_wide)
+summary(fit)
+
+```
+
+The results from the latent growth curve analysis show an increasing pattern of mean change in participant's height across assessments (slope = 2.491, p<.001). In addition, the model identified significant variability in both the intercept (estimate = 9.39, se=.33, p<.001), which represents initial height and the slope (estimate = .31, se=.04, p<.001), which measures growth over time. This indicates substantial differences in starting heights and growth rates among individuals. The covariance between the intercept and slope was not statistically significant (estimate = -.11, p = .18), suggesting initial height does not influence the rate of growth.
+
+### Model Plots
+```{r}
+
+# Plotting the height data over time from the df_long dataframe
+ggplot(df_long, aes(x = event, y = height, group = id)) +
+    geom_line(alpha = 0.4, aes(color = "Actual Height"), size = 0.5) + # Lines to connect data points for each participant
+    geom_point(alpha = 0.6, color = "blue") + # Points for actual heights
+    scale_x_discrete(limits = c("Baseline", "Year_1", "Year_2", "Year_3")) + # Ensuring the order of events
+    labs(
+        title = "Actual Height Growth Across Timepoints",
+        x = "Time (Years from Baseline)",
+        y = "Height (inches)"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom") # Adjust legend position
+
+```
+
+This plot visualizes the height trajectories across four annual timepoints. Each line represents an individual participant's height trajectory showing overall trends while maintaining focus on individual variations. Blue points mark the actual height measurements at each timepoint, providing a clear view of the data distribution and growth patterns over time. This graph highlights both the general trend of increasing height and the individual differences in growth rates among participants.
+
+## Wrapping Up
+This analysis employed a latent growth curve model (LGCM) framework to examine participants' heights across multiple assessment points. Results revealed an increasing trend in average height changes over time, with a slope parameter of 2.49 (p<.001), indicating a steady growth across all assessments. Significant variability was observed both in the intercept, with an estimate of 9.39 (se = .33, p<.001), representing the initial height, and in the slope, with an estimate of .31 (se = .04, p<.001), which measures growth over time. This highlights notable individual differences in starting heights and growth rates. Furthermore, the lack of a statistically significant covariance between the intercept and slope (estimate = -.11, p = .18) suggests that the initial height does not influence subsequent growth rates.
+
+Latent growth curve modeling provides a powerful tool for evaluating patterns of growth, allowing for the differentiation between average growth trajectories and individual variability. This method is able to parse out complex relationships, underscoring its utility in longitudinal data analysis, enhancing our interpretation of how individuals change over time.
+
+

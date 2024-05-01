@@ -1,0 +1,150 @@
+---
+title: "Linear Mixed Models: Random Intercept"
+author: "Biostatistics Working Group"
+---
+
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
+
+# This code configures knitr code chunk options
+
+knitr::opts_chunk$set(
+    echo = T, message = F, warning = F, error = F, output = T,
+    comment = NA, cache = T, code_folding = T,
+    R.options = list(width = 220, digits = 3),
+    fig.align = "center",
+    out.width = "75%", fig.asp = .75
+)
+```
+
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
+#| cache: FALSE
+
+# This code loads the data to be used for the example
+
+library(tidyverse)
+
+# Set the data path
+data_path <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+df <- readRDS(data_path)
+
+# Create and mutate the dataframe
+df_long <- df %>%
+    select(src_subject_id, eventname, anthroheightcalc) %>%
+    filter(eventname %in% c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1")) %>%
+    drop_na(anthroheightcalc) %>%
+    arrange(src_subject_id, eventname) %>%
+    mutate(
+        src_subject_id = factor(src_subject_id),
+        eventname = factor(eventname, levels = c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1"), labels = c("Baseline", "Year_1", "Year_2")),
+        anthroheightcalc = round(as.numeric(anthroheightcalc), 2)
+    ) %>%
+    rename(
+        id = src_subject_id,
+        event = eventname,
+        height = anthroheightcalc
+    )
+
+```
+
+## Overview
+The Linear mixed model (LMM) with a random intercept is similar to traditional (fixed-effect) linear regression, extending on this approach by including a subject-specific random-effect that allows each participant to have their own unique intercept value, in addition to the overall mean-level (fixed-effect) intercept value.
+
+This example will examine trajectories of height obtained across 3 annual measurement occasions in a sample of youth taking part in the ABCD Study. The primary aim is to characterize stability and change in participant's height, while accounting for observations that are clustered within youth over time. The random-intercept LMM will simultaneously estimate an overall sample mean (fixed effect) for the height trajectory's intercept and slope values, as well as subject-specific (random) effects that vary randomly about the mean intercept value.
+
+## Preliminary Setup
+### Load Packages
+```{r}
+
+library(tidyverse) # Collection of R packages for data science
+library(gtsummary) # Publication-ready tables
+library(rstatix) # Statistical Tests in tidy format
+library(lme4) # Linear mixed-effects models
+```
+
+### Descriptives
+```{r}
+
+descriptives_table <- df_long %>%
+    select(event, height) %>%
+    mutate(event = factor(event)) %>%
+    tbl_summary(
+        by = event,
+        missing = "no",
+        label = list(height ~ "Height"),
+        statistic = list(all_continuous() ~ "{mean} ({sd})", all_categorical() ~ "{p}%"),
+    ) %>%
+    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+    bold_labels() %>%
+    italicize_levels() %>%
+    modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+theme_gtsummary_compact()
+
+descriptives_table
+
+```
+
+## Results
+### Compute LMM Model with Random Intercepts
+This code fits a radom-intercept LMM to predict 'Height' across 3 annual visits, accounting for individual-level variability (random effects) of intercept values across participants. Model output is provided below, as well as a brief summary of results.
+
+This model accounts for individual variability in height by including a random intercept for each subject (id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion. 
+
+```{r}
+
+model <- lmer(height ~ 1 + event + (1 | id), data = df_long, REML = T)
+
+## Output and summary statistics
+summary(model)
+confint(model, level = 0.95, method = "Wald")
+
+```
+
+These results show an increasing trajectory of height across the years, with an increase of approximately 2.36 inches in Year 1 and 5.02 inches by Year 2 compared to the baseline, as evidenced by the fixed effects estimates. The random intercepts effect suggests some between-subject variability in particpant's height values at baseline, with a standard deviation of about 3.03 inches. The model's residuals are mostly well-behaved, although the range suggests a few extreme values or outliers.
+
+### Model Plots
+The following set of plots xxxxx.
+
+```{r}
+
+# Extract fixed effects
+fixed_effects <- fixef(model)
+
+# Prepare data frame for plotting
+df_long$predicted_height <- predict(model, re.form = NA) # Overall fixed effect predictions
+
+# Calculate individual intercept adjustments
+df_long$individual_intercept <- predict(model, re.form = ~ (1 | id)) - fixed_effects[1]
+
+# Generate the plot
+ggplot(df_long, aes(x = event, y = height)) +
+    geom_line(aes(y = height, color = "Individual Trajectories"), alpha = 0.3) +
+    geom_line(aes(y = predicted_height + individual_intercept, group = id, color = "Adjusted Individual Trajectories"), alpha = 0.7) +
+    geom_line(aes(x = event, y = predicted_height, group = 1, color = "Sample Mean Trajectory"), size = 1.5) +
+    scale_color_manual(values = c("Individual Trajectories" = "red", "Adjusted Individual Trajectories" = "grey", "Sample Mean Trajectory" = "blue")) +
+    labs(
+        title = "Individual Trajectories with Fixed Slope and Random Intercepts",
+        x = "Event Name",
+        y = "Height (inches)",
+        color = "Trajectory Type"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+
+```
+
+This plot illustrates the change in participant's height across 3 annual measurement occassions. The individual raw data points are shown as red lines, representing the original height measurements, which demonstrate the variability among participants at each time point. These are overlaid with grey lines, which adjust each individual's trajectory to start from their unique intercept while following a common growth pattern indicated by the fixed effects from the model. The blue line represents the sample mean trajectory, calculated from the model's fixed effects, showcasing the average growth trend across all participants. 
+
+The plot shows individual trajectories that vary around the model's predicted values due to random effects, indicating substantial inter-individual variability in baseline heights. On average, participants experienced an increase in height of approximately 2.36 inches from baseline to Year 1 and an additional 2.66 inches from Year 1 to Year 2. The random effects for individual intercepts suggest differences in starting heights, with a standard deviation of 3.03 inches, reflecting the variability in growth patterns among the participants.
+
+## Wrapping Up
+The random-intercept LMM analysis revealed an increasing pattern of change in children's height measured over 3 annual assessments. The mean intercept value showed an average initial height of 55.24 inches (sd = 3.03) with evidence of individual variability around this (random effect) estimate. An examination of the slope factor revealed year-to-year growth increments of approxmiately 2.5 inches, with the rate of change held constant across all participants. 
+
+The LMM framework used in this example offered the ability to account for individual differences in initial height and the consistent growth patterns over time, demonstrating its utility in handling clustered or correlated data that arise from repeated measurements on the same subjects. More generally, this approach is often particularly useful in developmental studies as it allows for the inclusion of both fixed effects, which estimate common parameters across all individuals, and random effects, which capture unique variations among individuals. This enables a more precise understanding of both the group-level trends and individual-specific trajectories in longitudinal data.
+
+

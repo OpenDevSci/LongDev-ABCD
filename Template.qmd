@@ -1,0 +1,75 @@
+---
+title: "Template"
+author: "author name"
+---
+
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
+
+# This code configures knitr code chunk options
+
+knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, output=T,
+                      comment=NA, cache=T, code_folding=T,
+                      R.options=list(width=220, digits = 3),
+                      fig.align='center', 
+                      out.width='75%', fig.asp=.75)
+```
+
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
+#| cache: FALSE
+
+# This code loads the data to be used for the example
+
+[Enter code to load example data]
+
+```
+
+## Overview
+[Introductory text for the example]
+
+## Preliminary Setup
+
+### Load R libraries
+```{r}
+
+library(xxxxx)    # xxxxxxx
+library(xxxxx)    # xxxxxxx
+
+```
+
+### Descriptives
+
+```{r}
+[Code for providing sample descriptives]
+```
+
+## Results
+
+### [Name of First Set of Analyses]
+[Concise description of the analysis approach]
+
+```{r}
+
+[Enter analysis code]
+
+```
+
+[Results write-up for analysis]
+
+### Model Plots
+[Concise description of the plot type]
+
+```{r}
+[Enter plot code]
+```
+[Concise summary of plot output]
+
+## Wrapping Up
+
+[Concise summary of the example]
+
+
+

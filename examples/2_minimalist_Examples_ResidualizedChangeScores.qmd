@@ -1,0 +1,165 @@
+---
+title: "Residualized Change Scores"
+author: "Biostatistics Working Group"
+---
+
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
+
+# This code configures knitr code chunk options
+
+knitr::opts_chunk$set(
+    echo = T, message = F, warning = F, error = F, output = T,
+    comment = NA, cache = T, code_folding = T,
+    R.options = list(width = 220, digits = 3),
+    fig.align = "center",
+    out.width = "75%", fig.asp = .75
+)
+```
+
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
+#| cache: FALSE
+
+# This code loads the data to be used for the example
+
+library(tidyverse)
+
+# Set the data path
+data_path <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+
+# Read the data
+df <- readRDS(data_path)
+
+# Create and mutate the dataframe
+df_long <- df %>%
+    select(src_subject_id, eventname, ehi_y_ss_scoreb, anthroheightcalc) %>%
+    filter(eventname %in% c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1")) %>%
+    drop_na(anthroheightcalc) %>%
+    arrange(src_subject_id, eventname) %>%
+    group_by(src_subject_id) %>%
+    fill(ehi_y_ss_scoreb, .direction = "downup") %>%
+    ungroup() %>%
+    filter(ehi_y_ss_scoreb %in% c(1, 2)) %>%
+    mutate(
+        src_subject_id = factor(src_subject_id),
+        eventname = factor(eventname, levels = c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1"), labels = c("Baseline", "Year_1")),
+        ehi_y_ss_scoreb = factor(ehi_y_ss_scoreb, levels = c(1, 2), labels = c("Right", "Left")),
+        anthroheightcalc = round(as.numeric(anthroheightcalc), 2)
+    ) %>%
+    rename(
+        id = src_subject_id,
+        event = eventname,
+        handedness = ehi_y_ss_scoreb,
+        height = anthroheightcalc
+    )
+
+```
+
+## Overview
+A residualized change score is a statistical approach used to account for the baseline (initial) values of a variable when measuring across two time points. First, a linear regression is conducted with the follow-up score predicted by the baseline score. The residual values from this model can be interpreted as change scores that have been adjusted for the baseline values. In a next step, regression analysis can be applied to determine whether a variable of interest predicts the residualized change score.
+
+This example will examine whether handedness predicts changes in height from baseline to the 1 year follow-up, controlling for initial height measurements, in a sample of participants taking part in the ABCD Study. Initially, a linear regression analysis predicts height measurements at the 1 year follow-up from their baseline values to calculate residualized change scores. Subsequently, a second regression assesses whether handedness (left vs. right) predicts these residualized changes in height measurements. The relationship is also visually represented through a violin plot, illustrating differences in the residualized height values between left-handed and right-handed individuals.
+
+## Preliminary Setup
+### Load Packages
+```{r}
+
+library(tidyverse) # Collection of R packages for data science
+library(gtsummary) # Publication-ready tables
+library(rstatix) # Statistical Tests in tidy format
+library(lme4) # Linear mixed-effects models
+```
+
+### Descriptives
+```{r}
+
+descriptives_table <- df_long %>%
+    select(event, handedness, height) %>%
+    mutate(event = factor(event)) %>%
+    mutate(handedness = factor(handedness)) %>%
+    tbl_summary(
+        by = event,
+        missing = "no",
+        label = list(handedness ~ "Handedness", height ~ "Height"),
+        statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),
+    ) %>%
+    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+    bold_labels() %>%
+    italicize_levels() %>%
+    modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+theme_gtsummary_compact()
+
+descriptives_table
+
+```
+
+## Results
+### Compute Multiple Regression Model
+The code below is used to compute a residualized change score by first adjusting participants' height at the 1-year follow-up for their baseline height through a regression analysis. The residuals from this model represent the adjusted height changes that are not explained by their initial measurements. Subsequently, these residualized change scores are used in a simple regression analysis to explore whether handedness predicts the changes in height between the two timepoints. This approach helps to isolate any effect of handedness on height growth, independent of the baseline height values.
+
+```{r}
+
+# Reshape data from long to wide format
+df_wide <- df_long %>%
+    pivot_wider(
+        names_from = event,
+        values_from = height,
+        names_prefix = "Height_"
+    )
+
+# Step 1: Fit the linear model to get residuals
+model_baseline <- lm(Height_Year_1 ~ Height_Baseline, data = df_wide, na.action = na.exclude)
+df_wide <- df_wide %>%
+  mutate(residualized_change = residuals(model_baseline))
+
+# Step 2: Model residualized change scores predicted by handedness
+model_residualized_change <- lm(residualized_change ~ handedness, data = df_wide, na.action = na.exclude)
+
+# View the summary of the model to see the effect of handedness
+summary(model_residualized_change)
+
+```
+
+The results from the residualized change score analysis suggest that while individual differences in growth occurs, handedness does not appear to be a determining factor. The model intercept, close to zero (-0.005), is consistent with the expectation that if there is no effect for handedness, there would be no change when adjusting for baseline heights. Further, examination of the model residuals (range = -53.90 to 65.53, se = 2.32) and the negligible r-squared value indicates that handedness does not explain a substantive portion of the variance in residualized height changes.
+
+### Model Plots
+```{r}
+
+par(mfrow = c(2, 2)) # Set up a 2x2 plotting area
+plot(model_baseline) # Generate diagnostic plots
+
+# Visualize the residualized change scores across different levels of handedness
+
+# Create a violin plot to show the distribution of residualized change scores by handedness
+# Jittered points are added to provide a more granular view of individual observations
+# Load necessary libraries
+library(RColorBrewer)
+
+# Plotting using ggplot2
+ggplot(df_long, aes(x = handedness, y = height, fill = handedness)) +
+    geom_violin() +
+    geom_jitter(position = position_jitter(width = 0.2), size = 1, alpha = 0.5) +
+    scale_fill_brewer(palette = "Set2") +
+    labs(
+        title = "Residualized Change Score by Handedness",
+        x = "Handedness",
+        y = "Height Change Score"
+    ) +
+    theme_minimal() +
+    theme(
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none"
+    )
+
+```
+
+The violin plot visualizes the distribution of residualized change scores in children's heights by their handedness (Right, Left). Each violin shape provides insight into the density of the data at different (residualized) height values, with wider sections representing higher densities of data points. Superimposed jittered points offer a granular view of individual observations. From the plot, it appears that the overall distributions of the residualized change scores for the height outcome across the two handedness categories are markedly similar.
+
+## Wrapping Up
+This analysis evaluated residualized change scores of participants' height over a one-year period, controlling for initial height measurements at baseline. It then utilized a simple regression analysis to investigate handedness as a predictor of these adjusted changes in height. Findings demonstrated a non-significant effect of handedness on the residualized height values, with left-handed individuals showing an average height change increase of .06 inches (r = .77, se = .08, p = .43) more than right-handed individuals. A visual inspection using a violin plot further supported these results, showing overlapping distributions of residualized height changes across handedness categories, indicating no substantial effect.
+
+This approach of using residualized change scores can be particularly valuable when initial measurement levels may influence the outcome. In some context, this analysis can provide a more accurate reflection of change by accounting for baseline values, making it suitable for analyses where measurement of change is a primary aim and where baseline characteristics might otherwise obscure true changes.
+
