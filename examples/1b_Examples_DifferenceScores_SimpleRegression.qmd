@@ -300,7 +300,7 @@ iii. a parameter estimate of `r model_summary$coefficients["sexMale or other", "
 iv. standard error of `r model_summary$coefficients["sexMale or other", "Std. Error"]`; 
 v. p-value of `r model_summary$coefficients["sexMale or other", "Pr(>|t|)"]`. 
 
-Compared to boys (the reference group), girls have an average increase in height difference of approximately `r round(model_summary$coefficients["sexMale or other", "Estimate"], 3)` units. This effect was marginally significant with a p-value of `r round(model_summary$coefficients["sexMale or other", "Pr(>|t|)"], 4)`. Overall, the model explained a very small portion of the variance in height difference, with an adjusted R-squared value of `r round(model_summary$adj.r.squared, 6)`, and the overall model significance was not statistically significant with a p-value of `r pf(model_summary$fstatistic[1], model_summary$fstatistic[2], model_summary$fstatistic[3], lower.tail = FALSE)`.
+Compared to girls (the reference group), boys have an average height difference of approximately `r round(model_summary$coefficients["sexMale or other", "Estimate"], 3)` units. This effect was statistically significant with a p-value of `r round(model_summary$coefficients["sexMale or other", "Pr(>|t|)"], 4)`. Overall, the model explained a very small portion of the variance in height difference, with an adjusted R-squared value of `r round(model_summary$adj.r.squared, 6)`, and the overall model significance was  statistically significant with a p-value of `r pf(model_summary$fstatistic[1], model_summary$fstatistic[2], model_summary$fstatistic[3], lower.tail = FALSE)`.
 
 :::
 
