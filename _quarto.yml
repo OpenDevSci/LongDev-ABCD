@@ -97,24 +97,24 @@ website:
               contents:
                 - 4_Examples_SignedRankTest.qmd
             - section: "Marginal Models"
-               contents:
+              contents:
                 - 5_Examples_MarginalModels.qmd
             - section: "Generalized Estimating Equations"
-               contents:
+              contents:
                 - 6_Examples_GeneralizedEstimatingEquations.qmd
             - section: "Generalized Linear Mixed-Effects Models"
-               contents:
+              contents:
                 - 7_Examples_GeneralizedLinearMixedEffectsModels.qmd
-         - section: "SEM Approaches"
-           contents:
+        - section: "SEM Approaches"
+          contents:
             - section: "Autoregressive Crosslagged Panel Models"
-               contents:
+              contents:
                 - 8_Examples_AutoregressiveCrosslaggedPanelModels.qmd
             - section: "Latent Change Scores Models"
-               contents:
+              contents:
                 - 9_Examples_LatentChangeScoresModels.qmd
             - section: "LatentGrowthCurveModels"
-               contents:
+              contents:
                 - 10_Examples_LatentGrowthCurveModels.qmd
         #     - section: "Multivariate Latent Growth Curve Models"
         #       contents:
