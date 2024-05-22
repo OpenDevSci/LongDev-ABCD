@@ -15,10 +15,10 @@ project:
     - examples/3a_Examples_LinearMixedModels.qmd
     - examples/3b_Examples_LinearMixedModels.qmd
     - examples/4_Examples_SignedRankTest.qmd
-    # - 5_Examples_MarginalModels.qmd
-    # - 6_Examples_GeneralizedEstimatingEquations.qmd
-    # - 7_Examples_GeneralizedLinearMixedEffectsModels.qmd
-    # - 8_Examples_AutoregressiveCrosslaggedPanelModels.qmd
+    - examples/5_Examples_MarginalModels.qmd
+    - examples/6_Examples_GeneralizedEstimatingEquations.qmd
+    - examples/7_Examples_GeneralizedLinearMixedEffectsModels.qmd
+    - examples/8_Examples_AutoregressiveCrosslaggedPanelModels.qmd
     - examples/9_Examples_LatentChangeScoresModels.qmd
     - examples/10_Examples_LatentGrowthCurveModels.qmd
     # - 11_Examples_MultivariateLatentGrowthCurveModels.qmd
@@ -96,26 +96,26 @@ website:
             - section: "Signed-Rank Test"
               contents:
                 - 4_Examples_SignedRankTest.qmd
-        #     - section: "Marginal Models"
-        #       contents:
-        #         - 5_Examples_MarginalModels.qmd
-        #     - section: "Generalized Estimating Equations"
-        #       contents:
-        #         - 6_Examples_GeneralizedEstimatingEquations.qmd
-        #     - section: "Generalized Linear Mixed-Effects Models"
-        #       contents:
-        #         - 7_Examples_GeneralizedLinearMixedEffectsModels.qmd
-        - section: "SEM Approaches"
-          contents:
-        #     - section: "Autoregressive Crosslagged Panel Models"
-        #       contents:
-        #         - 8_Examples_AutoregressiveCrosslaggedPanelModels.qmd
-             - section: "Latent Change Scores Models"
+            - section: "Marginal Models"
                contents:
-                 - 9_Examples_LatentChangeScoresModels.qmd
-             - section: "LatentGrowthCurveModels"
+                - 5_Examples_MarginalModels.qmd
+            - section: "Generalized Estimating Equations"
                contents:
-                 - 10_Examples_LatentGrowthCurveModels.qmd
+                - 6_Examples_GeneralizedEstimatingEquations.qmd
+            - section: "Generalized Linear Mixed-Effects Models"
+               contents:
+                - 7_Examples_GeneralizedLinearMixedEffectsModels.qmd
+         - section: "SEM Approaches"
+           contents:
+            - section: "Autoregressive Crosslagged Panel Models"
+               contents:
+                - 8_Examples_AutoregressiveCrosslaggedPanelModels.qmd
+            - section: "Latent Change Scores Models"
+               contents:
+                - 9_Examples_LatentChangeScoresModels.qmd
+            - section: "LatentGrowthCurveModels"
+               contents:
+                - 10_Examples_LatentGrowthCurveModels.qmd
         #     - section: "Multivariate Latent Growth Curve Models"
         #       contents:
         #         - 11_Examples_MultivariateLatentGrowthCurveModels.qmd

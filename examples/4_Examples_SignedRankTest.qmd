@@ -3,348 +3,143 @@ title: "Signed-Rank Test"
 author: "Biostatistics Working Group"
 ---
 
-# Signed-Rank Test {.unnumbered}
+```{r}
+#| echo: FALSE # The content of this code block will not be rendered
+#| output: FALSE # Output from this code block will not be rendered
 
-It is actually quite common that numeric depend variables need to be transformed or converted into ranks, i.e. ordinal variables, because the distribution of residuals does not allow the application of parametric tests such as t-tests or linear regression. In such cases, as we are dealing with rank (ordinal) data, the application of a chi-square test is unwarranted and we need to use another test. There are different alternatives depending on whether the data are paired (coming from the same individuals) or if all observations are independent.
+# This code configures knitr code chunk options
 
-The non-parametric alternative for independent t-tests, i.e. for data where we are dealing with two separate groups and a numeric dependent variable that violates parametric assumptions (or an ordinal dependent variable), is the Mann-Whitney U-test. In contrast, if the groups under investigation represent identical participants that are tested under two conditions, the appropriate alternative is a Wilcoxon Signed Rank test (which is thus the alternative for paired t-test).
-
-Imagine we wanted to determine if two language families differed with respect to the size of their phoneme inventories. You have already ranked the inventory sizes and would now like to now if language family correlates with inventory size. As such, we are dealing with two independent groups and we want to implement a non-parametric alternative of a t-test. To answer this question, you create the table shown below.
-####
-
-## Overview
-
-<p>
-
-The Signed-Rank Test xxxxxxx. This xxxxxxx.
-
-In this example, we will utilize the signed-rank test to analyze xxxxxx obtained across multiple measurement occasions for a sample of youth participating in the ABCD Study. Our primary objective is to understand xxxxxx, while factoring in the clustered nature of observations within individuals over time. The signed-rank test facilitates this by xxxxx.
-
-</p>
-
-## Preliminary Setup
-
-::: panel-tabset
-### Install Packages {.tabset .tabset-fade .tabset-pills}
-
-::: blue
-> **This code installs the r packages necessary for this example, if
-> they are not already installed**
-
-```{r pckg-install}
-#| echo: TRUE
-#| messages: FALSE
-#| warning: FALSE
-#| output: FALSE
-
-# Create a list of required packages
-packages_required <- c("tidyverse","rstatix","DT", "gtsummary","easystats")
-
-# Check which packages are not installed and install them
-packages_to_install <- setdiff(packages_required, rownames(installed.packages()))
-if (length(packages_to_install) > 0) {
-    install.packages(packages_to_install)
-}
-
-# Load the required packages
-lapply(packages_required, library, character.only = TRUE)
-
+knitr::opts_chunk$set(
+    echo = T, message = F, warning = F, error = F, output = T,
+    comment = NA, cache = T, code_folding = T,
+    R.options = list(width = 220, digits = 3),
+    fig.align = "center",
+    out.width = "75%", fig.asp = .75
+)
 ```
-:::
 
-### Load Packages
-
-::: blue
-**This code loads the r libraries necessary for this example**
-
-```{r lib-load}
-#| echo: TRUE
-#| messages: FALSE
-#| warning: FALSE
-#| output: FALSE
-
-library(tidyverse)    # Collection of R packages for data science
-library(rstatix)      # Pipe-friendly framework for basic statistical tests
-library(DT)           # Rendering interactive data tables
-library(easystats)    #
-library(gtsummary)    #
-```
-:::
-
-```{r config}
-#| echo: FALSE
-#| messages: FALSE
-#| warning: FALSE
-#| output: FALSE
-
-### Config Options
-#::: blue
-#**This code configures knitr code chunk options** 
-
-knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, 
-                      comment=NA, cache=T, code_folding=T,
-                      R.options=list(width=220, digits = 3),
-                      fig.align='center', 
-                      out.width='75%', fig.asp=.75)
-```
-:::
-
-## Descriptives Overview
-
-::: panel-tabset
-### Read and View Data {.tabset .tabset-fade .tabset-pills}
-
-::: blue
-
-**This code reads in and shows the data to be used in the current example**
-
-```{r read-data}
-#| echo: TRUE
-#| messages: FALSE
-#| warning: FALSE
-#| output: FALSE
+```{r}
+#| echo: FALSE # The content of this code block will not be shown when rendered
+#| output: FALSE # Output from this code block will not be shown when rendered
 #| cache: FALSE
 
-# Set the data paths
-data_path_1 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"
-data_path_2 <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
+# This code loads the data to be used for the example
+
+library(tidyverse)
+
+# Set the data path
+data_path <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
 
 # Read the data
-data_demographics <- readRDS(data_path_1)
-data_nonimaging <- readRDS(data_path_2)
+df <- readRDS(data_path)
 
-# Subset the nonimaging data to include desired variables
-selected_vars <- c("src_subject_id", "eventname", "anthroweightcalc")
-subset_data <- data_nonimaging[, selected_vars]
+# Create and mutate the dataframe
+df_long <- df %>%
+    select(src_subject_id, eventname, anthroheightcalc) %>%
+    filter(eventname %in% c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1")) %>%
+    drop_na(anthroheightcalc) %>%
+    arrange(src_subject_id, eventname) %>%
+    mutate(
+        src_subject_id = factor(src_subject_id),
+        eventname = factor(eventname, levels = c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1"), labels = c("Baseline", "Year_1", "Year_2", "Year_3")),
+        anthroheightcalc = round(as.numeric(anthroheightcalc), 2)
+    ) %>%
+    rename(
+        id = src_subject_id,
+        event = eventname,
+        height = anthroheightcalc
+    )
 
-library(dplyr)
-# # Merge the datasets on 'src_subject_id' and 'eventname'
-merged_data <- data_demographics %>%
-  full_join(subset_data, by = c("src_subject_id", "eventname"))
-
-# Inspect the merged data structure
-str(merged_data)
-
-# Define event names to be retained in the analysis and convert variables to appropriate data types
-eventnames_to_include <- c("baseline_year_1_arm_1",
-                           "1_year_follow_up_y_arm_1",
-                           "2_year_follow_up_y_arm_1",
-                           "3_year_follow_up_y_arm_1",
-                           "4_year_follow_up_y_arm_1")
-
-df <- merged_data %>%
-  filter(eventname %in% eventnames_to_include) %>%
-  mutate(
-    src_subject_id = as.factor(src_subject_id),
-    eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),
-    age = as.numeric(age),
-    sex = as.factor(sex),
-    race.4level = as.factor(race.4level),
-    hisp = as.factor(hisp),
-    high.educ.bl = as.factor(high.educ.bl),
-    household.income.bl = as.factor(household.income.bl),
-    acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),
-    rel_family_id.bl = as.factor(rel_family_id.bl),
-    site_id_l = as.factor(site_id_l),
-    anthroweightcalc = as.numeric(anthroweightcalc)
-  ) %>%
-  # Exclude cases from unused assessment waves
-  filter(!is.na(eventname))
-
-#####
-#Creating new ordinal variable for the example
-df$education <- factor(
-  with(df, ifelse(high.educ.bl %in% c("1st grade", "2nd grade", "3rd grade", "4th grade",
-                                      "5th grade",
-                                      "6th grade", "7th grade", "8th grade", "9th grade",
-                                      "10th grade",
-                                      "11th grade", "12th grade"), "lt_highschool",
-                  ifelse(high.educ.bl == "High school graduate", "highschool",
-                  ifelse(high.educ.bl == "GED or equivalent Diploma", "GED",
-                  ifelse(high.educ.bl == "Some college", "some_college",
-                  ifelse(high.educ.bl %in% c("Associate degree: Academic Program", 
-                                              "Associate degree: Occupational"),
-                         "associate_degree",
-                  ifelse(high.educ.bl == "Bachelor's degree (ex. BA", "Bachelor's_degree",
-                  ifelse(high.educ.bl == "Master's degree (ex. MA", "Master's_degree",
-                  ifelse(high.educ.bl %in% c("Doctoral degree (ex. PhD", "Professional
-                                             School degree (ex. MD"), 
-                         "Advanced_degree", NA))))))))))
-  levels = c("lt_highschool", "highschool", "GED", "some_college", "associate_degree",
-             "Bachelor's_degree", "Master's_degree", "Advanced_degree")
-  ordered = TRUE
-
-
-####
-
-####
-df$income <- factor(
-  with(df, ifelse(household.income.bl == "Less than $5,000", "<$5,000",
-                  ifelse(household.income.bl == "$5,000 through $11,999", "$5,000-$11,999",
-                  ifelse(household.income.bl == "$12,000 through $15,999", "$12,000-$15,999",
-                  ifelse(household.income.bl == "$16,000 through $24,999", "$16,000-$24,999",
-                  ifelse(household.income.bl == "$25,000 through $34,999", "$25,000-$34,999",
-                  ifelse(household.income.bl == "$35,000 through $49,999", "$35,000-$49,999",
-                  ifelse(household.income.bl == "$50,000 through $74,999", "$50,000-$74,999",
-                  ifelse(household.income.bl == "$75,000 through $99,999", "$75,000-$99,999",
-                  ifelse(household.income.bl == "$100,000 through $199,999", "$100,000-$199,999",
-                  ifelse(household.income.bl == "$200,000 and greater", "≥$200,000",
-                  NA))))))))))),
-  levels = c("<$5,000", "$5,000-$11,999", "$12,000-$15,999", "$16,000-$24,999",
-             "$25,000-$34,999", "$35,000-$49,999", "$50,000-$74,999",
-             "$75,000-$99,999", "$100,000-$199,999", "≥$200,000"),
-  ordered = TRUE
-)
-
-####
-
-# Create a mapping from factor levels to numeric values
-income_levels <- c("Less than $5,000", "$5,000 through $11,999", "$12,000 through $15,999", "$16,000 through $24,999", "$25,000 through $34,999", "$35,000 through $49,999", "$50,000 through $74,999", "$75,000 through $99,999", "$100,000 through $199,999", "$200,000 and greater", "Don't know", "Refuse to answer", "No deseo responder")
-
-# We assign numbers 1 through 10, but we have 12 levels, including "Don't know", "Refuse to answer", and "No deseo responder"
-# Let's assume "Don't know" and any refusal to answer will be treated as NA
-income_numeric_values <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, NA, NA, NA)
-
-# Create a named vector for easy lookup
-income_values <- setNames(income_numeric_values, income_levels)
-
-# Convert the `income` factor to numeric using the named vector
-df$income_numeric <- income_values[as.character(df$household.income.bl)]
-
-# Handling NAs and refused to answer
-df$income_numeric[is.na(df$household.income.bl) | df$household.income.bl %in% c("Don't know", "Refuse to answer", "No deseo responder")] <- NA
-
+df_long <- df_long %>%
+    group_by(id) %>%
+    filter(all(c("Baseline", "Year_1", "Year_2", "Year_3") %in% event)) %>%
+    ungroup()
 
 ```
-:::
+
+## Overview
+The Signed Rank-Sum test is a non-parametric method used to compare paired samples or repeated measures. Unlike traditional parametric tests, it does not assume normality and is particularly useful when dealing with skewed distributions or ordinal data. This method extends the Wilcoxon signed rank-sum test to handle multiple measurements over time, making it suitable for longitudinal data analysis.
+
+This example will examine changes in height across 3 annual measurement occasions in a sample of youth taking part in the ABCD Study. The primary aim is to determine whether there are significant changes in height over time, while accounting for observations that are clustered within youth over time. The signed rank-sum test will help us identify whether height levels have significantly increased or decreased across the three time points without making parametric assumptions about the data distribution.
+
+## Preliminary Setup
+### Load Packages
+```{r}
+
+library(tidyverse) # Collection of R packages for data science
+library(gtsummary) # Publication-ready tables
+library(rstatix) # Statistical Tests in tidy format
+library(easystats) # 
+library(lme4) # Linear mixed-effects models
+```
 
 ### Descriptives
+```{r}
 
-::: blue
-**This code creates a descriptives table**
-
-```{r descriptives}
-#| echo: TRUE
-#| messages: FALSE
-#| warning: FALSE
-
-descriptives_table <- df %>%
-  select(eventname, sex, race.4level, income_numeric, education) %>%
-  mutate(eventname = factor(eventname, labels = c("Baseline", "Year 1","Year 2","Year 3","Year 4"))) %>%
-  mutate(sex = factor(sex, labels = c("Female", "Male"))) %>%
-  tbl_summary(
-    by = eventname,
-    missing = "no",
-    label = list(sex ~ "Sex", race.4level ~ "Race", income_numeric ~ "Income", 
-                 education ~ "Education"),
-    statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),
-  ) %>%
-modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
-  bold_labels() %>%
-  italicize_levels() %>%
-  modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+descriptives_table <- df_long %>%
+    select(event, height) %>%
+    mutate(event = factor(event)) %>%
+    tbl_summary(
+        by = event,
+        missing = "no",
+        label = list(height ~ "Height"),
+        statistic = list(all_continuous() ~ "{mean} ({sd})", all_categorical() ~ "{p}%"),
+    ) %>%
+    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+    bold_labels() %>%
+    italicize_levels() %>%
+    modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
 theme_gtsummary_compact()
 
 descriptives_table
+
 ```
-:::
-:::
 
 ## Results 
+### Compute Signed Rank Test
+This code performs a Signed Rank-Sum Test to compare 'Height' across 3 annual visits, focusing on the changes in height over time. The output of the test is provided below, along with a summary of results. This non-parametric test accounts for the paired nature of the observations and determines whether there are significant changes in height across the three time points without assuming a specific distribution for the data.
 
-::: panel-tabset
-### Build Model {.tabset .tabset-fade .tabset-pills}
-
-::: blue
-The code fits a xxxx to examine the 'xxxxx' variable across time points ('eventname'). It incorporates xxxxxx. The results of the model are then printed to provide a detailed summary of the fitted model parameters.
-
-**STEP 1: Convert dataframe from long-to-wide format**
-```{r long-to-wide}
-#| class.source: 'fold-hide'
-#| message: FALSE
-#| warning: FALSE
-#| echo: TRUE
-
-# Split the data into static (unchanging) and changing variables
-# Static variables are taken only from the baseline measurement occasion
-df_static <- df %>%
-  filter(eventname == "baseline_year_1_arm_1") %>%
-  select(src_subject_id, site_id_l, sex)
-
-df_changing <- df %>%
-  select(src_subject_id, eventname, income_numeric, education)
-
-# Convert the changing variables from long format to wide format
-df_wide_changing <- df_changing %>%
-  gather(variable, value, -src_subject_id, -eventname) %>%
-  unite("variable_event", variable, eventname) %>%
-  spread(variable_event, value)
-
-# Merge the static and changing data frames based on the 'src_subject_id' variable
-df_wide <- df_static %>%
-  left_join(df_wide_changing, by = "src_subject_id")
-
-# Rename columns to shorter names for easier reference
-df_wide <- df_wide %>% 
-        rename("income_numeric_0"="income_numeric_baseline_year_1_arm_1",
-               "income_numeric_1"="income_numeric_1_year_follow_up_y_arm_1",
-               "income_numeric_2"="income_numeric_2_year_follow_up_y_arm_1",
-               "income_numeric_3"="income_numeric_3_year_follow_up_y_arm_1",
-               "income_numeric_4"="income_numeric_4_year_follow_up_y_arm_1"
-               )
-
-# Reorder columns in the dataframe
-df_wide <- df_wide %>% select(src_subject_id, site_id_l, sex, income_numeric_0, income_numeric_1, income_numeric_2, income_numeric_3, income_numeric_4)
-
-```
-
-**Descriptive Statistics for the Income Variable**
 ```{r}
-## Summary statistics
-# Compute summary statistics for Income by eventname
-summary <- df %>%
-    group_by(eventname) %>%
-    get_summary_stats(income_numeric, type = "mean_sd")
+# Reshape data from long to wide format
+df_wide <- df_long %>%
+    pivot_wider(
+        id_cols = c(id),
+        names_from = event,
+        values_from = height,
+        names_prefix = "Height_"
+    )
 
-data.frame(summary)
-```
+df_wide$Height_Baseline <- as.numeric(as.character(df_wide$Height_Baseline))
+df_wide$Height_Year_1 <- as.numeric(as.character(df_wide$Height_Year_1))
 
-The summary statistics provide insights into the Weight variable across different `eventname` categories. At baseline, the average weight is approximately `r summary$mean[summary$eventname == "baseline_year_1_arm_1"]` units with a standard deviation of `r summary$sd[summary$eventname == "baseline_year_1_arm_1"]`. Over the years, there’s a noticeable increase in average weight: by the first year, it’s about `r summary$mean[summary$eventname == "1_year_follow_up_y_arm_1"]` units, and it continues to rise, reaching approximately `r summary$mean[summary$eventname == "4_year_follow_up_y_arm_1"]` units by the fourth year. The standard deviation remains relatively consistent over the years, suggesting similar variability in weight measurements across these time points.
+df_wide_complete <- na.omit(df_wide[, c("Height_Baseline", "Height_Year_1")])
 
-**STEP 2: Compute Signed Rank Test**
-```{r}
+model <- wilcox.test(df_wide_complete$Height_Baseline, df_wide_complete$Height_Year_1, paired = TRUE)
 
-#########
-df_wide$income_numeric_0 <- as.numeric(as.character(df_wide$income_numeric_0))
-df_wide$income_numeric_1 <- as.numeric(as.character(df_wide$income_numeric_1))
-df_wide$income_numeric_4 <- as.numeric(as.character(df_wide$income_numeric_4))
-df_wide_complete <- na.omit(df_wide[, c("income_numeric_0", "income_numeric_4")])
-
-model <- wilcox.test(df_wide_complete$income_numeric_0, df_wide_complete$income_numeric_4, paired = TRUE)
-
-report(wilcox.test(df_wide_complete$income_numeric_0, df_wide_complete$income_numeric_4))
+report(wilcox.test(df_wide_complete$Height_Baseline, df_wide_complete$Height_Year_1))
 
 ```
-
-:::
+These results indicate a significant increase in height from baseline to Year 1, as evidenced by the Wilcoxon signed rank-sum test. The test statistic (W = 2.41e+06) and the negative rank biserial correlation (r = -0.39) suggest a large effect size, with the p-value (< .001) confirming the statistical significance of the observed changes. This analysis shows that participants' heights have significantly increased from baseline to Year 1.
 
 ### Model Plots
+```{r}
 
-::: blue
-Testtesttest
+ggplot(df_long, aes(x = event, y = height, group = id)) +
+  geom_line(aes(group = id), alpha = 0.3, color = "grey") +  # Individual trajectories
+  geom_boxplot() +  # Boxplot for summary statistics
+  labs(title = "Comparison of Height Measurements Across Time Points",
+       x = "Time Point", y = "Height (inches)") +
+  theme_minimal() +
+  theme(legend.position = "none")  # Hide legend, if not necessary
 
-:::
-:::
+```
+This plot illustrates the change in participants' height across 3 annual measurement occasions using a combination of individual trajectories and boxplots. The grey lines represent individual participants' height trajectories, demonstrating the variability among participants at each time point. The boxplots summarize the distribution of height measurements at each time point, highlighting the median, interquartile range, and potential outliers.
+
+The plot reveals significant changes in height over time, with the median height increasing across the three measurement occasions. The individual trajectories show that while most participants experience an increase in height, the rate of growth varies. This visualization helps to identify trends and patterns in height changes, as well as the variability in growth among participants. The boxplots provide a clear summary of the central tendency and spread of height measurements at each time point, indicating that the overall height distribution shifts upwards over time.
 
 ## Wrapping Up
-<div class = "blue">
+The signed rank-sum test analysis revealed significant changes in children's height measured over 3 annual assessments. The Wilcoxon rank sum test with continuity correction between baseline and Year 1 indicated a significant increase in height (W = 2.41e+06, p < .001; r (rank biserial) = -0.39, 95% CI [-0.42, -0.37]). These results suggest a large effect size, with the p-value confirming the statistical significance of the observed changes. Participants' heights significantly increased from baseline to Year 1. This non-parametric method was particularly useful for handling the paired nature of the data and did not assume normality, making it suitable for skewed distributions often encountered in growth measurements.
 
-::: panel-tabset
-### Write-up {.tabset .tabset-fade .tabset-pills}
-
-::: blue
-
-:::
-:::
+The signed rank-sum test provided insights into overall changes in height without requiring parametric assumptions, demonstrating its utility in analyzing longitudinal data. This approach is valuable in developmental studies as it robustly detects significant changes over time, even with non-normal data distributions. By focusing on rank differences, the test highlights meaningful changes within individuals, offering a straightforward yet powerful method to examine growth patterns across repeated measurements.
 
 
