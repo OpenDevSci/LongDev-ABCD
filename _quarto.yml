@@ -122,9 +122,9 @@ website:
         #     - section: "Latent Transition Analysis"
         #       contents:
         #         - 12_Examples_LatentTransitionAnalysis.qmd
-             - section: "Latent Class Growth Analysis"
-               contents:
-                 - 13b_Examples_LatentClassGrowthAnalysis.qmd
+            - section: "Latent Class Growth Analysis"
+              contents:
+                - 13b_Examples_LatentClassGrowthAnalysis.qmd
         #     - section: "Growth Mixture Models"
         #       contents:
         #         - 13_Examples_GrowthMixtureModels.qmd

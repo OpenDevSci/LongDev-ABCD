@@ -68,6 +68,7 @@ This example will examine height across 3 annual measurement occasions in a samp
 library(tidyverse)    # Collection of R packages for data science
 library(rstatix)      # Pipe-friendly framework for basic statistical tests
 library(geepack)      # Generalized Estimating Equations (GEE) analysis
+library(gtsummary) # Publication-ready tables
 
 ```
 
@@ -128,7 +129,7 @@ predicted_values <- predicted_values %>%
 
 # Generate the plot
 ggplot(predicted_values, aes(x = event, y = mean_height)) +
-  geom_line(color = "blue", size = 1) +
+  geom_line(color = "blue", linewidth = 1) +
   geom_point(color = "blue", size = 3) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2, color = "blue") +
   labs(
@@ -151,15 +152,4 @@ The marginal model analysis using Generalized Estimating Equations (GEE) reveale
 The GEE framework employed in this example captured the population-averaged trends while accounting for the correlation of repeated measurements within individuals. The exchangeable correlation structure suggested that measurements were consistently correlated within individuals, with an estimated correlation parameter (alpha) of 0.681. The significant Wald statistics and p-values (< 2e-16) provided strong evidence of height changes over time.
 
 The marginal model approach is particularly useful in developmental studies as it estimates common parameters across all individuals, offering a clear understanding of population-level trends in longitudinal data. This method is valuable for examining average growth patterns while accounting for the correlation in repeated measurements, providing insights into the overall changes in height over time.
-
-
-
-
-
-
-
-
-
-
-
 

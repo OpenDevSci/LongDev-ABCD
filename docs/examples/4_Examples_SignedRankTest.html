@@ -170,13 +170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
-    <h2 id="toc-title">Table of Contents</h2>
-   
-  <ul>
-  <li><a href="#signed-rank-test" id="toc-signed-rank-test" class="nav-link active" data-scroll-target="#signed-rank-test">Signed-Rank Test</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -206,231 +200,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="signed-rank-test" class="level1 unnumbered">
-<h1 class="unnumbered">Signed-Rank Test</h1>
-<p>It is actually quite common that numeric depend variables need to be transformed or converted into ranks, i.e.&nbsp;ordinal variables, because the distribution of residuals does not allow the application of parametric tests such as t-tests or linear regression. In such cases, as we are dealing with rank (ordinal) data, the application of a chi-square test is unwarranted and we need to use another test. There are different alternatives depending on whether the data are paired (coming from the same individuals) or if all observations are independent.</p>
-<p>The non-parametric alternative for independent t-tests, i.e.&nbsp;for data where we are dealing with two separate groups and a numeric dependent variable that violates parametric assumptions (or an ordinal dependent variable), is the Mann-Whitney U-test. In contrast, if the groups under investigation represent identical participants that are tested under two conditions, the appropriate alternative is a Wilcoxon Signed Rank test (which is thus the alternative for paired t-test).</p>
-<p>Imagine we wanted to determine if two language families differed with respect to the size of their phoneme inventories. You have already ranked the inventory sizes and would now like to now if language family correlates with inventory size. As such, we are dealing with two independent groups and we want to implement a non-parametric alternative of a t-test. To answer this question, you create the table shown below. ####</p>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>
-</p><p>The Signed-Rank Test xxxxxxx. This xxxxxxx.</p>
-<p>In this example, we will utilize the signed-rank test to analyze xxxxxx obtained across multiple measurement occasions for a sample of youth participating in the ABCD Study. Our primary objective is to understand xxxxxx, while factoring in the clustered nature of observations within individuals over time. The signed-rank test facilitates this by xxxxx.</p>
-<p></p>
+<p>The Signed Rank-Sum test is a non-parametric method used to compare paired samples or repeated measures. Unlike traditional parametric tests, it does not assume normality and is particularly useful when dealing with skewed distributions or ordinal data. This method extends the Wilcoxon signed rank-sum test to handle multiple measurements over time, making it suitable for longitudinal data analysis.</p>
+<p>This example will examine changes in height across 3 annual measurement occasions in a sample of youth taking part in the ABCD Study. The primary aim is to determine whether there are significant changes in height over time, while accounting for observations that are clustered within youth over time. The signed rank-sum test will help us identify whether height levels have significantly increased or decreased across the three time points without making parametric assumptions about the data distribution.</p>
 </section>
 <section id="preliminary-setup" class="level2">
 <h2 class="anchored" data-anchor-id="preliminary-setup">Preliminary Setup</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Install Packages</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Load Packages</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div class="blue">
-<blockquote class="blockquote">
-<p><strong>This code installs the r packages necessary for this example, if they are not already installed</strong></p>
-</blockquote>
-<div class="cell" data-messages="false">
+<section id="load-packages" class="level3">
+<h3 class="anchored" data-anchor-id="load-packages">Load Packages</h3>
+<div class="cell" data-layout-align="center">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Create a list of required packages</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a>packages_required <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"tidyverse"</span>,<span class="st">"rstatix"</span>,<span class="st">"DT"</span>, <span class="st">"gtsummary"</span>,<span class="st">"easystats"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Check which packages are not installed and install them</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>packages_to_install <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(packages_required, <span class="fu">rownames</span>(<span class="fu">installed.packages</span>()))</span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="cf">if</span> (<span class="fu">length</span>(packages_to_install) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="fu">install.packages</span>(packages_to_install)</span>
-<span id="cb1-8"><a href="#cb1-8"></a>}</span>
-<span id="cb1-9"><a href="#cb1-9"></a></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># Load the required packages</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">lapply</span>(packages_required, library, <span class="at">character.only =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Collection of R packages for data science</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(gtsummary) <span class="co"># Publication-ready tables</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(rstatix) <span class="co"># Statistical Tests in tidy format</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(easystats) <span class="co"># </span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(lme4) <span class="co"># Linear mixed-effects models</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-</div>
-</div>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div class="blue">
-<p><strong>This code loads the r libraries necessary for this example</strong></p>
-<div class="cell" data-messages="false">
-<details open="" class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># Collection of R packages for data science</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">library</span>(rstatix)      <span class="co"># Pipe-friendly framework for basic statistical tests</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">library</span>(DT)           <span class="co"># Rendering interactive data tables</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">library</span>(easystats)    <span class="co">#</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="fu">library</span>(gtsummary)    <span class="co">#</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</div>
-</div>
-</div>
 </div>
 </section>
-<section id="descriptives-overview" class="level2">
-<h2 class="anchored" data-anchor-id="descriptives-overview">Descriptives Overview</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Read and View Data</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Descriptives</a></li></ul>
-<div class="tab-content">
-<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div class="blue">
-<p><strong>This code reads in and shows the data to be used in the current example</strong></p>
-<div class="cell" data-layout-align="center" data-messages="false">
+<section id="descriptives" class="level3">
+<h3 class="anchored" data-anchor-id="descriptives">Descriptives</h3>
+<div class="cell" data-layout-align="center">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Set the data paths</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>data_path_1 <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a>data_path_2 <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># Read the data</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>data_demographics <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path_1)</span>
-<span id="cb3-7"><a href="#cb3-7"></a>data_nonimaging <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path_2)</span>
-<span id="cb3-8"><a href="#cb3-8"></a></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># Subset the nonimaging data to include desired variables</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>selected_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"src_subject_id"</span>, <span class="st">"eventname"</span>, <span class="st">"anthroweightcalc"</span>)</span>
-<span id="cb3-11"><a href="#cb3-11"></a>subset_data <span class="ot">&lt;-</span> data_nonimaging[, selected_vars]</span>
-<span id="cb3-12"><a href="#cb3-12"></a></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="co"># # Merge the datasets on 'src_subject_id' and 'eventname'</span></span>
-<span id="cb3-15"><a href="#cb3-15"></a>merged_data <span class="ot">&lt;-</span> data_demographics <span class="sc">%&gt;%</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a>  <span class="fu">full_join</span>(subset_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"src_subject_id"</span>, <span class="st">"eventname"</span>))</span>
-<span id="cb3-17"><a href="#cb3-17"></a></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co"># Inspect the merged data structure</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a><span class="fu">str</span>(merged_data)</span>
-<span id="cb3-20"><a href="#cb3-20"></a></span>
-<span id="cb3-21"><a href="#cb3-21"></a><span class="co"># Define event names to be retained in the analysis and convert variables to appropriate data types</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a>eventnames_to_include <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"baseline_year_1_arm_1"</span>,</span>
-<span id="cb3-23"><a href="#cb3-23"></a>                           <span class="st">"1_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb3-24"><a href="#cb3-24"></a>                           <span class="st">"2_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb3-25"><a href="#cb3-25"></a>                           <span class="st">"3_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb3-26"><a href="#cb3-26"></a>                           <span class="st">"4_year_follow_up_y_arm_1"</span>)</span>
-<span id="cb3-27"><a href="#cb3-27"></a></span>
-<span id="cb3-28"><a href="#cb3-28"></a>df <span class="ot">&lt;-</span> merged_data <span class="sc">%&gt;%</span></span>
-<span id="cb3-29"><a href="#cb3-29"></a>  <span class="fu">filter</span>(eventname <span class="sc">%in%</span> eventnames_to_include) <span class="sc">%&gt;%</span></span>
-<span id="cb3-30"><a href="#cb3-30"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-31"><a href="#cb3-31"></a>    <span class="at">src_subject_id =</span> <span class="fu">as.factor</span>(src_subject_id),</span>
-<span id="cb3-32"><a href="#cb3-32"></a>    <span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">levels =</span> eventnames_to_include, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb3-33"><a href="#cb3-33"></a>    <span class="at">age =</span> <span class="fu">as.numeric</span>(age),</span>
-<span id="cb3-34"><a href="#cb3-34"></a>    <span class="at">sex =</span> <span class="fu">as.factor</span>(sex),</span>
-<span id="cb3-35"><a href="#cb3-35"></a>    <span class="at">race.4level =</span> <span class="fu">as.factor</span>(race<span class="fl">.4</span>level),</span>
-<span id="cb3-36"><a href="#cb3-36"></a>    <span class="at">hisp =</span> <span class="fu">as.factor</span>(hisp),</span>
-<span id="cb3-37"><a href="#cb3-37"></a>    <span class="at">high.educ.bl =</span> <span class="fu">as.factor</span>(high.educ.bl),</span>
-<span id="cb3-38"><a href="#cb3-38"></a>    <span class="at">household.income.bl =</span> <span class="fu">as.factor</span>(household.income.bl),</span>
-<span id="cb3-39"><a href="#cb3-39"></a>    <span class="at">acs_raked_propensity_score =</span> <span class="fu">as.numeric</span>(acs_raked_propensity_score),</span>
-<span id="cb3-40"><a href="#cb3-40"></a>    <span class="at">rel_family_id.bl =</span> <span class="fu">as.factor</span>(rel_family_id.bl),</span>
-<span id="cb3-41"><a href="#cb3-41"></a>    <span class="at">site_id_l =</span> <span class="fu">as.factor</span>(site_id_l),</span>
-<span id="cb3-42"><a href="#cb3-42"></a>    <span class="at">anthroweightcalc =</span> <span class="fu">as.numeric</span>(anthroweightcalc)</span>
-<span id="cb3-43"><a href="#cb3-43"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-44"><a href="#cb3-44"></a>  <span class="co"># Exclude cases from unused assessment waves</span></span>
-<span id="cb3-45"><a href="#cb3-45"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventname))</span>
-<span id="cb3-46"><a href="#cb3-46"></a></span>
-<span id="cb3-47"><a href="#cb3-47"></a><span class="do">#####</span></span>
-<span id="cb3-48"><a href="#cb3-48"></a><span class="co">#Creating new ordinal variable for the example</span></span>
-<span id="cb3-49"><a href="#cb3-49"></a>df<span class="sc">$</span>education <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
-<span id="cb3-50"><a href="#cb3-50"></a>  <span class="fu">with</span>(df, <span class="fu">ifelse</span>(high.educ.bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"1st grade"</span>, <span class="st">"2nd grade"</span>, <span class="st">"3rd grade"</span>, <span class="st">"4th grade"</span>,</span>
-<span id="cb3-51"><a href="#cb3-51"></a>                                      <span class="st">"5th grade"</span>,</span>
-<span id="cb3-52"><a href="#cb3-52"></a>                                      <span class="st">"6th grade"</span>, <span class="st">"7th grade"</span>, <span class="st">"8th grade"</span>, <span class="st">"9th grade"</span>,</span>
-<span id="cb3-53"><a href="#cb3-53"></a>                                      <span class="st">"10th grade"</span>,</span>
-<span id="cb3-54"><a href="#cb3-54"></a>                                      <span class="st">"11th grade"</span>, <span class="st">"12th grade"</span>), <span class="st">"lt_highschool"</span>,</span>
-<span id="cb3-55"><a href="#cb3-55"></a>                  <span class="fu">ifelse</span>(high.educ.bl <span class="sc">==</span> <span class="st">"High school graduate"</span>, <span class="st">"highschool"</span>,</span>
-<span id="cb3-56"><a href="#cb3-56"></a>                  <span class="fu">ifelse</span>(high.educ.bl <span class="sc">==</span> <span class="st">"GED or equivalent Diploma"</span>, <span class="st">"GED"</span>,</span>
-<span id="cb3-57"><a href="#cb3-57"></a>                  <span class="fu">ifelse</span>(high.educ.bl <span class="sc">==</span> <span class="st">"Some college"</span>, <span class="st">"some_college"</span>,</span>
-<span id="cb3-58"><a href="#cb3-58"></a>                  <span class="fu">ifelse</span>(high.educ.bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Associate degree: Academic Program"</span>, </span>
-<span id="cb3-59"><a href="#cb3-59"></a>                                              <span class="st">"Associate degree: Occupational"</span>),</span>
-<span id="cb3-60"><a href="#cb3-60"></a>                         <span class="st">"associate_degree"</span>,</span>
-<span id="cb3-61"><a href="#cb3-61"></a>                  <span class="fu">ifelse</span>(high.educ.bl <span class="sc">==</span> <span class="st">"Bachelor's degree (ex. BA"</span>, <span class="st">"Bachelor's_degree"</span>,</span>
-<span id="cb3-62"><a href="#cb3-62"></a>                  <span class="fu">ifelse</span>(high.educ.bl <span class="sc">==</span> <span class="st">"Master's degree (ex. MA"</span>, <span class="st">"Master's_degree"</span>,</span>
-<span id="cb3-63"><a href="#cb3-63"></a>                  <span class="fu">ifelse</span>(high.educ.bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Doctoral degree (ex. PhD"</span>, <span class="st">"Professional</span></span>
-<span id="cb3-64"><a href="#cb3-64"></a><span class="st">                                             School degree (ex. MD"</span>), </span>
-<span id="cb3-65"><a href="#cb3-65"></a>                         <span class="st">"Advanced_degree"</span>, <span class="cn">NA</span>))))))))))</span>
-<span id="cb3-66"><a href="#cb3-66"></a>  levels <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"lt_highschool"</span>, <span class="st">"highschool"</span>, <span class="st">"GED"</span>, <span class="st">"some_college"</span>, <span class="st">"associate_degree"</span>,</span>
-<span id="cb3-67"><a href="#cb3-67"></a>             <span class="st">"Bachelor's_degree"</span>, <span class="st">"Master's_degree"</span>, <span class="st">"Advanced_degree"</span>)</span>
-<span id="cb3-68"><a href="#cb3-68"></a>  ordered <span class="ot">=</span> <span class="cn">TRUE</span></span>
-<span id="cb3-69"><a href="#cb3-69"></a></span>
-<span id="cb3-70"><a href="#cb3-70"></a></span>
-<span id="cb3-71"><a href="#cb3-71"></a><span class="do">####</span></span>
-<span id="cb3-72"><a href="#cb3-72"></a></span>
-<span id="cb3-73"><a href="#cb3-73"></a><span class="do">####</span></span>
-<span id="cb3-74"><a href="#cb3-74"></a>df<span class="sc">$</span>income <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
-<span id="cb3-75"><a href="#cb3-75"></a>  <span class="fu">with</span>(df, <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"Less than $5,000"</span>, <span class="st">"&lt;$5,000"</span>,</span>
-<span id="cb3-76"><a href="#cb3-76"></a>                  <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"$5,000 through $11,999"</span>, <span class="st">"$5,000-$11,999"</span>,</span>
-<span id="cb3-77"><a href="#cb3-77"></a>                  <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"$12,000 through $15,999"</span>, <span class="st">"$12,000-$15,999"</span>,</span>
-<span id="cb3-78"><a href="#cb3-78"></a>                  <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"$16,000 through $24,999"</span>, <span class="st">"$16,000-$24,999"</span>,</span>
-<span id="cb3-79"><a href="#cb3-79"></a>                  <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"$25,000 through $34,999"</span>, <span class="st">"$25,000-$34,999"</span>,</span>
-<span id="cb3-80"><a href="#cb3-80"></a>                  <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"$35,000 through $49,999"</span>, <span class="st">"$35,000-$49,999"</span>,</span>
-<span id="cb3-81"><a href="#cb3-81"></a>                  <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"$50,000 through $74,999"</span>, <span class="st">"$50,000-$74,999"</span>,</span>
-<span id="cb3-82"><a href="#cb3-82"></a>                  <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"$75,000 through $99,999"</span>, <span class="st">"$75,000-$99,999"</span>,</span>
-<span id="cb3-83"><a href="#cb3-83"></a>                  <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"$100,000 through $199,999"</span>, <span class="st">"$100,000-$199,999"</span>,</span>
-<span id="cb3-84"><a href="#cb3-84"></a>                  <span class="fu">ifelse</span>(household.income.bl <span class="sc">==</span> <span class="st">"$200,000 and greater"</span>, <span class="st">"≥$200,000"</span>,</span>
-<span id="cb3-85"><a href="#cb3-85"></a>                  <span class="cn">NA</span>))))))))))),</span>
-<span id="cb3-86"><a href="#cb3-86"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"&lt;$5,000"</span>, <span class="st">"$5,000-$11,999"</span>, <span class="st">"$12,000-$15,999"</span>, <span class="st">"$16,000-$24,999"</span>,</span>
-<span id="cb3-87"><a href="#cb3-87"></a>             <span class="st">"$25,000-$34,999"</span>, <span class="st">"$35,000-$49,999"</span>, <span class="st">"$50,000-$74,999"</span>,</span>
-<span id="cb3-88"><a href="#cb3-88"></a>             <span class="st">"$75,000-$99,999"</span>, <span class="st">"$100,000-$199,999"</span>, <span class="st">"≥$200,000"</span>),</span>
-<span id="cb3-89"><a href="#cb3-89"></a>  <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
-<span id="cb3-90"><a href="#cb3-90"></a>)</span>
-<span id="cb3-91"><a href="#cb3-91"></a></span>
-<span id="cb3-92"><a href="#cb3-92"></a><span class="do">####</span></span>
-<span id="cb3-93"><a href="#cb3-93"></a></span>
-<span id="cb3-94"><a href="#cb3-94"></a><span class="co"># Create a mapping from factor levels to numeric values</span></span>
-<span id="cb3-95"><a href="#cb3-95"></a>income_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Less than $5,000"</span>, <span class="st">"$5,000 through $11,999"</span>, <span class="st">"$12,000 through $15,999"</span>, <span class="st">"$16,000 through $24,999"</span>, <span class="st">"$25,000 through $34,999"</span>, <span class="st">"$35,000 through $49,999"</span>, <span class="st">"$50,000 through $74,999"</span>, <span class="st">"$75,000 through $99,999"</span>, <span class="st">"$100,000 through $199,999"</span>, <span class="st">"$200,000 and greater"</span>, <span class="st">"Don't know"</span>, <span class="st">"Refuse to answer"</span>, <span class="st">"No deseo responder"</span>)</span>
-<span id="cb3-96"><a href="#cb3-96"></a></span>
-<span id="cb3-97"><a href="#cb3-97"></a><span class="co"># We assign numbers 1 through 10, but we have 12 levels, including "Don't know", "Refuse to answer", and "No deseo responder"</span></span>
-<span id="cb3-98"><a href="#cb3-98"></a><span class="co"># Let's assume "Don't know" and any refusal to answer will be treated as NA</span></span>
-<span id="cb3-99"><a href="#cb3-99"></a>income_numeric_values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>)</span>
-<span id="cb3-100"><a href="#cb3-100"></a></span>
-<span id="cb3-101"><a href="#cb3-101"></a><span class="co"># Create a named vector for easy lookup</span></span>
-<span id="cb3-102"><a href="#cb3-102"></a>income_values <span class="ot">&lt;-</span> <span class="fu">setNames</span>(income_numeric_values, income_levels)</span>
-<span id="cb3-103"><a href="#cb3-103"></a></span>
-<span id="cb3-104"><a href="#cb3-104"></a><span class="co"># Convert the `income` factor to numeric using the named vector</span></span>
-<span id="cb3-105"><a href="#cb3-105"></a>df<span class="sc">$</span>income_numeric <span class="ot">&lt;-</span> income_values[<span class="fu">as.character</span>(df<span class="sc">$</span>household.income.bl)]</span>
-<span id="cb3-106"><a href="#cb3-106"></a></span>
-<span id="cb3-107"><a href="#cb3-107"></a><span class="co"># Handling NAs and refused to answer</span></span>
-<span id="cb3-108"><a href="#cb3-108"></a>df<span class="sc">$</span>income_numeric[<span class="fu">is.na</span>(df<span class="sc">$</span>household.income.bl) <span class="sc">|</span> df<span class="sc">$</span>household.income.bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Don't know"</span>, <span class="st">"Refuse to answer"</span>, <span class="st">"No deseo responder"</span>)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</div>
-</div>
-<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<div class="blue">
-<p><strong>This code creates a descriptives table</strong></p>
-<div class="cell" data-layout-align="center" data-messages="false">
-<details open="" class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>descriptives_table <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">select</span>(eventname, sex, race<span class="fl">.4</span>level, income_numeric, education) <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>  <span class="fu">mutate</span>(<span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Baseline"</span>, <span class="st">"Year 1"</span>,<span class="st">"Year 2"</span>,<span class="st">"Year 3"</span>,<span class="st">"Year 4"</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">factor</span>(sex, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">"Male"</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a>  <span class="fu">tbl_summary</span>(</span>
-<span id="cb4-6"><a href="#cb4-6"></a>    <span class="at">by =</span> eventname,</span>
-<span id="cb4-7"><a href="#cb4-7"></a>    <span class="at">missing =</span> <span class="st">"no"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8"></a>    <span class="at">label =</span> <span class="fu">list</span>(sex <span class="sc">~</span> <span class="st">"Sex"</span>, race<span class="fl">.4</span>level <span class="sc">~</span> <span class="st">"Race"</span>, income_numeric <span class="sc">~</span> <span class="st">"Income"</span>, </span>
-<span id="cb4-9"><a href="#cb4-9"></a>                 education <span class="sc">~</span> <span class="st">"Education"</span>),</span>
-<span id="cb4-10"><a href="#cb4-10"></a>    <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd}) )"</span>, <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span>),</span>
-<span id="cb4-11"><a href="#cb4-11"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a>  <span class="fu">bold_labels</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a>  <span class="fu">italicize_levels</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a>  <span class="fu">modify_spanning_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**Assessment Wave**"</span>)</span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="fu">theme_gtsummary_compact</span>()</span>
-<span id="cb4-17"><a href="#cb4-17"></a></span>
-<span id="cb4-18"><a href="#cb4-18"></a>descriptives_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>descriptives_table <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>    <span class="fu">select</span>(event, height) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>    <span class="fu">mutate</span>(<span class="at">event =</span> <span class="fu">factor</span>(event)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>    <span class="fu">tbl_summary</span>(</span>
+<span id="cb2-5"><a href="#cb2-5"></a>        <span class="at">by =</span> event,</span>
+<span id="cb2-6"><a href="#cb2-6"></a>        <span class="at">missing =</span> <span class="st">"no"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7"></a>        <span class="at">label =</span> <span class="fu">list</span>(height <span class="sc">~</span> <span class="st">"Height"</span>),</span>
+<span id="cb2-8"><a href="#cb2-8"></a>        <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>, <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span>),</span>
+<span id="cb2-9"><a href="#cb2-9"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>    <span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>    <span class="fu">bold_labels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>    <span class="fu">italicize_levels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>    <span class="fu">modify_spanning_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**Assessment Wave**"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="fu">theme_gtsummary_compact</span>()</span>
+<span id="cb2-15"><a href="#cb2-15"></a></span>
+<span id="cb2-16"><a href="#cb2-16"></a>descriptives_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
-<div id="xpqljlyqif" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xpqljlyqif table {
+<div id="fyrrqvntsz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fyrrqvntsz table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#xpqljlyqif thead, #xpqljlyqif tbody, #xpqljlyqif tfoot, #xpqljlyqif tr, #xpqljlyqif td, #xpqljlyqif th {
+#fyrrqvntsz thead, #fyrrqvntsz tbody, #fyrrqvntsz tfoot, #fyrrqvntsz tr, #fyrrqvntsz td, #fyrrqvntsz th {
   border-style: none;
 }
 
-#xpqljlyqif p {
+#fyrrqvntsz p {
   margin: 0;
   padding: 0;
 }
 
-#xpqljlyqif .gt_table {
+#fyrrqvntsz .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -456,12 +286,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_caption {
+#fyrrqvntsz .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#xpqljlyqif .gt_title {
+#fyrrqvntsz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -473,7 +303,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#xpqljlyqif .gt_subtitle {
+#fyrrqvntsz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -485,7 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#xpqljlyqif .gt_heading {
+#fyrrqvntsz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -497,13 +327,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_bottom_border {
+#fyrrqvntsz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_col_headings {
+#fyrrqvntsz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -518,7 +348,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_col_heading {
+#fyrrqvntsz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -538,7 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#xpqljlyqif .gt_column_spanner_outer {
+#fyrrqvntsz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -550,15 +380,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#xpqljlyqif .gt_column_spanner_outer:first-child {
+#fyrrqvntsz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xpqljlyqif .gt_column_spanner_outer:last-child {
+#fyrrqvntsz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xpqljlyqif .gt_column_spanner {
+#fyrrqvntsz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -570,11 +400,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#xpqljlyqif .gt_spanner_row {
+#fyrrqvntsz .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#xpqljlyqif .gt_group_heading {
+#fyrrqvntsz .gt_group_heading {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -600,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#xpqljlyqif .gt_empty_group_heading {
+#fyrrqvntsz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -615,15 +445,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#xpqljlyqif .gt_from_md > :first-child {
+#fyrrqvntsz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xpqljlyqif .gt_from_md > :last-child {
+#fyrrqvntsz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xpqljlyqif .gt_row {
+#fyrrqvntsz .gt_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -642,7 +472,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#xpqljlyqif .gt_stub {
+#fyrrqvntsz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -655,7 +485,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#xpqljlyqif .gt_stub_row_group {
+#fyrrqvntsz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -669,15 +499,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#xpqljlyqif .gt_row_group_first td {
+#fyrrqvntsz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xpqljlyqif .gt_row_group_first th {
+#fyrrqvntsz .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#xpqljlyqif .gt_summary_row {
+#fyrrqvntsz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -687,16 +517,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#xpqljlyqif .gt_first_summary_row {
+#fyrrqvntsz .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_first_summary_row.thick {
+#fyrrqvntsz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xpqljlyqif .gt_last_summary_row {
+#fyrrqvntsz .gt_last_summary_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -706,7 +536,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_grand_summary_row {
+#fyrrqvntsz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -716,7 +546,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#xpqljlyqif .gt_first_grand_summary_row {
+#fyrrqvntsz .gt_first_grand_summary_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -726,7 +556,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_last_grand_summary_row_top {
+#fyrrqvntsz .gt_last_grand_summary_row_top {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -736,11 +566,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_striped {
+#fyrrqvntsz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xpqljlyqif .gt_table_body {
+#fyrrqvntsz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -749,7 +579,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_footnotes {
+#fyrrqvntsz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -763,7 +593,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_footnote {
+#fyrrqvntsz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 1px;
@@ -772,7 +602,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#xpqljlyqif .gt_sourcenotes {
+#fyrrqvntsz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -786,7 +616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#xpqljlyqif .gt_sourcenote {
+#fyrrqvntsz .gt_sourcenote {
   font-size: 90%;
   padding-top: 1px;
   padding-bottom: 1px;
@@ -794,242 +624,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#xpqljlyqif .gt_left {
+#fyrrqvntsz .gt_left {
   text-align: left;
 }
 
-#xpqljlyqif .gt_center {
+#fyrrqvntsz .gt_center {
   text-align: center;
 }
 
-#xpqljlyqif .gt_right {
+#fyrrqvntsz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xpqljlyqif .gt_font_normal {
+#fyrrqvntsz .gt_font_normal {
   font-weight: normal;
 }
 
-#xpqljlyqif .gt_font_bold {
+#fyrrqvntsz .gt_font_bold {
   font-weight: bold;
 }
 
-#xpqljlyqif .gt_font_italic {
+#fyrrqvntsz .gt_font_italic {
   font-style: italic;
 }
 
-#xpqljlyqif .gt_super {
+#fyrrqvntsz .gt_super {
   font-size: 65%;
 }
 
-#xpqljlyqif .gt_footnote_marks {
+#fyrrqvntsz .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#xpqljlyqif .gt_asterisk {
+#fyrrqvntsz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xpqljlyqif .gt_indent_1 {
+#fyrrqvntsz .gt_indent_1 {
   text-indent: 5px;
 }
 
-#xpqljlyqif .gt_indent_2 {
+#fyrrqvntsz .gt_indent_2 {
   text-indent: 10px;
 }
 
-#xpqljlyqif .gt_indent_3 {
+#fyrrqvntsz .gt_indent_3 {
   text-indent: 15px;
 }
 
-#xpqljlyqif .gt_indent_4 {
+#fyrrqvntsz .gt_indent_4 {
   text-indent: 20px;
 }
 
-#xpqljlyqif .gt_indent_5 {
+#fyrrqvntsz .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
 
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <colgroup>
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header gt_col_headings gt_spanner_row">
 <th rowspan="2" id="<strong>Characteristic</strong>" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Characteristic</strong></th>
-<th colspan="5" id="<strong>Assessment Wave</strong>" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" scope="colgroup"><span class="gt_column_spanner"><strong>Assessment Wave</strong></span></th>
+<th colspan="4" id="<strong>Assessment Wave</strong>" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" scope="colgroup"><span class="gt_column_spanner"><strong>Assessment Wave</strong></span></th>
 </tr>
 <tr class="odd gt_col_headings">
-<th id="<strong>Baseline</strong><br>N = 11868<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Baseline</strong><br>
-N = 11868<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
-<th id="<strong>Year 1</strong><br>N = 11220<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year 1</strong><br>
-N = 11220<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
-<th id="<strong>Year 2</strong><br>N = 10973<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year 2</strong><br>
-N = 10973<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
-<th id="<strong>Year 3</strong><br>N = 10336<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year 3</strong><br>
-N = 10336<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
-<th id="<strong>Year 4</strong><br>N = 4754<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year 4</strong><br>
-N = 4754<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+<th id="<strong>Baseline</strong><br>N = 2818<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Baseline</strong><br>
+N = 2818<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+<th id="<strong>Year_1</strong><br>N = 2818<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year_1</strong><br>
+N = 2818<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+<th id="<strong>Year_2</strong><br>N = 2818<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year_2</strong><br>
+N = 2818<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+<th id="<strong>Year_3</strong><br>N = 2818<span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Year_3</strong><br>
+N = 2818<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-weight: bold">Sex</td>
-<td class="gt_row gt_center" headers="stat_1"></td>
-<td class="gt_row gt_center" headers="stat_2"></td>
-<td class="gt_row gt_center" headers="stat_3"></td>
-<td class="gt_row gt_center" headers="stat_4"></td>
-<td class="gt_row gt_center" headers="stat_5"></td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Female</td>
-<td class="gt_row gt_center" headers="stat_1">48%</td>
-<td class="gt_row gt_center" headers="stat_2">48%</td>
-<td class="gt_row gt_center" headers="stat_3">48%</td>
-<td class="gt_row gt_center" headers="stat_4">47%</td>
-<td class="gt_row gt_center" headers="stat_5">48%</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Male</td>
-<td class="gt_row gt_center" headers="stat_1">52%</td>
-<td class="gt_row gt_center" headers="stat_2">52%</td>
-<td class="gt_row gt_center" headers="stat_3">52%</td>
-<td class="gt_row gt_center" headers="stat_4">53%</td>
-<td class="gt_row gt_center" headers="stat_5">52%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-weight: bold">Race</td>
-<td class="gt_row gt_center" headers="stat_1"></td>
-<td class="gt_row gt_center" headers="stat_2"></td>
-<td class="gt_row gt_center" headers="stat_3"></td>
-<td class="gt_row gt_center" headers="stat_4"></td>
-<td class="gt_row gt_center" headers="stat_5"></td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Asian</td>
-<td class="gt_row gt_center" headers="stat_1">0.5%</td>
-<td class="gt_row gt_center" headers="stat_2">0.4%</td>
-<td class="gt_row gt_center" headers="stat_3">0.4%</td>
-<td class="gt_row gt_center" headers="stat_4">0.5%</td>
-<td class="gt_row gt_center" headers="stat_5">0.4%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Black</td>
-<td class="gt_row gt_center" headers="stat_1">16%</td>
-<td class="gt_row gt_center" headers="stat_2">15%</td>
-<td class="gt_row gt_center" headers="stat_3">15%</td>
-<td class="gt_row gt_center" headers="stat_4">14%</td>
-<td class="gt_row gt_center" headers="stat_5">12%</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Other/Mixed</td>
-<td class="gt_row gt_center" headers="stat_1">17%</td>
-<td class="gt_row gt_center" headers="stat_2">17%</td>
-<td class="gt_row gt_center" headers="stat_3">17%</td>
-<td class="gt_row gt_center" headers="stat_4">17%</td>
-<td class="gt_row gt_center" headers="stat_5">16%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;White</td>
-<td class="gt_row gt_center" headers="stat_1">66%</td>
-<td class="gt_row gt_center" headers="stat_2">67%</td>
-<td class="gt_row gt_center" headers="stat_3">67%</td>
-<td class="gt_row gt_center" headers="stat_4">68%</td>
-<td class="gt_row gt_center" headers="stat_5">72%</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-weight: bold">Income</td>
-<td class="gt_row gt_center" headers="stat_1">7.22 (2.42) )</td>
-<td class="gt_row gt_center" headers="stat_2">7.30 (2.38) )</td>
-<td class="gt_row gt_center" headers="stat_3">7.31 (2.36) )</td>
-<td class="gt_row gt_center" headers="stat_4">7.37 (2.32) )</td>
-<td class="gt_row gt_center" headers="stat_5">7.42 (2.26) )</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-weight: bold">Education</td>
-<td class="gt_row gt_center" headers="stat_1"></td>
-<td class="gt_row gt_center" headers="stat_2"></td>
-<td class="gt_row gt_center" headers="stat_3"></td>
-<td class="gt_row gt_center" headers="stat_4"></td>
-<td class="gt_row gt_center" headers="stat_5"></td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Advanced_degree</td>
-<td class="gt_row gt_center" headers="stat_1">3.5%</td>
-<td class="gt_row gt_center" headers="stat_2">3.6%</td>
-<td class="gt_row gt_center" headers="stat_3">3.7%</td>
-<td class="gt_row gt_center" headers="stat_4">3.8%</td>
-<td class="gt_row gt_center" headers="stat_5">3.8%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;associate_degree</td>
-<td class="gt_row gt_center" headers="stat_1">8.0%</td>
-<td class="gt_row gt_center" headers="stat_2">8.0%</td>
-<td class="gt_row gt_center" headers="stat_3">7.9%</td>
-<td class="gt_row gt_center" headers="stat_4">8.0%</td>
-<td class="gt_row gt_center" headers="stat_5">7.6%</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Bachelor's_degree</td>
-<td class="gt_row gt_center" headers="stat_1">31%</td>
-<td class="gt_row gt_center" headers="stat_2">31%</td>
-<td class="gt_row gt_center" headers="stat_3">32%</td>
-<td class="gt_row gt_center" headers="stat_4">32%</td>
-<td class="gt_row gt_center" headers="stat_5">33%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;GED</td>
-<td class="gt_row gt_center" headers="stat_1">2.5%</td>
-<td class="gt_row gt_center" headers="stat_2">2.3%</td>
-<td class="gt_row gt_center" headers="stat_3">2.4%</td>
-<td class="gt_row gt_center" headers="stat_4">2.2%</td>
-<td class="gt_row gt_center" headers="stat_5">1.8%</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;highschool</td>
-<td class="gt_row gt_center" headers="stat_1">9.1%</td>
-<td class="gt_row gt_center" headers="stat_2">8.8%</td>
-<td class="gt_row gt_center" headers="stat_3">8.7%</td>
-<td class="gt_row gt_center" headers="stat_4">8.3%</td>
-<td class="gt_row gt_center" headers="stat_5">7.8%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;lt_highschool</td>
-<td class="gt_row gt_center" headers="stat_1">7.2%</td>
-<td class="gt_row gt_center" headers="stat_2">6.7%</td>
-<td class="gt_row gt_center" headers="stat_3">6.6%</td>
-<td class="gt_row gt_center" headers="stat_4">6.2%</td>
-<td class="gt_row gt_center" headers="stat_5">6.1%</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Master's_degree</td>
-<td class="gt_row gt_center" headers="stat_1">21%</td>
-<td class="gt_row gt_center" headers="stat_2">22%</td>
-<td class="gt_row gt_center" headers="stat_3">22%</td>
-<td class="gt_row gt_center" headers="stat_4">22%</td>
-<td class="gt_row gt_center" headers="stat_5">22%</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;some_college</td>
-<td class="gt_row gt_center" headers="stat_1">18%</td>
-<td class="gt_row gt_center" headers="stat_2">18%</td>
-<td class="gt_row gt_center" headers="stat_3">18%</td>
-<td class="gt_row gt_center" headers="stat_4">17%</td>
-<td class="gt_row gt_center" headers="stat_5">17%</td>
+<td class="gt_row gt_left" headers="label" style="font-weight: bold">Height</td>
+<td class="gt_row gt_center" headers="stat_1">55.1 (3.6)</td>
+<td class="gt_row gt_center" headers="stat_2">57.5 (3.7)</td>
+<td class="gt_row gt_center" headers="stat_3">60.3 (3.6)</td>
+<td class="gt_row gt_center" headers="stat_4">62.3 (4.1)</td>
 </tr>
 </tbody><tfoot class="gt_footnotes">
-<tr class="even">
-<td colspan="6" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> %; Mean (SD) )</td>
+<tr class="odd">
+<td colspan="5" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> Mean (SD)</td>
 </tr>
 </tfoot>
 
@@ -1039,126 +729,76 @@ N = 4754<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ita
 </div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
+</section>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Build Model</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Model Plots</a></li></ul>
-<div class="tab-content">
-<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div class="blue">
-<p>The code fits a xxxx to examine the ‘xxxxx’ variable across time points (‘eventname’). It incorporates xxxxxx. The results of the model are then printed to provide a detailed summary of the fitted model parameters.</p>
-<p><strong>STEP 1: Convert dataframe from long-to-wide format</strong></p>
+<section id="compute-signed-rank-test" class="level3">
+<h3 class="anchored" data-anchor-id="compute-signed-rank-test">Compute Signed Rank Test</h3>
+<p>This code performs a Signed Rank-Sum Test to compare ‘Height’ across 3 annual visits, focusing on the changes in height over time. The output of the test is provided below, along with a summary of results. This non-parametric test accounts for the paired nature of the observations and determines whether there are significant changes in height across the three time points without assuming a specific distribution for the data.</p>
 <div class="cell" data-layout-align="center">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r fold-hide number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Split the data into static (unchanging) and changing variables</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># Static variables are taken only from the baseline measurement occasion</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>df_static <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">filter</span>(eventname <span class="sc">==</span> <span class="st">"baseline_year_1_arm_1"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>  <span class="fu">select</span>(src_subject_id, site_id_l, sex)</span>
-<span id="cb5-6"><a href="#cb5-6"></a></span>
-<span id="cb5-7"><a href="#cb5-7"></a>df_changing <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a>  <span class="fu">select</span>(src_subject_id, eventname, income_numeric, education)</span>
-<span id="cb5-9"><a href="#cb5-9"></a></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co"># Convert the changing variables from long format to wide format</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a>df_wide_changing <span class="ot">&lt;-</span> df_changing <span class="sc">%&gt;%</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a>  <span class="fu">gather</span>(variable, value, <span class="sc">-</span>src_subject_id, <span class="sc">-</span>eventname) <span class="sc">%&gt;%</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a>  <span class="fu">unite</span>(<span class="st">"variable_event"</span>, variable, eventname) <span class="sc">%&gt;%</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a>  <span class="fu">spread</span>(variable_event, value)</span>
-<span id="cb5-15"><a href="#cb5-15"></a></span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="co"># Merge the static and changing data frames based on the 'src_subject_id' variable</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a>df_wide <span class="ot">&lt;-</span> df_static <span class="sc">%&gt;%</span></span>
-<span id="cb5-18"><a href="#cb5-18"></a>  <span class="fu">left_join</span>(df_wide_changing, <span class="at">by =</span> <span class="st">"src_subject_id"</span>)</span>
-<span id="cb5-19"><a href="#cb5-19"></a></span>
-<span id="cb5-20"><a href="#cb5-20"></a><span class="co"># Rename columns to shorter names for easier reference</span></span>
-<span id="cb5-21"><a href="#cb5-21"></a>df_wide <span class="ot">&lt;-</span> df_wide <span class="sc">%&gt;%</span> </span>
-<span id="cb5-22"><a href="#cb5-22"></a>        <span class="fu">rename</span>(<span class="st">"income_numeric_0"</span><span class="ot">=</span><span class="st">"income_numeric_baseline_year_1_arm_1"</span>,</span>
-<span id="cb5-23"><a href="#cb5-23"></a>               <span class="st">"income_numeric_1"</span><span class="ot">=</span><span class="st">"income_numeric_1_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb5-24"><a href="#cb5-24"></a>               <span class="st">"income_numeric_2"</span><span class="ot">=</span><span class="st">"income_numeric_2_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb5-25"><a href="#cb5-25"></a>               <span class="st">"income_numeric_3"</span><span class="ot">=</span><span class="st">"income_numeric_3_year_follow_up_y_arm_1"</span>,</span>
-<span id="cb5-26"><a href="#cb5-26"></a>               <span class="st">"income_numeric_4"</span><span class="ot">=</span><span class="st">"income_numeric_4_year_follow_up_y_arm_1"</span></span>
-<span id="cb5-27"><a href="#cb5-27"></a>               )</span>
-<span id="cb5-28"><a href="#cb5-28"></a></span>
-<span id="cb5-29"><a href="#cb5-29"></a><span class="co"># Reorder columns in the dataframe</span></span>
-<span id="cb5-30"><a href="#cb5-30"></a>df_wide <span class="ot">&lt;-</span> df_wide <span class="sc">%&gt;%</span> <span class="fu">select</span>(src_subject_id, site_id_l, sex, income_numeric_0, income_numeric_1, income_numeric_2, income_numeric_3, income_numeric_4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p><strong>Descriptive Statistics for the Income Variable</strong></p>
-<div class="cell" data-layout-align="center">
-<details open="" class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="do">## Summary statistics</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co"># Compute summary statistics for Income by eventname</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a>summary <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a>    <span class="fu">group_by</span>(eventname) <span class="sc">%&gt;%</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a>    <span class="fu">get_summary_stats</span>(income_numeric, <span class="at">type =</span> <span class="st">"mean_sd"</span>)</span>
-<span id="cb6-6"><a href="#cb6-6"></a></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="fu">data.frame</span>(summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["eventname"],"name":[1],"type":["ord"],"align":["right"]},{"label":["variable"],"name":[2],"type":["fct"],"align":["left"]},{"label":["n"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["mean"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"baseline_year_1_arm_1","2":"income_numeric","3":"10851","4":"7.22","5":"2.42"},{"1":"1_year_follow_up_y_arm_1","2":"income_numeric","3":"10304","4":"7.30","5":"2.38"},{"1":"2_year_follow_up_y_arm_1","2":"income_numeric","3":"10095","4":"7.31","5":"2.36"},{"1":"3_year_follow_up_y_arm_1","2":"income_numeric","3":"9546","4":"7.37","5":"2.32"},{"1":"4_year_follow_up_y_arm_1","2":"income_numeric","3":"4404","4":"7.42","5":"2.26"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-</div>
-<p>The summary statistics provide insights into the Weight variable across different <code>eventname</code> categories. At baseline, the average weight is approximately 7.224 units with a standard deviation of 2.423. Over the years, there’s a noticeable increase in average weight: by the first year, it’s about 7.299 units, and it continues to rise, reaching approximately 7.424 units by the fourth year. The standard deviation remains relatively consistent over the years, suggesting similar variability in weight measurements across these time points.</p>
-<p><strong>STEP 2: Compute Signed Rank Test</strong></p>
-<div class="cell" data-layout-align="center">
-<details open="" class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="do">#########</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>df_wide<span class="sc">$</span>income_numeric_0 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>income_numeric_0))</span>
-<span id="cb7-3"><a href="#cb7-3"></a>df_wide<span class="sc">$</span>income_numeric_1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>income_numeric_1))</span>
-<span id="cb7-4"><a href="#cb7-4"></a>df_wide<span class="sc">$</span>income_numeric_4 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>income_numeric_4))</span>
-<span id="cb7-5"><a href="#cb7-5"></a>df_wide_complete <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df_wide[, <span class="fu">c</span>(<span class="st">"income_numeric_0"</span>, <span class="st">"income_numeric_4"</span>)])</span>
-<span id="cb7-6"><a href="#cb7-6"></a></span>
-<span id="cb7-7"><a href="#cb7-7"></a>model <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(df_wide_complete<span class="sc">$</span>income_numeric_0, df_wide_complete<span class="sc">$</span>income_numeric_4, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-8"><a href="#cb7-8"></a></span>
-<span id="cb7-9"><a href="#cb7-9"></a><span class="fu">report</span>(<span class="fu">wilcox.test</span>(df_wide_complete<span class="sc">$</span>income_numeric_0, df_wide_complete<span class="sc">$</span>income_numeric_4))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Reshape data from long to wide format</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>df_wide <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>    <span class="fu">pivot_wider</span>(</span>
+<span id="cb3-4"><a href="#cb3-4"></a>        <span class="at">id_cols =</span> <span class="fu">c</span>(id),</span>
+<span id="cb3-5"><a href="#cb3-5"></a>        <span class="at">names_from =</span> event,</span>
+<span id="cb3-6"><a href="#cb3-6"></a>        <span class="at">values_from =</span> height,</span>
+<span id="cb3-7"><a href="#cb3-7"></a>        <span class="at">names_prefix =</span> <span class="st">"Height_"</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>    )</span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a>df_wide<span class="sc">$</span>Height_Baseline <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>Height_Baseline))</span>
+<span id="cb3-11"><a href="#cb3-11"></a>df_wide<span class="sc">$</span>Height_Year_1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>Height_Year_1))</span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a>df_wide_complete <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df_wide[, <span class="fu">c</span>(<span class="st">"Height_Baseline"</span>, <span class="st">"Height_Year_1"</span>)])</span>
+<span id="cb3-14"><a href="#cb3-14"></a></span>
+<span id="cb3-15"><a href="#cb3-15"></a>model <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(df_wide_complete<span class="sc">$</span>Height_Baseline, df_wide_complete<span class="sc">$</span>Height_Year_1, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="fu">report</span>(<span class="fu">wilcox.test</span>(df_wide_complete<span class="sc">$</span>Height_Baseline, df_wide_complete<span class="sc">$</span>Height_Year_1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Effect sizes were labelled following Funder's (2019) recommendations.
 
-The Wilcoxon rank sum test with continuity correction testing the difference in ranks between df_wide_complete$income_numeric_0 and df_wide_complete$income_numeric_4 suggests that the effect is positive, statistically
-not significant, and tiny (W = 9.70e+06, p &gt; .999; r (rank biserial) = 0.00, 95% CI [-0.02, 0.02])</code></pre>
+The Wilcoxon rank sum test with continuity correction testing the difference in ranks between df_wide_complete$Height_Baseline and df_wide_complete$Height_Year_1 suggests that the effect is negative, statistically
+significant, and large (W = 2.41e+06, p &lt; .001; r (rank biserial) = -0.39, 95% CI [-0.42, -0.37])</code></pre>
+</div>
+</div>
+<p>These results indicate a significant increase in height from baseline to Year 1, as evidenced by the Wilcoxon signed rank-sum test. The test statistic (W = 2.41e+06) and the negative rank biserial correlation (r = -0.39) suggest a large effect size, with the p-value (&lt; .001) confirming the statistical significance of the observed changes. This analysis shows that participants’ heights have significantly increased from baseline to Year 1.</p>
+</section>
+<section id="model-plots" class="level3">
+<h3 class="anchored" data-anchor-id="model-plots">Model Plots</h3>
+<div class="cell" data-layout-align="center">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">ggplot</span>(df_long, <span class="fu">aes</span>(<span class="at">x =</span> event, <span class="at">y =</span> height, <span class="at">group =</span> id)) <span class="sc">+</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> id), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">+</span>  <span class="co"># Individual trajectories</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span>  <span class="co"># Boxplot for summary statistics</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Comparison of Height Measurements Across Time Points"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5"></a>       <span class="at">x =</span> <span class="st">"Time Point"</span>, <span class="at">y =</span> <span class="st">"Height (inches)"</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)  <span class="co"># Hide legend, if not necessary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="4_Examples_SignedRankTest_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></p>
+</figure>
 </div>
 </div>
 </div>
-</div>
-<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div class="blue">
-<p>Testtesttest</p>
-</div>
-</div>
-</div>
-</div>
+<p>This plot illustrates the change in participants’ height across 3 annual measurement occasions using a combination of individual trajectories and boxplots. The grey lines represent individual participants’ height trajectories, demonstrating the variability among participants at each time point. The boxplots summarize the distribution of height measurements at each time point, highlighting the median, interquartile range, and potential outliers.</p>
+<p>The plot reveals significant changes in height over time, with the median height increasing across the three measurement occasions. The individual trajectories show that while most participants experience an increase in height, the rate of growth varies. This visualization helps to identify trends and patterns in height changes, as well as the variability in growth among participants. The boxplots provide a clear summary of the central tendency and spread of height measurements at each time point, indicating that the overall height distribution shifts upwards over time.</p>
+</section>
 </section>
 <section id="wrapping-up" class="level2">
 <h2 class="anchored" data-anchor-id="wrapping-up">Wrapping Up</h2>
-<div class="blue">
-
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Write-up</a></li></ul>
-<div class="tab-content">
-<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div class="blue">
-
-</div>
-</div>
-</div>
-</div>
+<p>The signed rank-sum test analysis revealed significant changes in children’s height measured over 3 annual assessments. The Wilcoxon rank sum test with continuity correction between baseline and Year 1 indicated a significant increase in height (W = 2.41e+06, p &lt; .001; r (rank biserial) = -0.39, 95% CI [-0.42, -0.37]). These results suggest a large effect size, with the p-value confirming the statistical significance of the observed changes. Participants’ heights significantly increased from baseline to Year 1. This non-parametric method was particularly useful for handling the paired nature of the data and did not assume normality, making it suitable for skewed distributions often encountered in growth measurements.</p>
+<p>The signed rank-sum test provided insights into overall changes in height without requiring parametric assumptions, demonstrating its utility in analyzing longitudinal data. This approach is valuable in developmental studies as it robustly detects significant changes over time, even with non-normal data distributions. By focusing on rank differences, the test highlights meaningful changes within individuals, offering a straightforward yet powerful method to examine growth patterns across repeated measurements.</p>
 
 
 <!-- -->
 
-</div></section>
 </section>
 
 </main> <!-- /main -->
@@ -1620,354 +1260,147 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">---</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="an">title:</span><span class="co"> "Signed-Rank Test"</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="co">---</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a></span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="fu"># Signed-Rank Test {.unnumbered}</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a></span>
-<span id="cb9-8"><a href="#cb9-8"></a>It is actually quite common that numeric depend variables need to be transformed or converted into ranks, i.e. ordinal variables, because the distribution of residuals does not allow the application of parametric tests such as t-tests or linear regression. In such cases, as we are dealing with rank (ordinal) data, the application of a chi-square test is unwarranted and we need to use another test. There are different alternatives depending on whether the data are paired (coming from the same individuals) or if all observations are independent.</span>
-<span id="cb9-9"><a href="#cb9-9"></a></span>
-<span id="cb9-10"><a href="#cb9-10"></a>The non-parametric alternative for independent t-tests, i.e. for data where we are dealing with two separate groups and a numeric dependent variable that violates parametric assumptions (or an ordinal dependent variable), is the Mann-Whitney U-test. In contrast, if the groups under investigation represent identical participants that are tested under two conditions, the appropriate alternative is a Wilcoxon Signed Rank test (which is thus the alternative for paired t-test).</span>
-<span id="cb9-11"><a href="#cb9-11"></a></span>
-<span id="cb9-12"><a href="#cb9-12"></a>Imagine we wanted to determine if two language families differed with respect to the size of their phoneme inventories. You have already ranked the inventory sizes and would now like to now if language family correlates with inventory size. As such, we are dealing with two independent groups and we want to implement a non-parametric alternative of a t-test. To answer this question, you create the table shown below.</span>
-<span id="cb9-13"><a href="#cb9-13"></a>####</span>
-<span id="cb9-14"><a href="#cb9-14"></a></span>
-<span id="cb9-15"><a href="#cb9-15"></a><span class="fu">## Overview</span></span>
-<span id="cb9-16"><a href="#cb9-16"></a></span>
-<span id="cb9-17"><a href="#cb9-17"></a>&lt;p&gt;</span>
-<span id="cb9-18"><a href="#cb9-18"></a></span>
-<span id="cb9-19"><a href="#cb9-19"></a>The Signed-Rank Test xxxxxxx. This xxxxxxx.</span>
-<span id="cb9-20"><a href="#cb9-20"></a></span>
-<span id="cb9-21"><a href="#cb9-21"></a>In this example, we will utilize the signed-rank test to analyze xxxxxx obtained across multiple measurement occasions for a sample of youth participating in the ABCD Study. Our primary objective is to understand xxxxxx, while factoring in the clustered nature of observations within individuals over time. The signed-rank test facilitates this by xxxxx.</span>
-<span id="cb9-22"><a href="#cb9-22"></a></span>
-<span id="cb9-23"><a href="#cb9-23"></a>&lt;/p&gt;</span>
-<span id="cb9-24"><a href="#cb9-24"></a></span>
-<span id="cb9-25"><a href="#cb9-25"></a><span class="fu">## Preliminary Setup</span></span>
-<span id="cb9-26"><a href="#cb9-26"></a></span>
-<span id="cb9-27"><a href="#cb9-27"></a>::: panel-tabset</span>
-<span id="cb9-28"><a href="#cb9-28"></a><span class="fu">### Install Packages {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb9-29"><a href="#cb9-29"></a></span>
-<span id="cb9-30"><a href="#cb9-30"></a>::: blue</span>
-<span id="cb9-31"><a href="#cb9-31"></a><span class="at">&gt; **This code installs the r packages necessary for this example, if</span></span>
-<span id="cb9-32"><a href="#cb9-32"></a><span class="at">&gt; they are not already installed**</span></span>
-<span id="cb9-33"><a href="#cb9-33"></a></span>
-<span id="cb9-34"><a href="#cb9-34"></a><span class="in">```{r pckg-install}</span></span>
-<span id="cb9-35"><a href="#cb9-35"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb9-36"><a href="#cb9-36"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb9-37"><a href="#cb9-37"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb9-38"><a href="#cb9-38"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb9-39"><a href="#cb9-39"></a></span>
-<span id="cb9-40"><a href="#cb9-40"></a><span class="in"># Create a list of required packages</span></span>
-<span id="cb9-41"><a href="#cb9-41"></a><span class="in">packages_required &lt;- c("tidyverse","rstatix","DT", "gtsummary","easystats")</span></span>
-<span id="cb9-42"><a href="#cb9-42"></a></span>
-<span id="cb9-43"><a href="#cb9-43"></a><span class="in"># Check which packages are not installed and install them</span></span>
-<span id="cb9-44"><a href="#cb9-44"></a><span class="in">packages_to_install &lt;- setdiff(packages_required, rownames(installed.packages()))</span></span>
-<span id="cb9-45"><a href="#cb9-45"></a><span class="in">if (length(packages_to_install) &gt; 0) {</span></span>
-<span id="cb9-46"><a href="#cb9-46"></a><span class="in">    install.packages(packages_to_install)</span></span>
-<span id="cb9-47"><a href="#cb9-47"></a><span class="in">}</span></span>
-<span id="cb9-48"><a href="#cb9-48"></a></span>
-<span id="cb9-49"><a href="#cb9-49"></a><span class="in"># Load the required packages</span></span>
-<span id="cb9-50"><a href="#cb9-50"></a><span class="in">lapply(packages_required, library, character.only = TRUE)</span></span>
-<span id="cb9-51"><a href="#cb9-51"></a></span>
-<span id="cb9-52"><a href="#cb9-52"></a><span class="in">```</span></span>
-<span id="cb9-53"><a href="#cb9-53"></a>:::</span>
-<span id="cb9-54"><a href="#cb9-54"></a></span>
-<span id="cb9-55"><a href="#cb9-55"></a><span class="fu">### Load Packages</span></span>
-<span id="cb9-56"><a href="#cb9-56"></a></span>
-<span id="cb9-57"><a href="#cb9-57"></a>::: blue</span>
-<span id="cb9-58"><a href="#cb9-58"></a>**This code loads the r libraries necessary for this example**</span>
-<span id="cb9-59"><a href="#cb9-59"></a></span>
-<span id="cb9-60"><a href="#cb9-60"></a><span class="in">```{r lib-load}</span></span>
-<span id="cb9-61"><a href="#cb9-61"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb9-62"><a href="#cb9-62"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb9-63"><a href="#cb9-63"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb9-64"><a href="#cb9-64"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb9-65"><a href="#cb9-65"></a></span>
-<span id="cb9-66"><a href="#cb9-66"></a><span class="in">library(tidyverse)    # Collection of R packages for data science</span></span>
-<span id="cb9-67"><a href="#cb9-67"></a><span class="in">library(rstatix)      # Pipe-friendly framework for basic statistical tests</span></span>
-<span id="cb9-68"><a href="#cb9-68"></a><span class="in">library(DT)           # Rendering interactive data tables</span></span>
-<span id="cb9-69"><a href="#cb9-69"></a><span class="in">library(easystats)    #</span></span>
-<span id="cb9-70"><a href="#cb9-70"></a><span class="in">library(gtsummary)    #</span></span>
-<span id="cb9-71"><a href="#cb9-71"></a><span class="in">```</span></span>
-<span id="cb9-72"><a href="#cb9-72"></a>:::</span>
-<span id="cb9-73"><a href="#cb9-73"></a></span>
-<span id="cb9-74"><a href="#cb9-74"></a><span class="in">```{r config}</span></span>
-<span id="cb9-75"><a href="#cb9-75"></a><span class="in">#| echo: FALSE</span></span>
-<span id="cb9-76"><a href="#cb9-76"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb9-77"><a href="#cb9-77"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb9-78"><a href="#cb9-78"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb9-79"><a href="#cb9-79"></a></span>
-<span id="cb9-80"><a href="#cb9-80"></a><span class="in">### Config Options</span></span>
-<span id="cb9-81"><a href="#cb9-81"></a><span class="in">#::: blue</span></span>
-<span id="cb9-82"><a href="#cb9-82"></a><span class="in">#**This code configures knitr code chunk options** </span></span>
-<span id="cb9-83"><a href="#cb9-83"></a></span>
-<span id="cb9-84"><a href="#cb9-84"></a><span class="in">knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, </span></span>
-<span id="cb9-85"><a href="#cb9-85"></a><span class="in">                      comment=NA, cache=T, code_folding=T,</span></span>
-<span id="cb9-86"><a href="#cb9-86"></a><span class="in">                      R.options=list(width=220, digits = 3),</span></span>
-<span id="cb9-87"><a href="#cb9-87"></a><span class="in">                      fig.align='center', </span></span>
-<span id="cb9-88"><a href="#cb9-88"></a><span class="in">                      out.width='75%', fig.asp=.75)</span></span>
-<span id="cb9-89"><a href="#cb9-89"></a><span class="in">```</span></span>
-<span id="cb9-90"><a href="#cb9-90"></a>:::</span>
-<span id="cb9-91"><a href="#cb9-91"></a></span>
-<span id="cb9-92"><a href="#cb9-92"></a><span class="fu">## Descriptives Overview</span></span>
-<span id="cb9-93"><a href="#cb9-93"></a></span>
-<span id="cb9-94"><a href="#cb9-94"></a>::: panel-tabset</span>
-<span id="cb9-95"><a href="#cb9-95"></a><span class="fu">### Read and View Data {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb9-96"><a href="#cb9-96"></a></span>
-<span id="cb9-97"><a href="#cb9-97"></a>::: blue</span>
-<span id="cb9-98"><a href="#cb9-98"></a></span>
-<span id="cb9-99"><a href="#cb9-99"></a>**This code reads in and shows the data to be used in the current example**</span>
-<span id="cb9-100"><a href="#cb9-100"></a></span>
-<span id="cb9-101"><a href="#cb9-101"></a><span class="in">```{r read-data}</span></span>
-<span id="cb9-102"><a href="#cb9-102"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb9-103"><a href="#cb9-103"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb9-104"><a href="#cb9-104"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb9-105"><a href="#cb9-105"></a><span class="in">#| output: FALSE</span></span>
-<span id="cb9-106"><a href="#cb9-106"></a><span class="in">#| cache: FALSE</span></span>
-<span id="cb9-107"><a href="#cb9-107"></a></span>
-<span id="cb9-108"><a href="#cb9-108"></a><span class="in"># Set the data paths</span></span>
-<span id="cb9-109"><a href="#cb9-109"></a><span class="in">data_path_1 &lt;- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/demo5.0.rds"</span></span>
-<span id="cb9-110"><a href="#cb9-110"></a><span class="in">data_path_2 &lt;- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
-<span id="cb9-111"><a href="#cb9-111"></a></span>
-<span id="cb9-112"><a href="#cb9-112"></a><span class="in"># Read the data</span></span>
-<span id="cb9-113"><a href="#cb9-113"></a><span class="in">data_demographics &lt;- readRDS(data_path_1)</span></span>
-<span id="cb9-114"><a href="#cb9-114"></a><span class="in">data_nonimaging &lt;- readRDS(data_path_2)</span></span>
-<span id="cb9-115"><a href="#cb9-115"></a></span>
-<span id="cb9-116"><a href="#cb9-116"></a><span class="in"># Subset the nonimaging data to include desired variables</span></span>
-<span id="cb9-117"><a href="#cb9-117"></a><span class="in">selected_vars &lt;- c("src_subject_id", "eventname", "anthroweightcalc")</span></span>
-<span id="cb9-118"><a href="#cb9-118"></a><span class="in">subset_data &lt;- data_nonimaging[, selected_vars]</span></span>
-<span id="cb9-119"><a href="#cb9-119"></a></span>
-<span id="cb9-120"><a href="#cb9-120"></a><span class="in">library(dplyr)</span></span>
-<span id="cb9-121"><a href="#cb9-121"></a><span class="in"># # Merge the datasets on 'src_subject_id' and 'eventname'</span></span>
-<span id="cb9-122"><a href="#cb9-122"></a><span class="in">merged_data &lt;- data_demographics %&gt;%</span></span>
-<span id="cb9-123"><a href="#cb9-123"></a><span class="in">  full_join(subset_data, by = c("src_subject_id", "eventname"))</span></span>
-<span id="cb9-124"><a href="#cb9-124"></a></span>
-<span id="cb9-125"><a href="#cb9-125"></a><span class="in"># Inspect the merged data structure</span></span>
-<span id="cb9-126"><a href="#cb9-126"></a><span class="in">str(merged_data)</span></span>
-<span id="cb9-127"><a href="#cb9-127"></a></span>
-<span id="cb9-128"><a href="#cb9-128"></a><span class="in"># Define event names to be retained in the analysis and convert variables to appropriate data types</span></span>
-<span id="cb9-129"><a href="#cb9-129"></a><span class="in">eventnames_to_include &lt;- c("baseline_year_1_arm_1",</span></span>
-<span id="cb9-130"><a href="#cb9-130"></a><span class="in">                           "1_year_follow_up_y_arm_1",</span></span>
-<span id="cb9-131"><a href="#cb9-131"></a><span class="in">                           "2_year_follow_up_y_arm_1",</span></span>
-<span id="cb9-132"><a href="#cb9-132"></a><span class="in">                           "3_year_follow_up_y_arm_1",</span></span>
-<span id="cb9-133"><a href="#cb9-133"></a><span class="in">                           "4_year_follow_up_y_arm_1")</span></span>
-<span id="cb9-134"><a href="#cb9-134"></a></span>
-<span id="cb9-135"><a href="#cb9-135"></a><span class="in">df &lt;- merged_data %&gt;%</span></span>
-<span id="cb9-136"><a href="#cb9-136"></a><span class="in">  filter(eventname %in% eventnames_to_include) %&gt;%</span></span>
-<span id="cb9-137"><a href="#cb9-137"></a><span class="in">  mutate(</span></span>
-<span id="cb9-138"><a href="#cb9-138"></a><span class="in">    src_subject_id = as.factor(src_subject_id),</span></span>
-<span id="cb9-139"><a href="#cb9-139"></a><span class="in">    eventname = factor(eventname, levels = eventnames_to_include, ordered = TRUE),</span></span>
-<span id="cb9-140"><a href="#cb9-140"></a><span class="in">    age = as.numeric(age),</span></span>
-<span id="cb9-141"><a href="#cb9-141"></a><span class="in">    sex = as.factor(sex),</span></span>
-<span id="cb9-142"><a href="#cb9-142"></a><span class="in">    race.4level = as.factor(race.4level),</span></span>
-<span id="cb9-143"><a href="#cb9-143"></a><span class="in">    hisp = as.factor(hisp),</span></span>
-<span id="cb9-144"><a href="#cb9-144"></a><span class="in">    high.educ.bl = as.factor(high.educ.bl),</span></span>
-<span id="cb9-145"><a href="#cb9-145"></a><span class="in">    household.income.bl = as.factor(household.income.bl),</span></span>
-<span id="cb9-146"><a href="#cb9-146"></a><span class="in">    acs_raked_propensity_score = as.numeric(acs_raked_propensity_score),</span></span>
-<span id="cb9-147"><a href="#cb9-147"></a><span class="in">    rel_family_id.bl = as.factor(rel_family_id.bl),</span></span>
-<span id="cb9-148"><a href="#cb9-148"></a><span class="in">    site_id_l = as.factor(site_id_l),</span></span>
-<span id="cb9-149"><a href="#cb9-149"></a><span class="in">    anthroweightcalc = as.numeric(anthroweightcalc)</span></span>
-<span id="cb9-150"><a href="#cb9-150"></a><span class="in">  ) %&gt;%</span></span>
-<span id="cb9-151"><a href="#cb9-151"></a><span class="in">  # Exclude cases from unused assessment waves</span></span>
-<span id="cb9-152"><a href="#cb9-152"></a><span class="in">  filter(!is.na(eventname))</span></span>
-<span id="cb9-153"><a href="#cb9-153"></a></span>
-<span id="cb9-154"><a href="#cb9-154"></a><span class="in">#####</span></span>
-<span id="cb9-155"><a href="#cb9-155"></a><span class="in">#Creating new ordinal variable for the example</span></span>
-<span id="cb9-156"><a href="#cb9-156"></a><span class="in">df$education &lt;- factor(</span></span>
-<span id="cb9-157"><a href="#cb9-157"></a><span class="in">  with(df, ifelse(high.educ.bl %in% c("1st grade", "2nd grade", "3rd grade", "4th grade",</span></span>
-<span id="cb9-158"><a href="#cb9-158"></a><span class="in">                                      "5th grade",</span></span>
-<span id="cb9-159"><a href="#cb9-159"></a><span class="in">                                      "6th grade", "7th grade", "8th grade", "9th grade",</span></span>
-<span id="cb9-160"><a href="#cb9-160"></a><span class="in">                                      "10th grade",</span></span>
-<span id="cb9-161"><a href="#cb9-161"></a><span class="in">                                      "11th grade", "12th grade"), "lt_highschool",</span></span>
-<span id="cb9-162"><a href="#cb9-162"></a><span class="in">                  ifelse(high.educ.bl == "High school graduate", "highschool",</span></span>
-<span id="cb9-163"><a href="#cb9-163"></a><span class="in">                  ifelse(high.educ.bl == "GED or equivalent Diploma", "GED",</span></span>
-<span id="cb9-164"><a href="#cb9-164"></a><span class="in">                  ifelse(high.educ.bl == "Some college", "some_college",</span></span>
-<span id="cb9-165"><a href="#cb9-165"></a><span class="in">                  ifelse(high.educ.bl %in% c("Associate degree: Academic Program", </span></span>
-<span id="cb9-166"><a href="#cb9-166"></a><span class="in">                                              "Associate degree: Occupational"),</span></span>
-<span id="cb9-167"><a href="#cb9-167"></a><span class="in">                         "associate_degree",</span></span>
-<span id="cb9-168"><a href="#cb9-168"></a><span class="in">                  ifelse(high.educ.bl == "Bachelor's degree (ex. BA", "Bachelor's_degree",</span></span>
-<span id="cb9-169"><a href="#cb9-169"></a><span class="in">                  ifelse(high.educ.bl == "Master's degree (ex. MA", "Master's_degree",</span></span>
-<span id="cb9-170"><a href="#cb9-170"></a><span class="in">                  ifelse(high.educ.bl %in% c("Doctoral degree (ex. PhD", "Professional</span></span>
-<span id="cb9-171"><a href="#cb9-171"></a><span class="in">                                             School degree (ex. MD"), </span></span>
-<span id="cb9-172"><a href="#cb9-172"></a><span class="in">                         "Advanced_degree", NA))))))))))</span></span>
-<span id="cb9-173"><a href="#cb9-173"></a><span class="in">  levels = c("lt_highschool", "highschool", "GED", "some_college", "associate_degree",</span></span>
-<span id="cb9-174"><a href="#cb9-174"></a><span class="in">             "Bachelor's_degree", "Master's_degree", "Advanced_degree")</span></span>
-<span id="cb9-175"><a href="#cb9-175"></a><span class="in">  ordered = TRUE</span></span>
-<span id="cb9-176"><a href="#cb9-176"></a></span>
-<span id="cb9-177"><a href="#cb9-177"></a></span>
-<span id="cb9-178"><a href="#cb9-178"></a><span class="in">####</span></span>
-<span id="cb9-179"><a href="#cb9-179"></a></span>
-<span id="cb9-180"><a href="#cb9-180"></a><span class="in">####</span></span>
-<span id="cb9-181"><a href="#cb9-181"></a><span class="in">df$income &lt;- factor(</span></span>
-<span id="cb9-182"><a href="#cb9-182"></a><span class="in">  with(df, ifelse(household.income.bl == "Less than $5,000", "&lt;$5,000",</span></span>
-<span id="cb9-183"><a href="#cb9-183"></a><span class="in">                  ifelse(household.income.bl == "$5,000 through $11,999", "$5,000-$11,999",</span></span>
-<span id="cb9-184"><a href="#cb9-184"></a><span class="in">                  ifelse(household.income.bl == "$12,000 through $15,999", "$12,000-$15,999",</span></span>
-<span id="cb9-185"><a href="#cb9-185"></a><span class="in">                  ifelse(household.income.bl == "$16,000 through $24,999", "$16,000-$24,999",</span></span>
-<span id="cb9-186"><a href="#cb9-186"></a><span class="in">                  ifelse(household.income.bl == "$25,000 through $34,999", "$25,000-$34,999",</span></span>
-<span id="cb9-187"><a href="#cb9-187"></a><span class="in">                  ifelse(household.income.bl == "$35,000 through $49,999", "$35,000-$49,999",</span></span>
-<span id="cb9-188"><a href="#cb9-188"></a><span class="in">                  ifelse(household.income.bl == "$50,000 through $74,999", "$50,000-$74,999",</span></span>
-<span id="cb9-189"><a href="#cb9-189"></a><span class="in">                  ifelse(household.income.bl == "$75,000 through $99,999", "$75,000-$99,999",</span></span>
-<span id="cb9-190"><a href="#cb9-190"></a><span class="in">                  ifelse(household.income.bl == "$100,000 through $199,999", "$100,000-$199,999",</span></span>
-<span id="cb9-191"><a href="#cb9-191"></a><span class="in">                  ifelse(household.income.bl == "$200,000 and greater", "≥$200,000",</span></span>
-<span id="cb9-192"><a href="#cb9-192"></a><span class="in">                  NA))))))))))),</span></span>
-<span id="cb9-193"><a href="#cb9-193"></a><span class="in">  levels = c("&lt;$5,000", "$5,000-$11,999", "$12,000-$15,999", "$16,000-$24,999",</span></span>
-<span id="cb9-194"><a href="#cb9-194"></a><span class="in">             "$25,000-$34,999", "$35,000-$49,999", "$50,000-$74,999",</span></span>
-<span id="cb9-195"><a href="#cb9-195"></a><span class="in">             "$75,000-$99,999", "$100,000-$199,999", "≥$200,000"),</span></span>
-<span id="cb9-196"><a href="#cb9-196"></a><span class="in">  ordered = TRUE</span></span>
-<span id="cb9-197"><a href="#cb9-197"></a><span class="in">)</span></span>
-<span id="cb9-198"><a href="#cb9-198"></a></span>
-<span id="cb9-199"><a href="#cb9-199"></a><span class="in">####</span></span>
-<span id="cb9-200"><a href="#cb9-200"></a></span>
-<span id="cb9-201"><a href="#cb9-201"></a><span class="in"># Create a mapping from factor levels to numeric values</span></span>
-<span id="cb9-202"><a href="#cb9-202"></a><span class="in">income_levels &lt;- c("Less than $5,000", "$5,000 through $11,999", "$12,000 through $15,999", "$16,000 through $24,999", "$25,000 through $34,999", "$35,000 through $49,999", "$50,000 through $74,999", "$75,000 through $99,999", "$100,000 through $199,999", "$200,000 and greater", "Don't know", "Refuse to answer", "No deseo responder")</span></span>
-<span id="cb9-203"><a href="#cb9-203"></a></span>
-<span id="cb9-204"><a href="#cb9-204"></a><span class="in"># We assign numbers 1 through 10, but we have 12 levels, including "Don't know", "Refuse to answer", and "No deseo responder"</span></span>
-<span id="cb9-205"><a href="#cb9-205"></a><span class="in"># Let's assume "Don't know" and any refusal to answer will be treated as NA</span></span>
-<span id="cb9-206"><a href="#cb9-206"></a><span class="in">income_numeric_values &lt;- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, NA, NA, NA)</span></span>
-<span id="cb9-207"><a href="#cb9-207"></a></span>
-<span id="cb9-208"><a href="#cb9-208"></a><span class="in"># Create a named vector for easy lookup</span></span>
-<span id="cb9-209"><a href="#cb9-209"></a><span class="in">income_values &lt;- setNames(income_numeric_values, income_levels)</span></span>
-<span id="cb9-210"><a href="#cb9-210"></a></span>
-<span id="cb9-211"><a href="#cb9-211"></a><span class="in"># Convert the `income` factor to numeric using the named vector</span></span>
-<span id="cb9-212"><a href="#cb9-212"></a><span class="in">df$income_numeric &lt;- income_values[as.character(df$household.income.bl)]</span></span>
-<span id="cb9-213"><a href="#cb9-213"></a></span>
-<span id="cb9-214"><a href="#cb9-214"></a><span class="in"># Handling NAs and refused to answer</span></span>
-<span id="cb9-215"><a href="#cb9-215"></a><span class="in">df$income_numeric[is.na(df$household.income.bl) | df$household.income.bl %in% c("Don't know", "Refuse to answer", "No deseo responder")] &lt;- NA</span></span>
-<span id="cb9-216"><a href="#cb9-216"></a></span>
-<span id="cb9-217"><a href="#cb9-217"></a></span>
-<span id="cb9-218"><a href="#cb9-218"></a><span class="in">```</span></span>
-<span id="cb9-219"><a href="#cb9-219"></a>:::</span>
-<span id="cb9-220"><a href="#cb9-220"></a></span>
-<span id="cb9-221"><a href="#cb9-221"></a><span class="fu">### Descriptives</span></span>
-<span id="cb9-222"><a href="#cb9-222"></a></span>
-<span id="cb9-223"><a href="#cb9-223"></a>::: blue</span>
-<span id="cb9-224"><a href="#cb9-224"></a>**This code creates a descriptives table**</span>
-<span id="cb9-225"><a href="#cb9-225"></a></span>
-<span id="cb9-226"><a href="#cb9-226"></a><span class="in">```{r descriptives}</span></span>
-<span id="cb9-227"><a href="#cb9-227"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb9-228"><a href="#cb9-228"></a><span class="in">#| messages: FALSE</span></span>
-<span id="cb9-229"><a href="#cb9-229"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb9-230"><a href="#cb9-230"></a></span>
-<span id="cb9-231"><a href="#cb9-231"></a><span class="in">descriptives_table &lt;- df %&gt;%</span></span>
-<span id="cb9-232"><a href="#cb9-232"></a><span class="in">  select(eventname, sex, race.4level, income_numeric, education) %&gt;%</span></span>
-<span id="cb9-233"><a href="#cb9-233"></a><span class="in">  mutate(eventname = factor(eventname, labels = c("Baseline", "Year 1","Year 2","Year 3","Year 4"))) %&gt;%</span></span>
-<span id="cb9-234"><a href="#cb9-234"></a><span class="in">  mutate(sex = factor(sex, labels = c("Female", "Male"))) %&gt;%</span></span>
-<span id="cb9-235"><a href="#cb9-235"></a><span class="in">  tbl_summary(</span></span>
-<span id="cb9-236"><a href="#cb9-236"></a><span class="in">    by = eventname,</span></span>
-<span id="cb9-237"><a href="#cb9-237"></a><span class="in">    missing = "no",</span></span>
-<span id="cb9-238"><a href="#cb9-238"></a><span class="in">    label = list(sex ~ "Sex", race.4level ~ "Race", income_numeric ~ "Income", </span></span>
-<span id="cb9-239"><a href="#cb9-239"></a><span class="in">                 education ~ "Education"),</span></span>
-<span id="cb9-240"><a href="#cb9-240"></a><span class="in">    statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),</span></span>
-<span id="cb9-241"><a href="#cb9-241"></a><span class="in">  ) %&gt;%</span></span>
-<span id="cb9-242"><a href="#cb9-242"></a><span class="in">modify_header(all_stat_cols() ~ "**{level}**&lt;br&gt;N = {n}") %&gt;%</span></span>
-<span id="cb9-243"><a href="#cb9-243"></a><span class="in">  bold_labels() %&gt;%</span></span>
-<span id="cb9-244"><a href="#cb9-244"></a><span class="in">  italicize_levels() %&gt;%</span></span>
-<span id="cb9-245"><a href="#cb9-245"></a><span class="in">  modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")</span></span>
-<span id="cb9-246"><a href="#cb9-246"></a><span class="in">theme_gtsummary_compact()</span></span>
-<span id="cb9-247"><a href="#cb9-247"></a></span>
-<span id="cb9-248"><a href="#cb9-248"></a><span class="in">descriptives_table</span></span>
-<span id="cb9-249"><a href="#cb9-249"></a><span class="in">```</span></span>
-<span id="cb9-250"><a href="#cb9-250"></a>:::</span>
-<span id="cb9-251"><a href="#cb9-251"></a>:::</span>
-<span id="cb9-252"><a href="#cb9-252"></a></span>
-<span id="cb9-253"><a href="#cb9-253"></a><span class="fu">## Results </span></span>
-<span id="cb9-254"><a href="#cb9-254"></a></span>
-<span id="cb9-255"><a href="#cb9-255"></a>::: panel-tabset</span>
-<span id="cb9-256"><a href="#cb9-256"></a><span class="fu">### Build Model {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb9-257"><a href="#cb9-257"></a></span>
-<span id="cb9-258"><a href="#cb9-258"></a>::: blue</span>
-<span id="cb9-259"><a href="#cb9-259"></a>The code fits a xxxx to examine the 'xxxxx' variable across time points ('eventname'). It incorporates xxxxxx. The results of the model are then printed to provide a detailed summary of the fitted model parameters.</span>
-<span id="cb9-260"><a href="#cb9-260"></a></span>
-<span id="cb9-261"><a href="#cb9-261"></a>**STEP 1: Convert dataframe from long-to-wide format**</span>
-<span id="cb9-262"><a href="#cb9-262"></a><span class="in">```{r long-to-wide}</span></span>
-<span id="cb9-263"><a href="#cb9-263"></a><span class="in">#| class.source: 'fold-hide'</span></span>
-<span id="cb9-264"><a href="#cb9-264"></a><span class="in">#| message: FALSE</span></span>
-<span id="cb9-265"><a href="#cb9-265"></a><span class="in">#| warning: FALSE</span></span>
-<span id="cb9-266"><a href="#cb9-266"></a><span class="in">#| echo: TRUE</span></span>
-<span id="cb9-267"><a href="#cb9-267"></a></span>
-<span id="cb9-268"><a href="#cb9-268"></a><span class="in"># Split the data into static (unchanging) and changing variables</span></span>
-<span id="cb9-269"><a href="#cb9-269"></a><span class="in"># Static variables are taken only from the baseline measurement occasion</span></span>
-<span id="cb9-270"><a href="#cb9-270"></a><span class="in">df_static &lt;- df %&gt;%</span></span>
-<span id="cb9-271"><a href="#cb9-271"></a><span class="in">  filter(eventname == "baseline_year_1_arm_1") %&gt;%</span></span>
-<span id="cb9-272"><a href="#cb9-272"></a><span class="in">  select(src_subject_id, site_id_l, sex)</span></span>
-<span id="cb9-273"><a href="#cb9-273"></a></span>
-<span id="cb9-274"><a href="#cb9-274"></a><span class="in">df_changing &lt;- df %&gt;%</span></span>
-<span id="cb9-275"><a href="#cb9-275"></a><span class="in">  select(src_subject_id, eventname, income_numeric, education)</span></span>
-<span id="cb9-276"><a href="#cb9-276"></a></span>
-<span id="cb9-277"><a href="#cb9-277"></a><span class="in"># Convert the changing variables from long format to wide format</span></span>
-<span id="cb9-278"><a href="#cb9-278"></a><span class="in">df_wide_changing &lt;- df_changing %&gt;%</span></span>
-<span id="cb9-279"><a href="#cb9-279"></a><span class="in">  gather(variable, value, -src_subject_id, -eventname) %&gt;%</span></span>
-<span id="cb9-280"><a href="#cb9-280"></a><span class="in">  unite("variable_event", variable, eventname) %&gt;%</span></span>
-<span id="cb9-281"><a href="#cb9-281"></a><span class="in">  spread(variable_event, value)</span></span>
-<span id="cb9-282"><a href="#cb9-282"></a></span>
-<span id="cb9-283"><a href="#cb9-283"></a><span class="in"># Merge the static and changing data frames based on the 'src_subject_id' variable</span></span>
-<span id="cb9-284"><a href="#cb9-284"></a><span class="in">df_wide &lt;- df_static %&gt;%</span></span>
-<span id="cb9-285"><a href="#cb9-285"></a><span class="in">  left_join(df_wide_changing, by = "src_subject_id")</span></span>
-<span id="cb9-286"><a href="#cb9-286"></a></span>
-<span id="cb9-287"><a href="#cb9-287"></a><span class="in"># Rename columns to shorter names for easier reference</span></span>
-<span id="cb9-288"><a href="#cb9-288"></a><span class="in">df_wide &lt;- df_wide %&gt;% </span></span>
-<span id="cb9-289"><a href="#cb9-289"></a><span class="in">        rename("income_numeric_0"="income_numeric_baseline_year_1_arm_1",</span></span>
-<span id="cb9-290"><a href="#cb9-290"></a><span class="in">               "income_numeric_1"="income_numeric_1_year_follow_up_y_arm_1",</span></span>
-<span id="cb9-291"><a href="#cb9-291"></a><span class="in">               "income_numeric_2"="income_numeric_2_year_follow_up_y_arm_1",</span></span>
-<span id="cb9-292"><a href="#cb9-292"></a><span class="in">               "income_numeric_3"="income_numeric_3_year_follow_up_y_arm_1",</span></span>
-<span id="cb9-293"><a href="#cb9-293"></a><span class="in">               "income_numeric_4"="income_numeric_4_year_follow_up_y_arm_1"</span></span>
-<span id="cb9-294"><a href="#cb9-294"></a><span class="in">               )</span></span>
-<span id="cb9-295"><a href="#cb9-295"></a></span>
-<span id="cb9-296"><a href="#cb9-296"></a><span class="in"># Reorder columns in the dataframe</span></span>
-<span id="cb9-297"><a href="#cb9-297"></a><span class="in">df_wide &lt;- df_wide %&gt;% select(src_subject_id, site_id_l, sex, income_numeric_0, income_numeric_1, income_numeric_2, income_numeric_3, income_numeric_4)</span></span>
-<span id="cb9-298"><a href="#cb9-298"></a></span>
-<span id="cb9-299"><a href="#cb9-299"></a><span class="in">```</span></span>
-<span id="cb9-300"><a href="#cb9-300"></a></span>
-<span id="cb9-301"><a href="#cb9-301"></a>**Descriptive Statistics for the Income Variable**</span>
-<span id="cb9-304"><a href="#cb9-304"></a><span class="in">```{r}</span></span>
-<span id="cb9-305"><a href="#cb9-305"></a><span class="do">## Summary statistics</span></span>
-<span id="cb9-306"><a href="#cb9-306"></a><span class="co"># Compute summary statistics for Income by eventname</span></span>
-<span id="cb9-307"><a href="#cb9-307"></a>summary <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb9-308"><a href="#cb9-308"></a>    <span class="fu">group_by</span>(eventname) <span class="sc">%&gt;%</span></span>
-<span id="cb9-309"><a href="#cb9-309"></a>    <span class="fu">get_summary_stats</span>(income_numeric, <span class="at">type =</span> <span class="st">"mean_sd"</span>)</span>
-<span id="cb9-310"><a href="#cb9-310"></a></span>
-<span id="cb9-311"><a href="#cb9-311"></a><span class="fu">data.frame</span>(summary)</span>
-<span id="cb9-312"><a href="#cb9-312"></a><span class="in">```</span></span>
-<span id="cb9-313"><a href="#cb9-313"></a></span>
-<span id="cb9-314"><a href="#cb9-314"></a>The summary statistics provide insights into the Weight variable across different <span class="in">`eventname`</span> categories. At baseline, the average weight is approximately <span class="in">`r summary$mean[summary$eventname == "baseline_year_1_arm_1"]`</span> units with a standard deviation of <span class="in">`r summary$sd[summary$eventname == "baseline_year_1_arm_1"]`</span>. Over the years, there’s a noticeable increase in average weight: by the first year, it’s about <span class="in">`r summary$mean[summary$eventname == "1_year_follow_up_y_arm_1"]`</span> units, and it continues to rise, reaching approximately <span class="in">`r summary$mean[summary$eventname == "4_year_follow_up_y_arm_1"]`</span> units by the fourth year. The standard deviation remains relatively consistent over the years, suggesting similar variability in weight measurements across these time points.</span>
-<span id="cb9-315"><a href="#cb9-315"></a></span>
-<span id="cb9-316"><a href="#cb9-316"></a>**STEP 2: Compute Signed Rank Test**</span>
-<span id="cb9-319"><a href="#cb9-319"></a><span class="in">```{r}</span></span>
-<span id="cb9-320"><a href="#cb9-320"></a><span class="do">#########</span></span>
-<span id="cb9-321"><a href="#cb9-321"></a>df_wide<span class="sc">$</span>income_numeric_0 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>income_numeric_0))</span>
-<span id="cb9-322"><a href="#cb9-322"></a>df_wide<span class="sc">$</span>income_numeric_1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>income_numeric_1))</span>
-<span id="cb9-323"><a href="#cb9-323"></a>df_wide<span class="sc">$</span>income_numeric_4 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>income_numeric_4))</span>
-<span id="cb9-324"><a href="#cb9-324"></a>df_wide_complete <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df_wide[, <span class="fu">c</span>(<span class="st">"income_numeric_0"</span>, <span class="st">"income_numeric_4"</span>)])</span>
-<span id="cb9-325"><a href="#cb9-325"></a></span>
-<span id="cb9-326"><a href="#cb9-326"></a>model <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(df_wide_complete<span class="sc">$</span>income_numeric_0, df_wide_complete<span class="sc">$</span>income_numeric_4, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-327"><a href="#cb9-327"></a></span>
-<span id="cb9-328"><a href="#cb9-328"></a><span class="fu">report</span>(<span class="fu">wilcox.test</span>(df_wide_complete<span class="sc">$</span>income_numeric_0, df_wide_complete<span class="sc">$</span>income_numeric_4))</span>
-<span id="cb9-329"><a href="#cb9-329"></a></span>
-<span id="cb9-330"><a href="#cb9-330"></a><span class="in">```</span></span>
-<span id="cb9-331"><a href="#cb9-331"></a></span>
-<span id="cb9-332"><a href="#cb9-332"></a>:::</span>
-<span id="cb9-333"><a href="#cb9-333"></a></span>
-<span id="cb9-334"><a href="#cb9-334"></a><span class="fu">### Model Plots</span></span>
-<span id="cb9-335"><a href="#cb9-335"></a></span>
-<span id="cb9-336"><a href="#cb9-336"></a>::: blue</span>
-<span id="cb9-337"><a href="#cb9-337"></a>Testtesttest</span>
-<span id="cb9-338"><a href="#cb9-338"></a></span>
-<span id="cb9-339"><a href="#cb9-339"></a>:::</span>
-<span id="cb9-340"><a href="#cb9-340"></a>:::</span>
-<span id="cb9-341"><a href="#cb9-341"></a></span>
-<span id="cb9-342"><a href="#cb9-342"></a><span class="fu">## Wrapping Up</span></span>
-<span id="cb9-343"><a href="#cb9-343"></a>&lt;div class = "blue"&gt;</span>
-<span id="cb9-344"><a href="#cb9-344"></a></span>
-<span id="cb9-345"><a href="#cb9-345"></a>::: panel-tabset</span>
-<span id="cb9-346"><a href="#cb9-346"></a><span class="fu">### Write-up {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb9-347"><a href="#cb9-347"></a></span>
-<span id="cb9-348"><a href="#cb9-348"></a>::: blue</span>
-<span id="cb9-349"><a href="#cb9-349"></a></span>
-<span id="cb9-350"><a href="#cb9-350"></a>:::</span>
-<span id="cb9-351"><a href="#cb9-351"></a>:::</span>
-<span id="cb9-352"><a href="#cb9-352"></a></span>
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="an">title:</span><span class="co"> "Signed-Rank Test"</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">---</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="in">```{r}</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#| echo: FALSE # The content of this code block will not be rendered</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#| output: FALSE # Output from this code block will not be rendered</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co"># This code configures knitr code chunk options</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    <span class="at">echo =</span> T, <span class="at">message =</span> F, <span class="at">warning =</span> F, <span class="at">error =</span> F, <span class="at">output =</span> T,</span>
+<span id="cb6-16"><a href="#cb6-16"></a>    <span class="at">comment =</span> <span class="cn">NA</span>, <span class="at">cache =</span> T, <span class="at">code_folding =</span> T,</span>
+<span id="cb6-17"><a href="#cb6-17"></a>    <span class="at">R.options =</span> <span class="fu">list</span>(<span class="at">width =</span> <span class="dv">220</span>, <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb6-18"><a href="#cb6-18"></a>    <span class="at">fig.align =</span> <span class="st">"center"</span>,</span>
+<span id="cb6-19"><a href="#cb6-19"></a>    <span class="at">out.width =</span> <span class="st">"75%"</span>, <span class="at">fig.asp =</span> .<span class="dv">75</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a>)</span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="in">```</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="in">```{r}</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#| echo: FALSE # The content of this code block will not be shown when rendered</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#| output: FALSE # Output from this code block will not be shown when rendered</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#| cache: FALSE</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="co"># This code loads the data to be used for the example</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a></span>
+<span id="cb6-32"><a href="#cb6-32"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb6-33"><a href="#cb6-33"></a></span>
+<span id="cb6-34"><a href="#cb6-34"></a><span class="co"># Set the data path</span></span>
+<span id="cb6-35"><a href="#cb6-35"></a>data_path <span class="ot">&lt;-</span> <span class="st">"/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a></span>
+<span id="cb6-37"><a href="#cb6-37"></a><span class="co"># Read the data</span></span>
+<span id="cb6-38"><a href="#cb6-38"></a>df <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_path)</span>
+<span id="cb6-39"><a href="#cb6-39"></a></span>
+<span id="cb6-40"><a href="#cb6-40"></a><span class="co"># Create and mutate the dataframe</span></span>
+<span id="cb6-41"><a href="#cb6-41"></a>df_long <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb6-42"><a href="#cb6-42"></a>    <span class="fu">select</span>(src_subject_id, eventname, anthroheightcalc) <span class="sc">%&gt;%</span></span>
+<span id="cb6-43"><a href="#cb6-43"></a>    <span class="fu">filter</span>(eventname <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"baseline_year_1_arm_1"</span>, <span class="st">"1_year_follow_up_y_arm_1"</span>, <span class="st">"2_year_follow_up_y_arm_1"</span>, <span class="st">"3_year_follow_up_y_arm_1"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-44"><a href="#cb6-44"></a>    <span class="fu">drop_na</span>(anthroheightcalc) <span class="sc">%&gt;%</span></span>
+<span id="cb6-45"><a href="#cb6-45"></a>    <span class="fu">arrange</span>(src_subject_id, eventname) <span class="sc">%&gt;%</span></span>
+<span id="cb6-46"><a href="#cb6-46"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-47"><a href="#cb6-47"></a>        <span class="at">src_subject_id =</span> <span class="fu">factor</span>(src_subject_id),</span>
+<span id="cb6-48"><a href="#cb6-48"></a>        <span class="at">eventname =</span> <span class="fu">factor</span>(eventname, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"baseline_year_1_arm_1"</span>, <span class="st">"1_year_follow_up_y_arm_1"</span>, <span class="st">"2_year_follow_up_y_arm_1"</span>, <span class="st">"3_year_follow_up_y_arm_1"</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Baseline"</span>, <span class="st">"Year_1"</span>, <span class="st">"Year_2"</span>, <span class="st">"Year_3"</span>)),</span>
+<span id="cb6-49"><a href="#cb6-49"></a>        <span class="at">anthroheightcalc =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(anthroheightcalc), <span class="dv">2</span>)</span>
+<span id="cb6-50"><a href="#cb6-50"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-51"><a href="#cb6-51"></a>    <span class="fu">rename</span>(</span>
+<span id="cb6-52"><a href="#cb6-52"></a>        <span class="at">id =</span> src_subject_id,</span>
+<span id="cb6-53"><a href="#cb6-53"></a>        <span class="at">event =</span> eventname,</span>
+<span id="cb6-54"><a href="#cb6-54"></a>        <span class="at">height =</span> anthroheightcalc</span>
+<span id="cb6-55"><a href="#cb6-55"></a>    )</span>
+<span id="cb6-56"><a href="#cb6-56"></a></span>
+<span id="cb6-57"><a href="#cb6-57"></a>df_long <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
+<span id="cb6-58"><a href="#cb6-58"></a>    <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb6-59"><a href="#cb6-59"></a>    <span class="fu">filter</span>(<span class="fu">all</span>(<span class="fu">c</span>(<span class="st">"Baseline"</span>, <span class="st">"Year_1"</span>, <span class="st">"Year_2"</span>, <span class="st">"Year_3"</span>) <span class="sc">%in%</span> event)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-60"><a href="#cb6-60"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb6-61"><a href="#cb6-61"></a></span>
+<span id="cb6-62"><a href="#cb6-62"></a><span class="in">```</span></span>
+<span id="cb6-63"><a href="#cb6-63"></a></span>
+<span id="cb6-64"><a href="#cb6-64"></a><span class="fu">## Overview</span></span>
+<span id="cb6-65"><a href="#cb6-65"></a>The Signed Rank-Sum test is a non-parametric method used to compare paired samples or repeated measures. Unlike traditional parametric tests, it does not assume normality and is particularly useful when dealing with skewed distributions or ordinal data. This method extends the Wilcoxon signed rank-sum test to handle multiple measurements over time, making it suitable for longitudinal data analysis.</span>
+<span id="cb6-66"><a href="#cb6-66"></a></span>
+<span id="cb6-67"><a href="#cb6-67"></a>This example will examine changes in height across 3 annual measurement occasions in a sample of youth taking part in the ABCD Study. The primary aim is to determine whether there are significant changes in height over time, while accounting for observations that are clustered within youth over time. The signed rank-sum test will help us identify whether height levels have significantly increased or decreased across the three time points without making parametric assumptions about the data distribution.</span>
+<span id="cb6-68"><a href="#cb6-68"></a></span>
+<span id="cb6-69"><a href="#cb6-69"></a><span class="fu">## Preliminary Setup</span></span>
+<span id="cb6-70"><a href="#cb6-70"></a><span class="fu">### Load Packages</span></span>
+<span id="cb6-73"><a href="#cb6-73"></a><span class="in">```{r}</span></span>
+<span id="cb6-74"><a href="#cb6-74"></a><span class="fu">library</span>(tidyverse) <span class="co"># Collection of R packages for data science</span></span>
+<span id="cb6-75"><a href="#cb6-75"></a><span class="fu">library</span>(gtsummary) <span class="co"># Publication-ready tables</span></span>
+<span id="cb6-76"><a href="#cb6-76"></a><span class="fu">library</span>(rstatix) <span class="co"># Statistical Tests in tidy format</span></span>
+<span id="cb6-77"><a href="#cb6-77"></a><span class="fu">library</span>(easystats) <span class="co"># </span></span>
+<span id="cb6-78"><a href="#cb6-78"></a><span class="fu">library</span>(lme4) <span class="co"># Linear mixed-effects models</span></span>
+<span id="cb6-79"><a href="#cb6-79"></a><span class="in">```</span></span>
+<span id="cb6-80"><a href="#cb6-80"></a></span>
+<span id="cb6-81"><a href="#cb6-81"></a><span class="fu">### Descriptives</span></span>
+<span id="cb6-84"><a href="#cb6-84"></a><span class="in">```{r}</span></span>
+<span id="cb6-85"><a href="#cb6-85"></a>descriptives_table <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
+<span id="cb6-86"><a href="#cb6-86"></a>    <span class="fu">select</span>(event, height) <span class="sc">%&gt;%</span></span>
+<span id="cb6-87"><a href="#cb6-87"></a>    <span class="fu">mutate</span>(<span class="at">event =</span> <span class="fu">factor</span>(event)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-88"><a href="#cb6-88"></a>    <span class="fu">tbl_summary</span>(</span>
+<span id="cb6-89"><a href="#cb6-89"></a>        <span class="at">by =</span> event,</span>
+<span id="cb6-90"><a href="#cb6-90"></a>        <span class="at">missing =</span> <span class="st">"no"</span>,</span>
+<span id="cb6-91"><a href="#cb6-91"></a>        <span class="at">label =</span> <span class="fu">list</span>(height <span class="sc">~</span> <span class="st">"Height"</span>),</span>
+<span id="cb6-92"><a href="#cb6-92"></a>        <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>, <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{p}%"</span>),</span>
+<span id="cb6-93"><a href="#cb6-93"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-94"><a href="#cb6-94"></a>    <span class="fu">modify_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**{level}**&lt;br&gt;N = {n}"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-95"><a href="#cb6-95"></a>    <span class="fu">bold_labels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-96"><a href="#cb6-96"></a>    <span class="fu">italicize_levels</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-97"><a href="#cb6-97"></a>    <span class="fu">modify_spanning_header</span>(<span class="fu">all_stat_cols</span>() <span class="sc">~</span> <span class="st">"**Assessment Wave**"</span>)</span>
+<span id="cb6-98"><a href="#cb6-98"></a><span class="fu">theme_gtsummary_compact</span>()</span>
+<span id="cb6-99"><a href="#cb6-99"></a></span>
+<span id="cb6-100"><a href="#cb6-100"></a>descriptives_table</span>
+<span id="cb6-101"><a href="#cb6-101"></a></span>
+<span id="cb6-102"><a href="#cb6-102"></a><span class="in">```</span></span>
+<span id="cb6-103"><a href="#cb6-103"></a></span>
+<span id="cb6-104"><a href="#cb6-104"></a><span class="fu">## Results </span></span>
+<span id="cb6-105"><a href="#cb6-105"></a><span class="fu">### Compute Signed Rank Test</span></span>
+<span id="cb6-106"><a href="#cb6-106"></a>This code performs a Signed Rank-Sum Test to compare 'Height' across 3 annual visits, focusing on the changes in height over time. The output of the test is provided below, along with a summary of results. This non-parametric test accounts for the paired nature of the observations and determines whether there are significant changes in height across the three time points without assuming a specific distribution for the data.</span>
+<span id="cb6-107"><a href="#cb6-107"></a></span>
+<span id="cb6-110"><a href="#cb6-110"></a><span class="in">```{r}</span></span>
+<span id="cb6-111"><a href="#cb6-111"></a><span class="co"># Reshape data from long to wide format</span></span>
+<span id="cb6-112"><a href="#cb6-112"></a>df_wide <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
+<span id="cb6-113"><a href="#cb6-113"></a>    <span class="fu">pivot_wider</span>(</span>
+<span id="cb6-114"><a href="#cb6-114"></a>        <span class="at">id_cols =</span> <span class="fu">c</span>(id),</span>
+<span id="cb6-115"><a href="#cb6-115"></a>        <span class="at">names_from =</span> event,</span>
+<span id="cb6-116"><a href="#cb6-116"></a>        <span class="at">values_from =</span> height,</span>
+<span id="cb6-117"><a href="#cb6-117"></a>        <span class="at">names_prefix =</span> <span class="st">"Height_"</span></span>
+<span id="cb6-118"><a href="#cb6-118"></a>    )</span>
+<span id="cb6-119"><a href="#cb6-119"></a></span>
+<span id="cb6-120"><a href="#cb6-120"></a>df_wide<span class="sc">$</span>Height_Baseline <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>Height_Baseline))</span>
+<span id="cb6-121"><a href="#cb6-121"></a>df_wide<span class="sc">$</span>Height_Year_1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_wide<span class="sc">$</span>Height_Year_1))</span>
+<span id="cb6-122"><a href="#cb6-122"></a></span>
+<span id="cb6-123"><a href="#cb6-123"></a>df_wide_complete <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df_wide[, <span class="fu">c</span>(<span class="st">"Height_Baseline"</span>, <span class="st">"Height_Year_1"</span>)])</span>
+<span id="cb6-124"><a href="#cb6-124"></a></span>
+<span id="cb6-125"><a href="#cb6-125"></a>model <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(df_wide_complete<span class="sc">$</span>Height_Baseline, df_wide_complete<span class="sc">$</span>Height_Year_1, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-126"><a href="#cb6-126"></a></span>
+<span id="cb6-127"><a href="#cb6-127"></a><span class="fu">report</span>(<span class="fu">wilcox.test</span>(df_wide_complete<span class="sc">$</span>Height_Baseline, df_wide_complete<span class="sc">$</span>Height_Year_1))</span>
+<span id="cb6-128"><a href="#cb6-128"></a></span>
+<span id="cb6-129"><a href="#cb6-129"></a><span class="in">```</span></span>
+<span id="cb6-130"><a href="#cb6-130"></a>These results indicate a significant increase in height from baseline to Year 1, as evidenced by the Wilcoxon signed rank-sum test. The test statistic (W = 2.41e+06) and the negative rank biserial correlation (r = -0.39) suggest a large effect size, with the p-value (&lt; .001) confirming the statistical significance of the observed changes. This analysis shows that participants' heights have significantly increased from baseline to Year 1.</span>
+<span id="cb6-131"><a href="#cb6-131"></a></span>
+<span id="cb6-132"><a href="#cb6-132"></a><span class="fu">### Model Plots</span></span>
+<span id="cb6-135"><a href="#cb6-135"></a><span class="in">```{r}</span></span>
+<span id="cb6-136"><a href="#cb6-136"></a><span class="fu">ggplot</span>(df_long, <span class="fu">aes</span>(<span class="at">x =</span> event, <span class="at">y =</span> height, <span class="at">group =</span> id)) <span class="sc">+</span></span>
+<span id="cb6-137"><a href="#cb6-137"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> id), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">+</span>  <span class="co"># Individual trajectories</span></span>
+<span id="cb6-138"><a href="#cb6-138"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span>  <span class="co"># Boxplot for summary statistics</span></span>
+<span id="cb6-139"><a href="#cb6-139"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Comparison of Height Measurements Across Time Points"</span>,</span>
+<span id="cb6-140"><a href="#cb6-140"></a>       <span class="at">x =</span> <span class="st">"Time Point"</span>, <span class="at">y =</span> <span class="st">"Height (inches)"</span>) <span class="sc">+</span></span>
+<span id="cb6-141"><a href="#cb6-141"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-142"><a href="#cb6-142"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)  <span class="co"># Hide legend, if not necessary</span></span>
+<span id="cb6-143"><a href="#cb6-143"></a></span>
+<span id="cb6-144"><a href="#cb6-144"></a><span class="in">```</span></span>
+<span id="cb6-145"><a href="#cb6-145"></a>This plot illustrates the change in participants' height across 3 annual measurement occasions using a combination of individual trajectories and boxplots. The grey lines represent individual participants' height trajectories, demonstrating the variability among participants at each time point. The boxplots summarize the distribution of height measurements at each time point, highlighting the median, interquartile range, and potential outliers.</span>
+<span id="cb6-146"><a href="#cb6-146"></a></span>
+<span id="cb6-147"><a href="#cb6-147"></a>The plot reveals significant changes in height over time, with the median height increasing across the three measurement occasions. The individual trajectories show that while most participants experience an increase in height, the rate of growth varies. This visualization helps to identify trends and patterns in height changes, as well as the variability in growth among participants. The boxplots provide a clear summary of the central tendency and spread of height measurements at each time point, indicating that the overall height distribution shifts upwards over time.</span>
+<span id="cb6-148"><a href="#cb6-148"></a></span>
+<span id="cb6-149"><a href="#cb6-149"></a><span class="fu">## Wrapping Up</span></span>
+<span id="cb6-150"><a href="#cb6-150"></a>The signed rank-sum test analysis revealed significant changes in children's height measured over 3 annual assessments. The Wilcoxon rank sum test with continuity correction between baseline and Year 1 indicated a significant increase in height (W = 2.41e+06, p &lt; .001; r (rank biserial) = -0.39, 95% CI <span class="co">[</span><span class="ot">-0.42, -0.37</span><span class="co">]</span>). These results suggest a large effect size, with the p-value confirming the statistical significance of the observed changes. Participants' heights significantly increased from baseline to Year 1. This non-parametric method was particularly useful for handling the paired nature of the data and did not assume normality, making it suitable for skewed distributions often encountered in growth measurements.</span>
+<span id="cb6-151"><a href="#cb6-151"></a></span>
+<span id="cb6-152"><a href="#cb6-152"></a>The signed rank-sum test provided insights into overall changes in height without requiring parametric assumptions, demonstrating its utility in analyzing longitudinal data. This approach is valuable in developmental studies as it robustly detects significant changes over time, even with non-normal data distributions. By focusing on rank differences, the test highlights meaningful changes within individuals, offering a straightforward yet powerful method to examine growth patterns across repeated measurements.</span>
+<span id="cb6-153"><a href="#cb6-153"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

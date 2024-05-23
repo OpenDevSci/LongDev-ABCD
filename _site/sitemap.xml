@@ -9,6 +9,14 @@
     <lastmod>2024-05-01T01:10:56.399Z</lastmod>
   </url>
   <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/7_Examples_GeneralizedLinearMixedEffectsModels.html</loc>
+    <lastmod>2024-05-23T02:04:04.444Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/5_Examples_MarginalModels.html</loc>
+    <lastmod>2024-05-17T02:03:37.012Z</lastmod>
+  </url>
+  <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/3a_Examples_LinearMixedModels.html</loc>
     <lastmod>2024-05-01T15:59:19.670Z</lastmod>
   </url>
@@ -38,7 +46,15 @@
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/4_Examples_SignedRankTest.html</loc>
-    <lastmod>2024-03-19T20:20:53.999Z</lastmod>
+    <lastmod>2024-05-17T02:04:19.566Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/6_Examples_GeneralizedEstimatingEquations.html</loc>
+    <lastmod>2024-05-23T01:52:42.417Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/8_Examples_AutoregressiveCrosslaggedPanelModels.html</loc>
+    <lastmod>2024-05-22T15:25:43.009Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/10_Examples_LatentGrowthCurveModels.html</loc>

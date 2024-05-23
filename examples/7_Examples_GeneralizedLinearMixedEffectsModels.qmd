@@ -75,6 +75,7 @@ This example will examine height across 3 annual measurement occasions in a samp
 library(tidyverse)    # Collection of R packages for data science
 library(rstatix)      # Pipe-friendly framework for basic statistical tests
 library(lme4)         # Linear mixed-effects models
+library(gtsummary) # Publication-ready tables
 
 ```
 
@@ -106,14 +107,14 @@ This code fits a Generalized Linear Mixed Model (GLMM) to predict 'Height' acros
 
 ```{r}
 
-# Fit the LMM model
-model <- lmer(height ~ 1 + event + (1 | id), data = df_long, REML = TRUE)
-
-# Extract fixed effects
-fixed_effects <- fixef(model)
-
-summary(model)
-summary(fixed_effects)
+# # Fit the GLMM model
+# model <- lmer(handedness ~ 1 + event + (1 | id), data = df_long, REML = TRUE)
+# 
+# # Extract fixed effects
+# fixed_effects <- fixef(model)
+# 
+# summary(model)
+# summary(fixed_effects)
 
 
 ```
@@ -123,26 +124,26 @@ These results show an increasing trajectory of height across the years, with an 
 ### Model Plots
 ```{r}
 
-# Prepare data frame for plotting
-df_long$predicted_height <- predict(model, re.form = NA) # Overall fixed effect predictions
-
-# Calculate individual intercept adjustments
-df_long$individual_intercept <- predict(model, re.form = ~ (1 | id)) - fixed_effects[1]
-
-# Combine fixed effects and random effects predictions
-df_long$combined_predicted_height <- df_long$predicted_height + df_long$individual_intercept
-
-# Generate the plot
-ggplot(df_long, aes(x = event, y = height)) +
-  geom_point(alpha = 0.3) +
-  geom_line(aes(y = combined_predicted_height, group = id), color = "grey", alpha = 0.5) +
-  geom_line(aes(y = predicted_height, group = 1), color = "blue", size = 1.5) +
-  labs(
-    title = "Predicted vs. Observed Heights with GLMM",
-    x = "Event",
-    y = "Height (inches)"
-  ) +
-  theme_minimal()
+# # Prepare data frame for plotting
+# df_long$predicted_height <- predict(model, re.form = NA) # Overall fixed effect predictions
+# 
+# # Calculate individual intercept adjustments
+# df_long$individual_intercept <- predict(model, re.form = ~ (1 | id)) - fixed_effects[1]
+# 
+# # Combine fixed effects and random effects predictions
+# df_long$combined_predicted_height <- df_long$predicted_height + df_long$individual_intercept
+# 
+# # Generate the plot
+# ggplot(df_long, aes(x = event, y = height)) +
+#   geom_point(alpha = 0.3) +
+#   geom_line(aes(y = combined_predicted_height, group = id), color = "grey", alpha = 0.5) +
+#   geom_line(aes(y = predicted_height, group = 1), color = "blue", size = 1.5) +
+#   labs(
+#     title = "Predicted vs. Observed Heights with GLMM",
+#     x = "Event",
+#     y = "Height (inches)"
+#   ) +
+#   theme_minimal()
 
 
 ```
