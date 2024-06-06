@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r}
+```{r- BLOCK 1}
 #| echo: FALSE # The content of this code block will not be shown when rendered
 #| output: FALSE # Output from this code block will not be shown when rendered
 #| cache: FALSE
@@ -35,25 +35,22 @@ df <- readRDS(data_path)
 
 # Create and mutate the dataframe
 df_long <- df %>%
-    select(src_subject_id, eventname, cbcl_scr_syn_external_r) %>%
+    select(src_subject_id, eventname, interview_age, anthroheightcalc) %>%
     filter(eventname %in% c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1")) %>%
-    drop_na(cbcl_scr_syn_external_r) %>%
+    drop_na(anthroheightcalc) %>%
     arrange(src_subject_id, eventname) %>%
     mutate(
         src_subject_id = factor(src_subject_id),
         eventname = factor(eventname, levels = c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1"), labels = c("Baseline", "Year_1", "Year_2", "Year_3")),
-        cbcl_scr_syn_external_r = round(as.numeric(cbcl_scr_syn_external_r), 2)
+        interview_age = as.numeric(interview_age),
+        anthroheightcalc = round(as.numeric(anthroheightcalc), 2)
     ) %>%
     rename(
         id = src_subject_id,
         event = eventname,
-        height = cbcl_scr_syn_external_r
+        age = interview_age,
+        height = anthroheightcalc
     )
-
-df_long <- df_long %>%
-  group_by(id) %>%
-  filter(all(c("Baseline", "Year_1", "Year_2", "Year_3") %in% event)) %>%
-  ungroup()
 
 ```
 
@@ -75,41 +72,23 @@ library(lme4) # Linear mixed-effects models
 
 ### Descriptives
 ```{r}
-#| echo: FALSE # The content of this code block will not be shown when rendered
-#| output: FALSE # Output from this code block will not be shown when rendered
-#| cache: FALSE
 
-# This code loads the data to be used for the example
-
-library(tidyverse)
-
-# Set the data path
-data_path <- "/Users/shawes/ABCD/data/rds/abcd_5.0_rds/core-rds-5.0/non-imaging_excluding_nt_5.0.rds"
-
-# Read the data
-df <- readRDS(data_path)
-
-# Create and mutate the dataframe
-df_long <- df %>%
-    select(src_subject_id, eventname, cbcl_scr_syn_external_r) %>%
-    filter(eventname %in% c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1")) %>%
-    drop_na(cbcl_scr_syn_external_r) %>%
-    arrange(src_subject_id, eventname) %>%
-    mutate(
-        src_subject_id = factor(src_subject_id),
-        eventname = factor(eventname, levels = c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1"), labels = c("Baseline", "Year_1", "Year_2", "Year_3")),
-        cbcl_scr_syn_external_r = round(as.numeric(cbcl_scr_syn_external_r), 2)
+descriptives_table <- df_long %>%
+    select(event, age, height) %>%
+    mutate(event = factor(event)) %>%
+    tbl_summary(
+        by = event,
+        missing = "no",
+        label = list(height ~ "Height"),
+        statistic = list(all_continuous() ~ "{mean} ({sd})", all_categorical() ~ "{p}%"),
     ) %>%
-    rename(
-        id = src_subject_id,
-        event = eventname,
-        height = cbcl_scr_syn_external_r
-    )
+    modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+    bold_labels() %>%
+    italicize_levels() %>%
+    modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+theme_gtsummary_compact()
 
-df_long <- df_long %>%
-  group_by(id) %>%
-  filter(all(c("Baseline", "Year_1", "Year_2", "Year_3") %in% event)) %>%
-  ungroup()
+descriptives_table
 
 ```
 
@@ -121,20 +100,17 @@ This model accounts for individual variability in height by including a random i
 
 ```{r}
 
-model <- lmer(height ~ event + (1 + event | id), data = df_long, REML = T)
+df_long <- na.omit(df_long)
 
-
-
+model <- lmer(height ~ age + (1 + age | id), data = df_long, REML = T)
 
 # Model with random intercepts only
-model_ri_only <- lmer(height ~ event + (1 | id), data = df_long, REML = T)
-model_ri_only
-
+#model_ri_only <- lmer(height ~ age + (1 | id), data = df_long, REML = T)
+#model_ri_only
 
 # Model with random slopes only, without intercepts
-model_rs_only <- lmer(height ~ event + (0 + event | id), data = df_long, REML = T)
-model_rs_only
-
+#model_rs_only <- lmer(height ~ age + (0 + age | id), data = df_long, REML = T)
+#model_rs_only
 
 ## Output and summary statistics
 summary(model)

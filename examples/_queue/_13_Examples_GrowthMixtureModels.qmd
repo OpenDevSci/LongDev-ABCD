@@ -40,7 +40,7 @@ df_long <- df %>%
     drop_na(anthroheightcalc, anthroweightcalc) %>%
     arrange(src_subject_id, eventname) %>%
     mutate(
-        src_subject_id = factor(src_subject_id),
+        src_subject_id = as.numeric(src_subject_id),
         eventname = factor(eventname, levels = c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1"), labels = c("Baseline", "Year_1", "Year_2", "Year_3")),
         anthroheightcalc = round(as.numeric(anthroheightcalc), 2),
         anthroweightcalc = round(as.numeric(anthroweightcalc), 2)
@@ -69,6 +69,7 @@ In this example, we will utilize xxxxxx models to analyze xxxxxx obtained across
 ### Load R libraries
 ```{r}
 library(tidyverse)    # Collection of R packages for data science
+library(lcmm)
 library(lavaan)       #
 library(rstatix)      # Pipe-friendly framework for basic statistical tests
 library(DT)           # Rendering interactive data tables
@@ -98,6 +99,25 @@ descriptives_table
 ## Results 
 ### Compute Growth Mixture Model
 This code performs growth mixture modeling to examine the reciprocal relationships between 'Height' and 'Weight' measurements across 3 annual visits. The model output is provided below, along with a summary of results. This approach xxxxx.
+
+```{r}
+set.seed(2002)
+gmm1 <- hlme(height ~ event, subject = "id", random=~1, ng = 1, data =
+df_long)
+
+gmm2 <- gridsearch(rep = 100, maxiter = 10, minit = gmm1,
+hlme(height ~ event, subject = "id_numeric", random=~1,
+ng = 2, data = df_long, mixture = ~ event,
+nwg=T))
+
+gmm3 <- gridsearch(rep = 100, maxiter = 10, minit = gmm1,
+hlme(height ~ event, subject = "id_numeric", random=~1,
+ng = 3, data = df_long, mixture = ~ event,
+nwg=T))
+
+# make table with results for the 4 models:
+summarytable(gmm1, gmm2, gmm3)
+```
 
 ```{r}
 # Combine the data from all classes

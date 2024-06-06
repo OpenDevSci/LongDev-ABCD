@@ -115,16 +115,16 @@ df_wide <- na.omit(df_wide)
 # Define the model
 model <- '
   # Trait component
-  trait =~ 1 * anthroheightcalc_0 + 1 * anthroheightcalc_1 + 1 * anthroheightcalc_2 + 1 * anthroheightcalc_3
+  trait =~ 1 * height_Baseline + 1 * height_Year_1 + 1 * height_Year_2 + 1 * height_Year_3
 
   # State component
-  state =~ anthroheightcalc_0 + anthroheightcalc_1 + anthroheightcalc_2 + anthroheightcalc_3
+  state =~ height_Baseline + height_Year_1 + height_Year_2 + height_Year_3
 
   # Residual variances
-  anthroheightcalc_0 ~~ anthroheightcalc_0
-  anthroheightcalc_1 ~~ anthroheightcalc_1
-  anthroheightcalc_2 ~~ anthroheightcalc_2
-  anthroheightcalc_3 ~~ anthroheightcalc_3
+  height_Baseline ~~ height_Baseline
+  height_Year_1 ~~ height_Year_1
+  height_Year_2 ~~ height_Year_2
+  height_Year_3 ~~ height_Year_3
 '
 
 # Estimate the State-Trait Model

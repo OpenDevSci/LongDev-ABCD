@@ -70,6 +70,7 @@ library(tidyverse)    # Collection of R packages for data science
 library(rstatix)      # Pipe-friendly framework for basic statistical tests
 library(DT)           # Rendering interactive data tables
 library(lavaan)       #
+library(patchwork)
 ```
 
 ### Descriptives
@@ -114,12 +115,12 @@ library(lavaan)
 # Specify the multivariate latent growth curve model
 model <- '
   # Intercept and slope factors for variable 1 (height)
-  i_var1 =~ 1*height_Baseline + 1*height_Year_1 + 1*height_Year_2
-  s_var1 =~ 0*height_Baseline + 1*height_Year_1 + 2*height_Year_2
+  i_var1 =~ 1*height_Baseline + 1*height_Year_1 + 1*height_Year_2 + 1*height_Year_3
+  s_var1 =~ 0*height_Baseline + 1*height_Year_1 + 2*height_Year_2 + 3*height_Year_3
 
   # Intercept and slope factors for variable 2 (weight)
-  i_var2 =~ 1*weight_Baseline + 1*weight_Year_1 + 1*weight_Year_2
-  s_var2 =~ 0*weight_Baseline + 1*weight_Year_1 + 2*weight_Year_2
+  i_var2 =~ 1*weight_Baseline + 1*weight_Year_1 + 1*weight_Year_2 + 1*weight_Year_3
+  s_var2 =~ 0*weight_Baseline + 1*weight_Year_1 + 2*weight_Year_2 + 3*weight_Year_3
 '
 
 # Fit the model using FIML for handling missing data
@@ -135,9 +136,85 @@ These results show xxxxx, indicating that xxxxx (e.g., xxxxx). The xxxx effects 
 ### Model Plots
 ```{r}
 
+# Load necessary libraries
+library(tidyverse)
+library(patchwork)
+
+# Calculate means for each time point for height and weight
+mean_height <- df_wide %>%
+  summarise(across(starts_with("height"), mean, na.rm = TRUE))
+
+mean_weight <- df_wide %>%
+  summarise(across(starts_with("weight"), mean, na.rm = TRUE))
+
+# Reshape the data for plotting
+mean_height_long <- pivot_longer(mean_height, cols = everything(), names_to = "Time", values_to = "Mean_Height")
+mean_weight_long <- pivot_longer(mean_weight, cols = everything(), names_to = "Time", values_to = "Mean_Weight")
+
+# Plot the mean trajectories for height
+height_plot <- ggplot(mean_height_long, aes(x = Time, y = Mean_Height, group = 1)) +
+  geom_line(color = "blue", size = 1.2) +
+  geom_point(color = "blue") +
+  labs(title = "Mean Growth Trajectory for Height", y = "Mean Height", x = "Time Point") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Plot the mean trajectories for weight
+weight_plot <- ggplot(mean_weight_long, aes(x = Time, y = Mean_Weight, group = 1)) +
+  geom_line(color = "red", size = 1.2) +
+  geom_point(color = "red") +
+  labs(title = "Mean Growth Trajectory for Weight", y = "Mean Weight", x = "Time Point") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Combine the plots side by side using patchwork
+#combined_plot <- height_plot + weight_plot
+
+# Display plots
+print(height_plot)
+print(weight_plot)
+
+####
+
+# Extract factor scores
+factor_scores <- lavPredict(fit, type = "lv")
+
+# Convert to a data frame
+factor_scores_df <- as.data.frame(factor_scores)
+
+# Rename the columns for clarity
+colnames(factor_scores_df) <- c("Intercept_Height", "Slope_Height", "Intercept_Weight", "Slope_Weight")
+
+# Summary of the model
+summary(fit, fit.measures = TRUE, standardized = TRUE, rsquare = TRUE)
+
+# Plot histograms of intercepts and slopes
+ggplot(factor_scores_df, aes(x = Intercept_Height)) +
+  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.7) +
+  labs(title = "Distribution of Intercepts for Height", x = "Intercept", y = "Frequency") +
+  theme_minimal()
+
+ggplot(factor_scores_df, aes(x = Slope_Height)) +
+  geom_histogram(binwidth = 0.05, fill = "blue", alpha = 0.7) +
+  labs(title = "Distribution of Slopes for Height", x = "Slope", y = "Frequency") +
+  theme_minimal()
+
+ggplot(factor_scores_df, aes(x = Intercept_Weight)) +
+  geom_histogram(binwidth = 0.5, fill = "red", alpha = 0.7) +
+  labs(title = "Distribution of Intercepts for Weight", x = "Intercept", y = "Frequency") +
+  theme_minimal()
+
+ggplot(factor_scores_df, aes(x = Slope_Weight)) +
+  geom_histogram(binwidth = 0.05, fill = "red", alpha = 0.7) +
+  labs(title = "Distribution of Slopes for Weight", x = "Slope", y = "Frequency") +
+  theme_minimal()
+
+
+#####
+
 ```
 
-This plot illustrates xxxx.
+These plots illustrate xxxx.
 
 ## Wrapping Up
 The multivariate latent growth curve revealed xxxxxxxx.

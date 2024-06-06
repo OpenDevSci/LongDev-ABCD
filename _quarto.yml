@@ -1,7 +1,7 @@
 project:
   type: website
-  #output-dir: docs
-  resources: 
+  output-dir: docs
+  resources:
     - "webr-serviceworker.js"
     - "webr-worker.js"
 
@@ -74,7 +74,7 @@ website:
       background: light
       collapse-level: 1
       contents:
-       - manuscript/manuscript.qmd
+        - manuscript/manuscript.qmd
     - title: "Examples"
       contents:
         - examples/examples.qmd
@@ -116,12 +116,12 @@ website:
             - section: "LatentGrowthCurveModels"
               contents:
                 - 10_Examples_LatentGrowthCurveModels.qmd
-        #     - section: "Multivariate Latent Growth Curve Models"
-        #       contents:
-        #         - 11_Examples_MultivariateLatentGrowthCurveModels.qmd
-        #     - section: "Latent Transition Analysis"
-        #       contents:
-        #         - 12_Examples_LatentTransitionAnalysis.qmd
+            #     - section: "Multivariate Latent Growth Curve Models"
+            #       contents:
+            #         - 11_Examples_MultivariateLatentGrowthCurveModels.qmd
+            #     - section: "Latent Transition Analysis"
+            #       contents:
+            #         - 12_Examples_LatentTransitionAnalysis.qmd
             - section: "Latent Class Growth Analysis"
               contents:
                 - 13b_Examples_LatentClassGrowthAnalysis.qmd
