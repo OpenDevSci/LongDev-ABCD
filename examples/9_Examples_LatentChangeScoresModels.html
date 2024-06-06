@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.553">
+<meta name="generator" content="quarto-1.4.555">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -209,7 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="preliminary-setup">Preliminary Setup</h2>
 <section id="load-packages" class="level3">
 <h3 class="anchored" data-anchor-id="load-packages">Load Packages</h3>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Collection of R packages for data science</span></span>
@@ -224,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="descriptives" class="level3">
 <h3 class="anchored" data-anchor-id="descriptives">Descriptives</h3>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>descriptives_table <span class="ot">&lt;-</span> df_long <span class="sc">%&gt;%</span></span>
@@ -245,24 +245,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-16"><a href="#cb2-16"></a>descriptives_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div>
-<div id="eusootzdcp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#eusootzdcp table {
+<div id="twhfflddzz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#twhfflddzz table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#eusootzdcp thead, #eusootzdcp tbody, #eusootzdcp tfoot, #eusootzdcp tr, #eusootzdcp td, #eusootzdcp th {
+#twhfflddzz thead, #twhfflddzz tbody, #twhfflddzz tfoot, #twhfflddzz tr, #twhfflddzz td, #twhfflddzz th {
   border-style: none;
 }
 
-#eusootzdcp p {
+#twhfflddzz p {
   margin: 0;
   padding: 0;
 }
 
-#eusootzdcp .gt_table {
+#twhfflddzz .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -288,12 +287,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_caption {
+#twhfflddzz .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#eusootzdcp .gt_title {
+#twhfflddzz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -305,7 +304,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#eusootzdcp .gt_subtitle {
+#twhfflddzz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -317,7 +316,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#eusootzdcp .gt_heading {
+#twhfflddzz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -329,13 +328,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_bottom_border {
+#twhfflddzz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_col_headings {
+#twhfflddzz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -350,7 +349,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_col_heading {
+#twhfflddzz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -370,7 +369,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#eusootzdcp .gt_column_spanner_outer {
+#twhfflddzz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -382,15 +381,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#eusootzdcp .gt_column_spanner_outer:first-child {
+#twhfflddzz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#eusootzdcp .gt_column_spanner_outer:last-child {
+#twhfflddzz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#eusootzdcp .gt_column_spanner {
+#twhfflddzz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -402,11 +401,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#eusootzdcp .gt_spanner_row {
+#twhfflddzz .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#eusootzdcp .gt_group_heading {
+#twhfflddzz .gt_group_heading {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -432,7 +431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#eusootzdcp .gt_empty_group_heading {
+#twhfflddzz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -447,15 +446,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#eusootzdcp .gt_from_md > :first-child {
+#twhfflddzz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#eusootzdcp .gt_from_md > :last-child {
+#twhfflddzz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#eusootzdcp .gt_row {
+#twhfflddzz .gt_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -474,7 +473,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#eusootzdcp .gt_stub {
+#twhfflddzz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -487,7 +486,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#eusootzdcp .gt_stub_row_group {
+#twhfflddzz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -501,15 +500,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#eusootzdcp .gt_row_group_first td {
+#twhfflddzz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#eusootzdcp .gt_row_group_first th {
+#twhfflddzz .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#eusootzdcp .gt_summary_row {
+#twhfflddzz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -519,16 +518,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#eusootzdcp .gt_first_summary_row {
+#twhfflddzz .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_first_summary_row.thick {
+#twhfflddzz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#eusootzdcp .gt_last_summary_row {
+#twhfflddzz .gt_last_summary_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -538,7 +537,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_grand_summary_row {
+#twhfflddzz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -548,7 +547,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#eusootzdcp .gt_first_grand_summary_row {
+#twhfflddzz .gt_first_grand_summary_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -558,7 +557,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_last_grand_summary_row_top {
+#twhfflddzz .gt_last_grand_summary_row_top {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -568,11 +567,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_striped {
+#twhfflddzz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#eusootzdcp .gt_table_body {
+#twhfflddzz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -581,7 +580,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_footnotes {
+#twhfflddzz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -595,7 +594,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_footnote {
+#twhfflddzz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 1px;
@@ -604,7 +603,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#eusootzdcp .gt_sourcenotes {
+#twhfflddzz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -618,7 +617,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#eusootzdcp .gt_sourcenote {
+#twhfflddzz .gt_sourcenote {
   font-size: 90%;
   padding-top: 1px;
   padding-bottom: 1px;
@@ -626,68 +625,68 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#eusootzdcp .gt_left {
+#twhfflddzz .gt_left {
   text-align: left;
 }
 
-#eusootzdcp .gt_center {
+#twhfflddzz .gt_center {
   text-align: center;
 }
 
-#eusootzdcp .gt_right {
+#twhfflddzz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#eusootzdcp .gt_font_normal {
+#twhfflddzz .gt_font_normal {
   font-weight: normal;
 }
 
-#eusootzdcp .gt_font_bold {
+#twhfflddzz .gt_font_bold {
   font-weight: bold;
 }
 
-#eusootzdcp .gt_font_italic {
+#twhfflddzz .gt_font_italic {
   font-style: italic;
 }
 
-#eusootzdcp .gt_super {
+#twhfflddzz .gt_super {
   font-size: 65%;
 }
 
-#eusootzdcp .gt_footnote_marks {
+#twhfflddzz .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#eusootzdcp .gt_asterisk {
+#twhfflddzz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#eusootzdcp .gt_indent_1 {
+#twhfflddzz .gt_indent_1 {
   text-indent: 5px;
 }
 
-#eusootzdcp .gt_indent_2 {
+#twhfflddzz .gt_indent_2 {
   text-indent: 10px;
 }
 
-#eusootzdcp .gt_indent_3 {
+#twhfflddzz .gt_indent_3 {
   text-indent: 15px;
 }
 
-#eusootzdcp .gt_indent_4 {
+#twhfflddzz .gt_indent_4 {
   text-indent: 20px;
 }
 
-#eusootzdcp .gt_indent_5 {
+#twhfflddzz .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
 
-<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <colgroup>
 <col style="width: 20%">
 <col style="width: 20%">
@@ -730,7 +729,6 @@ N = 2818<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ita
 </div>
 </div>
 </div>
-</div>
 </section>
 </section>
 <section id="results" class="level2">
@@ -738,7 +736,7 @@ N = 2818<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ita
 <section id="compute-latent-change-score-model" class="level3">
 <h3 class="anchored" data-anchor-id="compute-latent-change-score-model">Compute Latent Change Score Model</h3>
 <p>The code below is used to compute a latent change score analysis to investigate changes in height across four annual assessments. This statistical approach models growth factors, including constant and proportional changes, and how they vary between individuals. It also evaluates the stability of growth patterns over time, giving a more nuanced understanding of developmental trajectories and the amount of change between each time point.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Reshape data from long to wide format</span></span>
@@ -812,8 +810,7 @@ Model Test User Model:
 <span id="cb5-21"><a href="#cb5-21"></a><span class="fu">kable</span>(param_bi_lcsm_01, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div>
-<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">label</th>
@@ -829,7 +826,7 @@ Model Test User Model:
 <td style="text-align: left;">gamma_lx1</td>
 <td style="text-align: right;">55.158</td>
 <td style="text-align: right;">0.080</td>
-<td style="text-align: right;">690.80</td>
+<td style="text-align: right;">690.805</td>
 <td style="text-align: left;">&lt; .001</td>
 <td style="text-align: right;">17.878</td>
 </tr>
@@ -837,7 +834,7 @@ Model Test User Model:
 <td style="text-align: left;">sigma2_lx1</td>
 <td style="text-align: right;">9.519</td>
 <td style="text-align: right;">0.669</td>
-<td style="text-align: right;">14.22</td>
+<td style="text-align: right;">14.221</td>
 <td style="text-align: left;">&lt; .001</td>
 <td style="text-align: right;">1.000</td>
 </tr>
@@ -845,7 +842,7 @@ Model Test User Model:
 <td style="text-align: left;">sigma2_ux</td>
 <td style="text-align: right;">3.575</td>
 <td style="text-align: right;">0.645</td>
-<td style="text-align: right;">5.54</td>
+<td style="text-align: right;">5.542</td>
 <td style="text-align: left;">&lt; .001</td>
 <td style="text-align: right;">3.575</td>
 </tr>
@@ -853,7 +850,7 @@ Model Test User Model:
 <td style="text-align: left;">alpha_g2</td>
 <td style="text-align: right;">17.371</td>
 <td style="text-align: right;">3.516</td>
-<td style="text-align: right;">4.94</td>
+<td style="text-align: right;">4.941</td>
 <td style="text-align: left;">&lt; .001</td>
 <td style="text-align: right;">17.337</td>
 </tr>
@@ -861,7 +858,7 @@ Model Test User Model:
 <td style="text-align: left;">sigma2_g2</td>
 <td style="text-align: right;">1.004</td>
 <td style="text-align: right;">0.222</td>
-<td style="text-align: right;">4.53</td>
+<td style="text-align: right;">4.525</td>
 <td style="text-align: left;">&lt; .001</td>
 <td style="text-align: right;">1.000</td>
 </tr>
@@ -869,7 +866,7 @@ Model Test User Model:
 <td style="text-align: left;">sigma_g2lx1</td>
 <td style="text-align: right;">2.261</td>
 <td style="text-align: right;">0.709</td>
-<td style="text-align: right;">3.19</td>
+<td style="text-align: right;">3.186</td>
 <td style="text-align: left;">.001</td>
 <td style="text-align: right;">0.731</td>
 </tr>
@@ -877,7 +874,7 @@ Model Test User Model:
 <td style="text-align: left;">beta_x</td>
 <td style="text-align: right;">-0.272</td>
 <td style="text-align: right;">0.064</td>
-<td style="text-align: right;">-4.24</td>
+<td style="text-align: right;">-4.235</td>
 <td style="text-align: left;">&lt; .001</td>
 <td style="text-align: right;">-1.214</td>
 </tr>
@@ -885,7 +882,7 @@ Model Test User Model:
 <td style="text-align: left;">phi_x</td>
 <td style="text-align: right;">0.429</td>
 <td style="text-align: right;">0.115</td>
-<td style="text-align: right;">3.71</td>
+<td style="text-align: right;">3.714</td>
 <td style="text-align: left;">&lt; .001</td>
 <td style="text-align: right;">0.371</td>
 </tr>
@@ -895,12 +892,11 @@ Model Test User Model:
 
 </div>
 </div>
-</div>
 <p>The results of the latent change score model (LCSM) for height indicated increasing patterns of growth. The fitted model included a constant change factor of .52, reflecting a uniform base growth factor across all individuals consistently over time. The proportional change factor of -.27 illustrates a negative relationship, indicating that higher initial heights might result in lesser incremental growth. The phi estimate .43 shows autoregressive effects of the change scores, where the direction and magnitude of past growth significantly predict subsequent changes.</p>
 </section>
 <section id="model-plots" class="level3">
 <h3 class="anchored" data-anchor-id="model-plots">Model Plots</h3>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Path diagram plot of model results</span></span>
@@ -913,15 +909,15 @@ Model Test User Model:
 <span id="cb6-8"><a href="#cb6-8"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div>
 <figure class="figure">
-<p><img src="9_Examples_LatentChangeScoresModels_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></p>
+<p><img src="9_Examples_LatentChangeScoresModels_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>This path diagram represents the structural relationships specified in the LCSM by simplifying the model structure into a more intuitive graphical format. The diagram highlights connections and dependencies among the variables, as well as the model’s estimated parameters.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Trajectory Plots</span></span>
@@ -942,9 +938,9 @@ Model Test User Model:
 <span id="cb7-16"><a href="#cb7-16"></a>plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div>
 <figure class="figure">
-<p><img src="9_Examples_LatentChangeScoresModels_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></p>
+<p><img src="9_Examples_LatentChangeScoresModels_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

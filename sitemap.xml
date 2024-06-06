@@ -2,46 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/13b_Examples_LatentClassGrowthAnalysis.html</loc>
-    <lastmod>2024-05-01T16:05:37.349Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.281Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/9_Examples_LatentChangeScoresModels.html</loc>
-    <lastmod>2024-05-01T16:05:37.501Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.449Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/7_Examples_GeneralizedLinearMixedEffectsModels.html</loc>
+    <lastmod>2024-06-06T14:23:25.441Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/5_Examples_MarginalModels.html</loc>
+    <lastmod>2024-06-06T14:23:25.437Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/3a_Examples_LinearMixedModels.html</loc>
-    <lastmod>2024-05-01T16:05:37.417Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.349Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/1b_Examples_DifferenceScores_SimpleRegression.html</loc>
-    <lastmod>2024-05-01T16:05:37.381Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.309Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/manuscript/manuscript.html</loc>
-    <lastmod>2024-05-01T16:05:37.661Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.605Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/examples.html</loc>
-    <lastmod>2024-05-01T16:05:37.541Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.485Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/index.html</loc>
-    <lastmod>2024-05-01T16:05:37.625Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.569Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/1a_Examples_DifferenceScores_PairedTtests.html</loc>
-    <lastmod>2024-05-01T16:05:37.369Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.297Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/2_Examples_ResidualizedChangeScores.html</loc>
-    <lastmod>2024-05-01T16:05:37.401Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.329Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/4_Examples_SignedRankTest.html</loc>
-    <lastmod>2024-05-01T16:05:37.493Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.425Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/6_Examples_GeneralizedEstimatingEquations.html</loc>
+    <lastmod>2024-06-06T14:23:25.441Z</lastmod>
+  </url>
+  <url>
+    <loc>https://opendevsci.github.io/LongDev-ABCD/examples/8_Examples_AutoregressiveCrosslaggedPanelModels.html</loc>
+    <lastmod>2024-06-06T14:23:25.445Z</lastmod>
   </url>
   <url>
     <loc>https://opendevsci.github.io/LongDev-ABCD/examples/10_Examples_LatentGrowthCurveModels.html</loc>
-    <lastmod>2024-05-01T16:05:37.349Z</lastmod>
+    <lastmod>2024-06-06T14:23:25.277Z</lastmod>
   </url>
 </urlset>
